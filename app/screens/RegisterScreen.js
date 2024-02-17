@@ -15,7 +15,7 @@ export default function RegisterScreen() {
       })
       .catch((error) => alert(error.message));
   };
-
+//deneme
   return (
     <View>
       <TextInput placeholder="Email" value={email} onChangeText={text => setEmail(text)} />
