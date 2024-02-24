@@ -2,7 +2,7 @@ import { useState,useRef, useEffect } from 'react';
 import * as tf from "@tensorflow/tfjs";
 import * as bodyPix from "@tensorflow-models/body-pix";
 import {cameraWithTensors} from '@tensorflow/tfjs-react-native'
-import { Button, StyleSheet, Text, TouchableOpacity,Platform, View } from 'react-native';
+import { Button, StyleSheet, Text, TouchableOpacity,Platform, View, Dimensions } from 'react-native';
 import { ImageManipulator } from 'expo-image-manipulator';
 import { Camera, CameraType } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
@@ -20,8 +20,8 @@ export default function TensorCamera() {
   width: 1080,
 } :
 {
-  height: 1200,
-  width: 1600,
+  height: 1920,
+  width: 1080,
 };
 Height=textureDims.height;
 Width=textureDims.width;
@@ -35,6 +35,15 @@ Width=textureDims.width;
       loadTf()
     }
   })
+
+  useEffect(() => {
+    const { width, height } = Dimensions.get('window');
+    const midX = width / 2;
+    const midY = height / 2;
+
+    console.log('Midpoint of X: ', midX);
+    console.log('Midpoint of Y: ', midY);
+  }, [])
 
 
 const takePicture = () => {
@@ -51,13 +60,13 @@ const takePicture = () => {
    
   const detect = async (net) => {
     // Check data is available
-    console.log(video)
+    //console.log(video)
     if(video){
       const person = await net.segmentPersonParts(video);
       const newArray = []
       person?.allPoses[0]?.keypoints.forEach(element => {
-        if(element.score >= 0.1){
-          newArray.push({part:element.part, score: element.score})
+        if(element.score >= 0.8){
+          newArray.push({part:element.part, score: element.score, position: element.position})
         }
       });
       console.log(newArray)}
@@ -92,28 +101,36 @@ const takePicture = () => {
 
   return (
     <View style={styles.container}>
-      <TensorCamera 
+     <TensorCamera 
         ref={cameraRef}
         style={styles.camera} 
         type={Camera.Constants.Type.front}
         onReady={isCheck ? runBodysegment : null}
-        resizeHeight={200}
-        resizeWidth={152}
+        resizeHeight={1920}
+        resizeWidth={1080}
         resizeDepth={3}
-        autorender={true}
+        //autorender={true}
         cameraTextureHeight={textureDims.height}
         cameraTextureWidth={textureDims.width}
         ratio='4:3'
       />
-    {/* Button Container */}
-    <View style={styles.buttonContainer}>
-      <TouchableOpacity onPress={takePicture} style={styles.button}>
-        <Text style={styles.buttonText}>Click me</Text>
-      </TouchableOpacity>
+
+      {/* Cross */}
+      <View style={styles.crossContainer}>
+        <View style={styles.crossVertical} />
+        <View style={styles.crossHorizontal} />
+      </View>
+
+      {/* Button Container */}
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity onPress={takePicture} style={styles.button}>
+          <Text style={styles.buttonText}>Click me</Text>
+        </TouchableOpacity>
+      </View>
     </View>
-  </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -121,9 +138,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   camera: {
-    width: 500,
-    height: 500,
-    zIndex: 1, // Ensure the camera is above the cross
+    width: '100%',
+    height: '90%',
+    zIndex: 1,
   },
   crossContainer: {
     position: 'absolute',
@@ -134,19 +151,30 @@ const styles = StyleSheet.create({
   },
   crossVertical: {
     position: 'absolute',
-    backgroundColor: 'red', // Cross color
-    width: 2, // Cross thickness
-    height: 20, // Full height
+    backgroundColor: 'red',
+    width: 2,
+    height: 20,
   },
   crossHorizontal: {
     position: 'absolute',
-    backgroundColor: 'red', // Cross color
-    width: 20, // Full width
-    height: 2, // Cross thickness
+    backgroundColor: 'red',
+    width: 20,
+    height: 2,
+  },
+  buttonContainer: {
+    position: 'absolute',
+    bottom: 20,
+    width: '100%',
+    alignItems: 'center',
+    zIndex: 1
   },
   button: {
     backgroundColor: 'blue',
     padding: 10,
     borderRadius: 5,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 18,
   },
 });
