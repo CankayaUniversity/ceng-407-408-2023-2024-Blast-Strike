@@ -15,6 +15,7 @@ export default function LoginScreen({ navigation }) {
         const user = userCredentials.user;
         console.log('Logged in with:', user.email);
         setLoading(false);
+        navigation.navigate('HomeScreen');
       })
       .catch((error) => {
         Alert.alert("Login Failed", error.message);

@@ -17,6 +17,7 @@
     "@tensorflow-models/body-pix": "^2.2.1",
     "@tensorflow/tfjs": "^4.17.0",
     "@tensorflow/tfjs-react-native": "^1.0.0",
+    "axios": "^1.6.7",
     "expo": "~50.0.6",
     "expo-camera": "^13.4.4",
     "expo-status-bar": "~1.11.1",

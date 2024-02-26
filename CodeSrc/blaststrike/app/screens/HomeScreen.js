@@ -1,11 +1,41 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity,Button } from 'react-native';
+import axios from 'axios';
 
 const HomeScreen = ({ navigation }) => {
+
+ 
+  const createLobby = async () => {
+    try {
+      console.log("adas");
+      // Make a POST request to your server
+      const response = await axios.post('http://localhost:4000/createLobby', {
+        // Include any data you want to send to the server in the request body
+        // For example:
+        // data: 'exampleData'
+        
+        lobbyName:'react axios lobby demo'
+        
+      });
+
+      // Handle the response from the server
+      console.log('Server response:', response.data);
+    } catch (error) {
+      // Handle errors if the request fails
+      console.error('Error making server request:', error);
+    }
+  };
+  
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Welcome to the Home Screen!</Text>
       
+
+      {/*  create lobby component*/}
+      <Button title="Create annn Lobby"  onPress={createLobby}></Button>
+
+
       {/* Add more buttons or content here as needed */}
     </View>
   );
@@ -36,5 +66,4 @@ const styles = StyleSheet.create({
 });
 
 export default HomeScreen;
-
 

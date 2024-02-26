@@ -9,6 +9,14 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+app.use(cors({
+    origin: ['*'], // Allow requests from this origin
+    methods: ['GET', 'POST','PUT','DELETE'], // Allow specific HTTP method
+    allowedHeaders: ['Content-Type', 'Authorization','Origin','X-Api-Key','X-Requested-With','Accept'], // Allow specific headers
+    //allowedHeaders: ['*'], // Allow specific headers
+    
+}));
+
 //Users
 
 app.get('/getUsers',async (req,res)=> {
@@ -31,7 +39,8 @@ app.get('/getLobby',async (req,res)=> {
 })
 
 app.post('/createLobby',async (req,res)=> {
-    createLobby(db,req.body);
+    console.log("req.body.data",req.body.data);
+    createLobby(db,req.body.data);
     res.send({msg:'Lobby Added'})
 })
 
