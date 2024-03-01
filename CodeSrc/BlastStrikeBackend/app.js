@@ -9,12 +9,11 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+//'http://10.0.2.2:8081','http://localhost:8081','exp://192.168.1.130:8081' thoose are the http req senders for possible axios-expo go network error.
 app.use(cors({
-    origin: ['*'], // Allow requests from this origin
+    origin: ['*',], // Allow requests from this origin
     methods: ['GET', 'POST','PUT','DELETE'], // Allow specific HTTP method
     allowedHeaders: ['Content-Type', 'Authorization','Origin','X-Api-Key','X-Requested-With','Accept'], // Allow specific headers
-    //allowedHeaders: ['*'], // Allow specific headers
-    
 }));
 
 //Users

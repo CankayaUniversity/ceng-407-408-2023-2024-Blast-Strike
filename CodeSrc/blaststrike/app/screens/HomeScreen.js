@@ -9,12 +9,18 @@ const HomeScreen = ({ navigation }) => {
     try {
       console.log("adas");
       // Make a POST request to your server
-      const response = await axios.post('http://localhost:4000/createLobby', {
+      /*
+      changed localhost to 10.0.2.2:4000 beacause android emulator cannot find localhost
+      on it's on device  as I am starting server on my computer
+      */
+      const response = await axios.post('http://10.0.2.2:4000/createLobby', {
         // Include any data you want to send to the server in the request body
         // For example:
         // data: 'exampleData'
-        
-        lobbyName:'react axios lobby demo'
+        data:{
+        lobbyName:'emulatör demo1'
+
+        }
         
       });
 
