@@ -1,10 +1,28 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity,Button } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, Button } from 'react-native';
+import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
+import Popup from './Popup'; // Import the Popup component
 import axios from 'axios';
+import FriendRequestsPopup from './FriendRequestPopUp';
+import { useFetchUserData } from '../../Hooks/useFetchUserData';
 
-const HomeScreen = ({ navigation }) => {
+// Assuming firebaseApp is initialized elsewhere in your project
+const auth = getAuth();
+const firestore = getFirestore();
 
- 
+const HomeScreen = () => {
+  const [popupVisible, setPopupVisible] = useState(false);
+  const [username, setUsername] = useState('');
+  const [friendRequestPopupVisible, setFriendRequestPopupVisible] = useState(false);
+  const userData=useFetchUserData();
+  
+  useEffect(() => {
+    // Update username state only when userData changes
+    if (userData) {
+      setUsername(userData.username);
+    }
+  }, [userData]); // Dependen
   const createLobby = async () => {
     try {
       console.log("adas");
@@ -31,20 +49,23 @@ const HomeScreen = ({ navigation }) => {
       console.error('Error making server request:', error);
     }
   };
+return (
+  <View style={styles.container}>
+    <Text>Welcome,{username}</Text>
+    <Button title='Send Friendship Request' onPress={() => setPopupVisible(true)} />
   
+          {/*  create lobby component*/}
+          <Button title='Create annn Lobby'  onPress={createLobby}></Button>
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Welcome to the Home Screen!</Text>
-      
+    <Popup
+      visible={popupVisible}
+      onClose={() => setPopupVisible(false)}
+    />
+    
+ 
+  </View>
+);
 
-      {/*  create lobby component*/}
-      <Button title="Create annn Lobby"  onPress={createLobby}></Button>
-
-
-      {/* Add more buttons or content here as needed */}
-    </View>
-  );
 };
 
 const styles = StyleSheet.create({
@@ -52,24 +73,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  button: {
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    backgroundColor: '#007bff',
-    borderRadius: 5,
-  },
-  buttonText: {
-    color: '#ffffff',
-    fontSize: 16,
   },
 });
 
 export default HomeScreen;
-

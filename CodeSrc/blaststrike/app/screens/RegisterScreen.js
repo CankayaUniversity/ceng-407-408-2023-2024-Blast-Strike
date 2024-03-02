@@ -1,26 +1,95 @@
+// Import statements for React and useState hook, and other necessary imports
 import React, { useState } from 'react';
-import { View, TextInput, Button, Alert } from 'react-native';
-import { FIREBASE_AUTH as auth } from '../../Database/Firebase';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { View, TextInput, Button, Alert, StyleSheet, ActivityIndicator, TouchableOpacity, Text } from 'react-native';
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { getFirestore, collection, addDoc } from 'firebase/firestore';
+import { firebaseApp } from '../../Database/Firebase';
 
-export default function RegisterScreen() {
+const auth = getAuth(firebaseApp);
+const firestore = getFirestore(firebaseApp);
+
+export default function RegisterScreen({ navigation }) {
+  // State hooks for user input and loading indicator
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSignUp = () => {
+    setIsLoading(true);
     createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredentials) => {
+      .then(async (userCredentials) => {
         const user = userCredentials.user;
-        console.log('Registered with:', user.email);
+        await addDoc(collection(firestore, 'Users'), {
+          username: username,
+          email: user.email,
+        });
+        Alert.alert("Registration Successful", "You are now registered and logged in.");
+        navigation.navigate("LoginScreen"); // Assuming "Login" is the name used in your stack navigator for the LoginScreen
       })
-      .catch((error) => alert(error.message));
+      .catch((error) => {
+        Alert.alert("Registration Failed", error.message);
+      })
+      .finally(() => setIsLoading(false));
   };
-//deneme1
+
   return (
-    <View>
-      <TextInput placeholder="Email" value={email} onChangeText={text => setEmail(text)} />
-      <TextInput placeholder="Password" value={password} secureTextEntry onChangeText={text => setPassword(text)} />
-      <Button title="Sign Up" onPress={handleSignUp} />
+    <View style={styles.container}>
+      {/* Existing TextInput and Button elements */}
+      <TextInput
+        placeholder="Username"
+        value={username}
+        onChangeText={setUsername}
+        style={styles.input}
+      />
+      <TextInput
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
+        style={styles.input}
+      />
+      <TextInput
+        placeholder="Password"
+        value={password}
+        secureTextEntry
+        onChangeText={setPassword}
+        style={styles.input}
+      />
+      {isLoading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : (
+        <Button title="Sign Up" onPress={handleSignUp} />
+      )}
+      {/* Back to Login Button */}
+      <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.backButton}>
+        <Text style={styles.backButtonText}>Back to Login</Text>
+      </TouchableOpacity>
     </View>
   );
 }
+
+// Add styling for the back button
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  input: {
+    width: '100%',
+    padding: 15,
+    marginVertical: 10,
+    borderWidth: 1,
+    borderColor: '#cccccc',
+    borderRadius: 5,
+    backgroundColor: '#ffffff',
+  },
+  backButton: {
+    marginTop: 15,
+  },
+  backButtonText: {
+    color: '#007bff',
+  },
+  // Existing styles...
+});

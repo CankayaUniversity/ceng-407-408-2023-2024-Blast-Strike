@@ -1,8 +1,8 @@
 import express from 'express';
 import cors from 'cors';
-import { getUsers,createUser } from './Database/dbUsers.js';
-import { getLobby,createLobby,addPlayer } from './Database/dbLobby.js';
-import { db } from './Database/firebaseConfig.js';
+import { getUsers,createUser,fetchCurrentUserData } from './DatabaseService/UsersService.js';
+import { getLobby,createLobby,addPlayer } from './DatabaseService/LobbyService.js';
+import { db } from './DatabaseService/firebaseConfig.js';
 
 const app = express();
 
@@ -29,6 +29,20 @@ app.post('/createUser',async (req,res)=> {
     createUser(db,data);
     res.send({msg:'User Added'})
 })
+
+app.post('/fetchCurrentUserData', async (req, res) => {
+    console.log("fetchCurrentUserData endpoint hit");
+    try {
+        const data = req.body; // Directly accessing the body as you're expecting a JSON payload
+        const currentUserData = await fetchCurrentUserData(db, data);
+        console.log("Fetched user username:", currentUserData.username);
+        // Assuming currentUserData directly contains the username or relevant user info
+        res.send({ username: currentUserData.username });
+    } catch (error) {
+        console.error('Server error fetching user data:', error);
+        res.status(500).send({ msg: 'Server error fetching user data' });
+    }
+});
 
 //Lobby
 
