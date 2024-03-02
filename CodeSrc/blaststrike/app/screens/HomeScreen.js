@@ -6,6 +6,7 @@ import Popup from './Popup'; // Import the Popup component
 import axios from 'axios';
 import FriendRequestsPopup from './FriendRequestPopUp';
 import { useFetchUserData } from '../../Hooks/useFetchUserData';
+import  CreateLobbyPopup from './CreateLobbyPopup';
 
 // Assuming firebaseApp is initialized elsewhere in your project
 const auth = getAuth();
@@ -13,6 +14,7 @@ const firestore = getFirestore();
 
 const HomeScreen = () => {
   const [popupVisible, setPopupVisible] = useState(false);
+  const [createLobbyPopupVisible, setCreateLobbyPopupVisible] = useState(false);
   const [username, setUsername] = useState('');
   const [friendRequestPopupVisible, setFriendRequestPopupVisible] = useState(false);
   const userData=useFetchUserData();
@@ -53,15 +55,17 @@ return (
   <View style={styles.container}>
     <Text>Welcome,{username}</Text>
     <Button title='Send Friendship Request' onPress={() => setPopupVisible(true)} />
-  
-          {/*  create lobby component*/}
-          <Button title='Create annn Lobby'  onPress={createLobby}></Button>
+    <Button title='Create a Lobby' onPress={() => setCreateLobbyPopupVisible(true)} />
+        
+    {/*<Button title='Create annn Lobby'  onPress={createLobby}></Button>*/}
 
     <Popup
       visible={popupVisible}
       onClose={() => setPopupVisible(false)}
     />
-    
+    <CreateLobbyPopup
+        visible={createLobbyPopupVisible}
+        onClose={() => setCreateLobbyPopupVisible(false)}/>
  
   </View>
 );

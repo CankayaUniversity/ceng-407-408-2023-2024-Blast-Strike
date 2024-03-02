@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { getAuth } from 'firebase/auth';
-
-const URL = 'http://127.0.0.1:8081/fetchCurrentUserData';
+const URL = 'http://10.0.2.2:4000/fetchCurrentUserData';
 const auth = getAuth();
 
 export const useFetchUserData = () => {

@@ -13,11 +13,15 @@ async function getLobby(db) {
 
 async function createLobby(db, data) {
     try {
+        console.log("data",data);
         let lobbyList= await getLobby(db);
         // To use lobby names as a identifier of a database doc we checking if the our lobby doc has duplicate
         lobbyList.forEach(lobby => {
-            if(lobby.lobbyName==data.lobbyName)
+            if(lobby.lobbyName==data.lobbyName )
             throw new Error('Lobby name ' + data.lobbyName+' must be unique,try to change name');
+            if(data.selectedTeam=='')
+            throw new Error('Selected team cannot be empty');
+
         });
 
          const docRef = await addDoc(collection(db, 'Lobby'), {
@@ -26,6 +30,7 @@ async function createLobby(db, data) {
             teamBlue:[]    
         });
         console.log('Lobby created successfully with ID:', docRef.id);
+        addPlayer(db,data);
 
     } catch (error) {
         console.error('Error creating Lobby:', error);
@@ -45,17 +50,18 @@ async function addPlayer(db, data) {
     
     */
     try {
-        // burdaki player name yapısı şimdilik sadece userName olarak kullanılabilir ilerki güncellemelerde burada username üzerinden kullanıcnın player hesabını çektiğimiz yer olucak
+        // burdaki player name yapısı şimdilik sadece username olarak kullanılabilir ilerki güncellemelerde burada username üzerinden kullanıcnın player hesabını çektiğimiz yer olucak
 
-        const playerName= await getUser(data.userName);
-       // let playerName= data.userName;
-       console.log("playerName",playerName);
+       // const playerName= await getUser(data.username);
+        let playerName= data.username;
+        console.log("playerName",playerName);
+        console.log("data",data);
 
        // enables to get and update lobby data fields
-       const lobbyDocId =await getLobbyIdByLobbyName(db,data.lobbyName)
+        const lobbyDocId =await getLobbyIdByLobbyName(db,data.lobbyName)
 
         // ref to doc with id
-       const docRef = doc(db, 'Lobby', lobbyDocId);
+        const docRef = doc(db, 'Lobby', lobbyDocId);
 
         //our main control object    
         let lobby =await getLobbyData(db,await getLobbyIdByLobbyName(db,data.lobbyName));
@@ -70,7 +76,8 @@ async function addPlayer(db, data) {
             if(lobby[data.selectedTeam].length<6)
             {
                 let newTeam = lobby[data.selectedTeam];
-                newTeam.push(data.userName);
+                newTeam.push(data.username);
+                console.log("newTeam",newTeam);
                 //adding player
                 await updateDoc(docRef, {
                     [data.selectedTeam]: newTeam
@@ -81,7 +88,7 @@ async function addPlayer(db, data) {
 
         }
         else
-            throw new error("lobby cannot found!!!");
+            throw new error("Lobby cannot found!!!");
 
     } catch (error) {
         console.error('Error adding player : ', error);

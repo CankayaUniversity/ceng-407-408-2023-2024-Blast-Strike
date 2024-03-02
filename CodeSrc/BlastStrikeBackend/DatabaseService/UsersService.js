@@ -8,11 +8,11 @@ async function getUsers() {
     console.log("user list", userList);
 }
 
-async function getUser(userName) {
-    /////// şimdilik userName ile aratma yapıyoruz ilerde gereksinimlere göre değiştirilerbilir
+async function getUser(username) {
+    /////// şimdilik username ile aratma yapıyoruz ilerde gereksinimlere göre değiştirilerbilir
     try {
         const usersRef = collection(db, 'Users');
-        const q = query(usersRef, where('userName', '==', userName));
+        const q = query(usersRef, where('username', '==', username));
         const querySnapshot = await getDocs(q);
         
         if (querySnapshot.empty) {
@@ -35,7 +35,7 @@ async function createUser(db, data) {
     try {
          const docRef = await addDoc(collection(db, 'Users'), {
             email: data.email,
-            userName: data.userName
+            username: data.username
         });
         console.log('User created successfully with ID:', docRef.id);
 
