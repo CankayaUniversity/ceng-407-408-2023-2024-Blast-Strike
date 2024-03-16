@@ -9,10 +9,13 @@ import * as ImagePicker from 'expo-image-picker';
 
 export default function TensorCamera() {
   const [permission, requestPermission] = Camera.useCameraPermissions();
-  const [video, setVideo] = useState(null)
+  const [video, setVideo] = useState(null);
   const cameraRef = useRef(null);
   const TensorCamera = cameraWithTensors(Camera);
   const [isCheck, setIsCheck] = useState(false);
+
+  const [startTime, setstartTime] = useState(null);
+  const [endTime, setendTime] = useState(null);
 
   const textureDims = Platform.OS === 'ios' ?
 {
@@ -62,6 +65,7 @@ const takePicture = () => {
     // Check data is available
     //console.log(video)
     if(video){
+      setstartTime(performance.now());
       const person = await net.segmentPersonParts(video);
       const newArray = []
       person?.allPoses[0]?.keypoints.forEach(element => {
@@ -69,9 +73,13 @@ const takePicture = () => {
           newArray.push({part:element.part, score: element.score, position: element.position})
         }
       });
-      console.log(newArray)}
-      setIsCheck(false);
+      console.log(newArray)
     }
+      setIsCheck(false);
+      setendTime(performance.now());
+      const elapsedTime = (endTime - startTime) / 1000;
+      console.log("Function execution time:", elapsedTime, "seconds");
+  }
 
       /*
       useEffect(() => {
