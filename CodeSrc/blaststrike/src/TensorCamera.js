@@ -3,28 +3,18 @@ import * as tf from "@tensorflow/tfjs";
 import * as bodyPix from "@tensorflow-models/body-pix";
 import {cameraWithTensors} from '@tensorflow/tfjs-react-native'
 import { Button, StyleSheet, Text, TouchableOpacity,Platform, View, Dimensions } from 'react-native';
-import { ImageManipulator } from 'expo-image-manipulator';
 import { Camera, CameraType } from 'expo-camera';
-import * as ImagePicker from 'expo-image-picker';
 
 export default function TensorCamera() {
   const [permission, requestPermission] = Camera.useCameraPermissions();
   const [video, setVideo] = useState(null)
+
   const cameraRef = useRef(null);
   const TensorCamera = cameraWithTensors(Camera);
   const [isCheck, setIsCheck] = useState(false);
 
-  const textureDims = Platform.OS === 'ios' ?
-{
-  height: 1920,
-  width: 1080,
-} :
-{
-  height: 1920,
-  width: 1080,
-};
-Height=textureDims.height;
-Width=textureDims.width;
+  const screenHeight = 960;
+  const screenWidth = 540;
 
   useEffect(() => {
     const loadTf = async ()=>  {
@@ -36,20 +26,65 @@ Width=textureDims.width;
     }
   })
 
-  useEffect(() => {
-    const { width, height } = Dimensions.get('window');
-    const midX = width / 2;
-    const midY = height / 2;
-
-    console.log('Midpoint of X: ', midX);
-    console.log('Midpoint of Y: ', midY);
-  }, [])
-
 
 const takePicture = () => {
   setIsCheck(true);
 };
 
+
+function detectHittedPart(segmentedParts){
+  //damage = NULL;
+  console.log(screenHeight/2);
+  console.log(screenWidth/2);
+  console.log(segmentedParts);
+
+  // Is person hitted by head
+  if(((segmentedParts.find(part => part.part == "leftEar").position.x >= (screenWidth/2) && segmentedParts.find(part => part.part == "rightEar").position.x <= (screenWidth/2)) ||
+     (segmentedParts.find(part => part.part == "leftEar").position.x <= (screenWidth/2) && segmentedParts.find(part => part.part == "rightEar").position.x >= (screenWidth/2))) &&
+      segmentedParts.find(part => part.part == "leftShoulder").position.y >= (screenHeight/2) &&
+      segmentedParts.find(part => part.part == "leftEar").score >= 0.8 &&
+      segmentedParts.find(part => part.part == "rightEar").score >= 0.8) 
+  {
+    console.log("Hitted by head, 100 dmg taken");
+    damage = 100;
+  }
+
+  else if(((segmentedParts.find(part => part.part == "leftShoulder").position.x <= (screenWidth/2) && segmentedParts.find(part => part.part == "rightShoulder").position.x >= (screenWidth/2)) || 
+          (segmentedParts.find(part => part.part == "leftShoulder").position.x >= (screenWidth/2) && segmentedParts.find(part => part.part == "rightShoulder").position.x <= (screenWidth/2))) &&
+          segmentedParts.find(part => part.part == "leftShoulder").position.y <= (screenHeight/2) &&
+          segmentedParts.find(part => part.part == "leftHip").position.y >= (screenHeight/2) &&
+          segmentedParts.find(part => part.part == "leftShoulder").score >= 0.8 &&
+          segmentedParts.find(part => part.part == "rightShoulder").score >= 0.8)
+  {
+    console.log("Hitted by body, 50 dmg taken");
+    damage = 50;
+  }
+
+  else
+  {
+    console.log("Cant hit to someone");
+  }
+  
+}
+
+const detect = async (net) => {
+  // Check data is available
+  //console.log(video)
+  if(video){
+    const person = await net.segmentPersonParts(video);
+    const newArray = []
+    // Returned: "part", "position": {"x", "y"}, "score"... 
+    // In head: nose, leftEye, rightEye, leftEar, rightEar
+    // In body: leftShoulder, rightShoulder, leftElbow, rightElbow, leftWrist, rightWrist, leftHip, rightHip, leftKnee, rightKnee, leftAnkle, rightAnkle
+    person?.allPoses[0]?.keypoints.forEach(element => {
+      if(element.score >= 0){
+        newArray.push({part:element.part, score: element.score, position: element.position})
+      }
+    });
+    setIsCheck(false);
+    detectHittedPart(newArray);
+  }
+}
 
   const runBodysegment = async (images) => {
     const net = await bodyPix.load();
@@ -57,22 +92,12 @@ const takePicture = () => {
     setVideo(images?.next().value)
     detect(net)
   };
-   
-  const detect = async (net) => {
-    // Check data is available
-    //console.log(video)
-    if(video){
-      const person = await net.segmentPersonParts(video);
-      const newArray = []
-      person?.allPoses[0]?.keypoints.forEach(element => {
-        if(element.score >= 0.8){
-          newArray.push({part:element.part, score: element.score, position: element.position})
-        }
-      });
-      console.log(newArray)}
-      setIsCheck(false);
-    }
 
+  function emptyFunc()
+  {
+    return;
+  }
+   
       /*
       useEffect(() => {
         const interval = setInterval(() => {
@@ -99,6 +124,7 @@ const takePicture = () => {
     );
   }
 
+
   return (
     <View style={styles.container}>
      <TensorCamera 
@@ -106,13 +132,13 @@ const takePicture = () => {
         style={styles.camera} 
         type={Camera.Constants.Type.front}
         onReady={isCheck ? runBodysegment : null}
-        resizeHeight={1920}
-        resizeWidth={1080}
-        resizeDepth={3}
+        resizeHeight={screenWidth}
+        resizeWidth={screenWidth}
+        resizeDepth={3} 
         //autorender={true}
-        cameraTextureHeight={textureDims.height}
-        cameraTextureWidth={textureDims.width}
-        ratio='4:3'
+        cameraTextureHeight={screenWidth}
+        cameraTextureWidth={screenWidth}
+        ratio='16:9'
       />
 
       {/* Cross */}
@@ -136,6 +162,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'red'
   },
   camera: {
     width: '100%',
