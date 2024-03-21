@@ -13,7 +13,6 @@ async function getLobby(db) {
 
 async function createLobby(db, data) {
     try {
-        console.log("data",data);
         let lobbyList= await getLobby(db);
         // To use lobby names as a identifier of a database doc we checking if the our lobby doc has duplicate
         lobbyList.forEach(lobby => {
@@ -30,7 +29,7 @@ async function createLobby(db, data) {
             teamBlue:[]    
         });
         console.log('Lobby created successfully with ID:', docRef.id);
-        addPlayer(db,data);
+        await addPlayer(db,data);
 
     } catch (error) {
         console.error('Error creating Lobby:', error);
@@ -125,6 +124,7 @@ async function getLobbyIdByLobbyName(db,lobbyName) {
 }
 
 async function getLobbyData(db,documentId) {
+    console.log(" get lobby documentId",documentId);
     try {
         // Reference to the document using its ID
         const docRef = doc(db, 'Lobby', documentId);
@@ -136,7 +136,8 @@ async function getLobbyData(db,documentId) {
         if (docSnapshot.exists()) {
             // Access the field values from the document data
             const data = docSnapshot.data();
-            //console.log('Document data:', data);
+            //adding document Id for subscription (onSnapshot)
+            data['documentId']=documentId;
             return data;
         } else {
             console.log('Document does not exist');
@@ -160,4 +161,4 @@ async function deleteLobby(db) {
 
 
 
-export { getLobby, createLobby,addPlayer };
+export { getLobby, createLobby,addPlayer,getLobbyData,getLobbyIdByLobbyName };

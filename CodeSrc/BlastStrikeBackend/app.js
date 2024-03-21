@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { getUsers,createUser,fetchCurrentUserData } from './DatabaseService/UsersService.js';
-import { getLobby,createLobby,addPlayer } from './DatabaseService/LobbyService.js';
+import { getLobby,createLobby,addPlayer,getLobbyData,getLobbyIdByLobbyName } from './DatabaseService/LobbyService.js';
 import { db } from './DatabaseService/firebaseConfig.js';
 
 const app = express();
@@ -20,13 +20,13 @@ app.use(cors({
 
 app.get('/getUsers',async (req,res)=> {
     const data=req.body;
-    getUsers(db,req.body);
+    await  getUsers(db,req.body);
     res.send({msg:'Users Get'})
 })
 
 app.post('/createUser',async (req,res)=> {
     const data=req.body;
-    createUser(db,data);
+    await createUser(db,data);
     res.send({msg:'User Added'})
 })
 
@@ -47,21 +47,27 @@ app.post('/fetchCurrentUserData', async (req, res) => {
 //Lobby
 
 app.get('/getLobby',async (req,res)=> {
-    getLobby(db,req.body);
+    await getLobby(db,req.body);
     res.send({msg:'Lobby get'})
 })
 
 app.post('/createLobby',async (req,res)=> {
-    console.log("req.body.data",req.body.data);
-    createLobby(db,req.body.data);
+    await createLobby(db,req.body.data);
     res.send({msg:'Lobby Added'})
 })
 
 app.put('/Lobby/addPlayer',async (req,res)=> {
-    addPlayer(db,req.body);
+    await addPlayer(db,req.body);
     res.send({msg:'Player joined'})
 })
 
-
+app.post('/Lobby/getLobbyData',async (req,res) => {
+    let documentId = await getLobbyIdByLobbyName(db,req.body.data['lobbyName']);
+    console.log("1231231 documentId", documentId);
+    let data = await getLobbyData(db,documentId );
+    console.log("1231231 data", data);
+    res.json(data);
+    
+})
 
 app.listen(4000,()=>console.log("backend running"))

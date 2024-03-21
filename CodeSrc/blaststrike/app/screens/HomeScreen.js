@@ -12,7 +12,7 @@ import  CreateLobbyPopup from './CreateLobbyPopup';
 const auth = getAuth();
 const firestore = getFirestore();
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
   const [popupVisible, setPopupVisible] = useState(false);
   const [createLobbyPopupVisible, setCreateLobbyPopupVisible] = useState(false);
   const [username, setUsername] = useState('');
@@ -25,47 +25,26 @@ const HomeScreen = () => {
       setUsername(userData.username);
     }
   }, [userData]); // Dependen
-  const createLobby = async () => {
-    try {
-      console.log("adas");
-      // Make a POST request to your server
-      /*
-      changed localhost to 10.0.2.2:4000 beacause android emulator cannot find localhost
-      on it's on device  as I am starting server on my computer
-      */
-      const response = await axios.post('http://10.0.2.2:4000/createLobby', {
-        // Include any data you want to send to the server in the request body
-        // For example:
-        // data: 'exampleData'
-        data:{
-        lobbyName:'emulatör demo1'
 
-        }
-        
-      });
-
-      // Handle the response from the server
-      console.log('Server response:', response.data);
-    } catch (error) {
-      // Handle errors if the request fails
-      console.error('Error making server request:', error);
-    }
-  };
 return (
   <View style={styles.container}>
     <Text>Welcome,{username}</Text>
     <Button title='Send Friendship Request' onPress={() => setPopupVisible(true)} />
     <Button title='Create a Lobby' onPress={() => setCreateLobbyPopupVisible(true)} />
+    <Button title='lobby navigate' onPress={() => navigation.navigate('Lobby')} />
         
     {/*<Button title='Create annn Lobby'  onPress={createLobby}></Button>*/}
 
     <Popup
       visible={popupVisible}
       onClose={() => setPopupVisible(false)}
+      
     />
     <CreateLobbyPopup
         visible={createLobbyPopupVisible}
-        onClose={() => setCreateLobbyPopupVisible(false)}/>
+        onClose={() => setCreateLobbyPopupVisible(false)}
+        navigation={navigation}
+        />
  
   </View>
 );

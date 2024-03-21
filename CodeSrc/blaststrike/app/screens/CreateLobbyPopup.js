@@ -6,9 +6,8 @@ import { getAuth } from 'firebase/auth';
 import axios from 'axios';
 
 const auth = getAuth();
-const firestore = getFirestore();
 
-const CreateLobbyPopup = ({ visible, onClose }) => {
+const CreateLobbyPopup = ({ visible, onClose,navigation }) => {
     const [nameOfLobby,setNameOfLobby]=useState('');
     const [currentUsername,setCurrentUsername]=useState('');
     var selectedTeam='';
@@ -53,8 +52,12 @@ const CreateLobbyPopup = ({ visible, onClose }) => {
           onClose(); // This will call the function passed from the parent component to close the modal.
   
           console.log("Lobby Created!");
+          navigation.navigate('Lobby',{
+          lobbyName:nameOfLobby,
+          username:currentUsername
+          });
         } catch (error) {
-          console.error('Error creating lobby:', error);
+          console.error('CreateLobby pop Error creating lobby:', error);
         }
         finally{
             setNameOfLobby('');
