@@ -37,35 +37,40 @@ function detectHittedPart(segmentedParts){
   console.log(screenHeight/2);
   console.log(screenWidth/2);
   console.log(segmentedParts);
+  console.log(segmentedParts.length);
 
-  // Is person hitted by head
-  if(((segmentedParts.find(part => part.part == "leftEar").position.x >= (screenWidth/2) && segmentedParts.find(part => part.part == "rightEar").position.x <= (screenWidth/2)) ||
-     (segmentedParts.find(part => part.part == "leftEar").position.x <= (screenWidth/2) && segmentedParts.find(part => part.part == "rightEar").position.x >= (screenWidth/2))) &&
-      segmentedParts.find(part => part.part == "leftShoulder").position.y >= (screenHeight/2) &&
-      segmentedParts.find(part => part.part == "leftEar").score >= 0.8 &&
-      segmentedParts.find(part => part.part == "rightEar").score >= 0.8) 
+  if(segmentedParts.length > 0)
   {
-    console.log("Hitted by head, 100 dmg taken");
-    damage = 100;
+    // Is person hitted by head
+    if(((segmentedParts.find(part => part.part == "leftEar").position.x >= (screenWidth/2) && segmentedParts.find(part => part.part == "rightEar").position.x <= (screenWidth/2)) ||
+      (segmentedParts.find(part => part.part == "leftEar").position.x <= (screenWidth/2) && segmentedParts.find(part => part.part == "rightEar").position.x >= (screenWidth/2))) &&
+        segmentedParts.find(part => part.part == "leftShoulder").position.y >= (screenHeight/2) &&
+        segmentedParts.find(part => part.part == "leftEar").score >= 0.8 &&
+        segmentedParts.find(part => part.part == "rightEar").score >= 0.8) 
+    {
+      console.log("Hitted by head, 100 dmg taken");
+      damage = 100;
+    }
+
+    else if(((segmentedParts.find(part => part.part == "leftShoulder").position.x <= (screenWidth/2) && segmentedParts.find(part => part.part == "rightShoulder").position.x >= (screenWidth/2)) || 
+            (segmentedParts.find(part => part.part == "leftShoulder").position.x >= (screenWidth/2) && segmentedParts.find(part => part.part == "rightShoulder").position.x <= (screenWidth/2))) &&
+            segmentedParts.find(part => part.part == "leftShoulder").position.y <= (screenHeight/2) &&
+            segmentedParts.find(part => part.part == "leftHip").position.y >= (screenHeight/2) &&
+            segmentedParts.find(part => part.part == "leftShoulder").score >= 0.8 &&
+            segmentedParts.find(part => part.part == "rightShoulder").score >= 0.8)
+    {
+      console.log("Hitted by body, 50 dmg taken");
+      damage = 50;
+    }
+
+    else
+    {
+      console.log("Cant hit to someone");
+    }
   }
 
-  else if(((segmentedParts.find(part => part.part == "leftShoulder").position.x <= (screenWidth/2) && segmentedParts.find(part => part.part == "rightShoulder").position.x >= (screenWidth/2)) || 
-          (segmentedParts.find(part => part.part == "leftShoulder").position.x >= (screenWidth/2) && segmentedParts.find(part => part.part == "rightShoulder").position.x <= (screenWidth/2))) &&
-          segmentedParts.find(part => part.part == "leftShoulder").position.y <= (screenHeight/2) &&
-          segmentedParts.find(part => part.part == "leftHip").position.y >= (screenHeight/2) &&
-          segmentedParts.find(part => part.part == "leftShoulder").score >= 0.8 &&
-          segmentedParts.find(part => part.part == "rightShoulder").score >= 0.8)
-  {
-    console.log("Hitted by body, 50 dmg taken");
-    damage = 50;
-  }
 
-  else
-  {
-    console.log("Cant hit to someone");
-  }
-  
-}
+} 
 
 const detect = async (net) => {
   // Check data is available
@@ -88,24 +93,26 @@ const detect = async (net) => {
 
   const runBodysegment = async (images) => {
     const net = await bodyPix.load();
-    console.log("BodyPix model loaded.");
+    console.log("BodyPix model loaded."); 
     setVideo(images?.next().value)
     detect(net)
   };
 
-  function emptyFunc()
-  {
-    return;
+  const CallBodySegmentation = async(images) => {
+    if(isCheck)
+    {
+      await runBodysegment(images);
+    }
   }
    
-      /*
-      useEffect(() => {
-        const interval = setInterval(() => {
-          runBodysegment();
-        }, 10000);
-        return () => clearInterval(interval);
-      }, []);
-      */
+    /*
+    useEffect(() => {
+      const interval = setInterval(() => {
+        runBodysegment();
+      }, 10000);
+      return () => clearInterval(interval);
+    }, []);
+    */
 
   // runBodysegment()
 
@@ -131,7 +138,7 @@ const detect = async (net) => {
         ref={cameraRef}
         style={styles.camera} 
         type={Camera.Constants.Type.front}
-        onReady={isCheck ? runBodysegment : null}
+        onReady={CallBodySegmentation}
         resizeHeight={screenWidth}
         resizeWidth={screenWidth}
         resizeDepth={3} 
