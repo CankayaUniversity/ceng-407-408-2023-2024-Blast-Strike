@@ -13,7 +13,7 @@ const Lobby = ({ route })  =>{
     const { username, lobbyName} = route.params;
    const [lobbyData, setLobbyData] = useState({});
     const db = FIRESTORE_DB;
-    const [createdLobbyExist,setCreatedLobbyExist]=useState(false);
+    const [LobbyExist,setLobbyExist]=useState(false);
     console.log("routed username and lobbyname",username,lobbyName);
     const [documentData, setDocumentData] = useState(null);
 /*
@@ -38,7 +38,7 @@ const Lobby = ({ route })  =>{
 */
 
 useEffect(() => {
-  if (createdLobbyExist && lobbyData.documentId) {
+  if (LobbyExist && lobbyData.documentId) {
     const unsubscribe = onSnapshot(doc(db, "Lobby", lobbyData.documentId), (doc) => {
       if (doc.exists()) {
         setDocumentData({ ...doc.data(), id: doc.id });
@@ -75,35 +75,34 @@ useEffect(() => {
               }
             })
         setLobbyData(response.data);
-        setCreatedLobbyExist(true);
+        console.log(response.data)
+        setLobbyExist(true);
         }catch(error){}
     }
 
-    if(!createdLobbyExist){
+    if(!LobbyExist){
       fetchUserLobbyData();
-      setCreatedLobbyExist(true);
-   
+      setLobbyExist(true);
     }
 
 
-
     return (
-        <View style={styles.container}>
+      <View style={styles.container}>
         <View style={styles.rotatedContainer}>
           <Text style={styles.heading}>5v5 FPS Shooter Game Lobby</Text>
           <View style={styles.teamSelection}>
             <View style={styles.team}>
               <Text style={styles.teamHeading}>Team 1</Text>
               <View style={styles.playerList}>
-                {/* Display list of players on Team 1 */}
-                {documentData.teamBlue.map( user =><Text>{user}</Text> )}
+                {/* Display list of players on Team 1 if documentData is not null and has teamBlue property */}
+                {lobbyData.teamBlue.map(user => <Text>{user}</Text>)}
               </View>
             </View>
             <View style={styles.team}>
               <Text style={styles.teamHeading}>Team 2</Text>
               <View style={styles.playerList}>
-                {/* Display list of players on Team 2 */}
-                {documentData.teamRed.map( user =><Text>{user}</Text> )}
+                {/* Display list of players on Team 2 if documentData is not null and has teamRed property */}
+                {lobbyData.teamRed.map(user => <Text>{user}</Text>)}
               </View>
             </View>
           </View>
@@ -115,6 +114,7 @@ useEffect(() => {
         </View>
       </View>
     );
+    
 
 };
 

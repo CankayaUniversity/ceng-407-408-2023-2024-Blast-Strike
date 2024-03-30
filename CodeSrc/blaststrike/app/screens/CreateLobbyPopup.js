@@ -20,7 +20,7 @@ const CreateLobbyPopup = ({ visible, onClose,navigation }) => {
         }
         try {
             // Fetching user data from your backend
-            const response = await axios.post('http://10.0.2.2:4000/fetchCurrentUserData', {
+            const response = await axios.post('http://localhost:4000/fetchCurrentUserData', {
             email: currentUser.email, // Sending current user's email to your backend
             })
         // usernameFromResponse = response.data.username; // Assuming the backend responds with the username
@@ -37,7 +37,7 @@ const CreateLobbyPopup = ({ visible, onClose,navigation }) => {
       // Proceed to send a friend request only if we successfully got the username
       if (currentUsername) {
         try {
-            const response = await axios.post('http://10.0.2.2:4000/createLobby', {
+            const response = await axios.post('http://localhost:4000/createLobby', {
                 // Include any data you want to send to the server in the request body
                 // For example:
                 // data: 'exampleData'

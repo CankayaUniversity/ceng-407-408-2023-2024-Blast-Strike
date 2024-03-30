@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import { getUsers,createUser,fetchCurrentUserData } from './DatabaseService/UsersService.js';
+import { getUsers,createUser,fetchCurrentUserData,sendFriendRequest,addFriends,deleteAcceptedRequest } from './DatabaseService/UsersService.js';
 import { getLobby,createLobby,addPlayer,getLobbyData,getLobbyIdByLobbyName } from './DatabaseService/LobbyService.js';
 import { db } from './DatabaseService/firebaseConfig.js';
 
@@ -44,6 +44,68 @@ app.post('/fetchCurrentUserData', async (req, res) => {
     }
 });
 
+app.post('/sendFriendRequest', async (req, res) => {
+    console.log("sendFriendRequest endpoint hit");
+
+    const data = req.body; // Assuming `data` is the direct body content.
+    console.log(data.data.to_username,data.data.from_username);
+
+    // Simple validation
+    if (!data || !data.data.to_username || !data.data.from_username || typeof data.data.status === 'undefined') {
+        return res.status(400).send({ error: 'Missing required fields' });
+    }
+
+    try {
+        await sendFriendRequest(db, data);
+        res.send({ msg: 'Request sent' });
+    } catch (error) {
+        // Use specific status codes for different types of errors if possible
+        const statusCode = error.message === "User is not found" ? 404 : 400;
+        res.status(statusCode).send({ error: error.message });
+    }
+});
+
+
+
+app.post('/addFriends',async(req,res)=>
+{
+    console.log("addFriends endpoint hit");
+    const data=req.body;
+    addFriends(db,data.data);
+    res.send({msg:'Request sended'});
+});
+app.post('/fetchFriendRequests', async (req, res) => {
+    console.log("fetchFriendRequest endpoint hit");
+    try {
+        const data = req.body;
+        // Await the completion of the fetchFriendRequests function to get the data
+        const friendRequests = await fetchFriendRequests(db, data);
+        console.log("in post Friend Requests");
+        //console.log(friendRequests);
+        // Send the fetched data in the response
+        res.send({ FriendRequests: friendRequests });
+    } catch (error) {
+        console.error('Server error fetching user data:', error);
+        // It's a good practice to return a meaningful HTTP status code
+        res.status(500).send({ msg: 'Server error fetching user data' });
+    }
+});
+app.post('/deleteAcceptedRequests', async (req, res) => {
+    console.log("deleteAcceptedRequests endpoint hit");
+    try {
+        const data = req.body;
+        // Await the completion of the fetchFriendRequests function to get the data
+        await deleteAcceptedRequest(db,data.data);
+      
+      
+        res.send({ msg:"Successfully deleted" });
+    } catch (error) {
+        console.error('Server error fetching user data:', error);
+        // It's a good practice to return a meaningful HTTP status code
+        res.status(500).send({ msg: 'Server error fetching user data' });
+    }
+});
+
 //Lobby
 
 app.get('/getLobby',async (req,res)=> {
@@ -68,6 +130,11 @@ app.post('/Lobby/getLobbyData',async (req,res) => {
     console.log("1231231 data", data);
     res.json(data);
     
+})
+
+app.put('/Lobby/joinLobby',async (req,res) => {
+    await addPlayer(db,req.body);
+    res.send({msg:'Player joined'})
 })
 
 app.listen(4000,()=>console.log("backend running"))
