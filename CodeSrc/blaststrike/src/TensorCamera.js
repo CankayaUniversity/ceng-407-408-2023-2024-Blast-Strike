@@ -42,22 +42,21 @@ function detectHittedPart(segmentedParts){
   if(segmentedParts.length > 0)
   {
     // Is person hitted by head
-    if(((segmentedParts.find(part => part.part == "leftEar").position.x >= (screenWidth/2) && segmentedParts.find(part => part.part == "rightEar").position.x <= (screenWidth/2)) ||
+    if(segmentedParts.find(part => part.part == "leftEar") &&
+      segmentedParts.find(part => part.part == "rightEar") && 
+      ((segmentedParts.find(part => part.part == "leftEar").position.x >= (screenWidth/2) && segmentedParts.find(part => part.part == "rightEar").position.x <= (screenWidth/2)) ||
       (segmentedParts.find(part => part.part == "leftEar").position.x <= (screenWidth/2) && segmentedParts.find(part => part.part == "rightEar").position.x >= (screenWidth/2))) &&
-        segmentedParts.find(part => part.part == "leftShoulder").position.y >= (screenHeight/2) &&
-        segmentedParts.find(part => part.part == "leftEar").score >= 0.8 &&
-        segmentedParts.find(part => part.part == "rightEar").score >= 0.8) 
+      segmentedParts.find(part => part.part == "leftShoulder").position.y >= (screenHeight/2)) 
     {
       console.log("Hitted by head, 100 dmg taken");
       damage = 100;
     }
 
-    else if(((segmentedParts.find(part => part.part == "leftShoulder").position.x <= (screenWidth/2) && segmentedParts.find(part => part.part == "rightShoulder").position.x >= (screenWidth/2)) || 
+    else if(segmentedParts.find(part => part.part == "leftShoulder") &&
+            segmentedParts.find(part => part.part == "rightShoulder") &&
+            ((segmentedParts.find(part => part.part == "leftShoulder").position.x <= (screenWidth/2) && segmentedParts.find(part => part.part == "rightShoulder").position.x >= (screenWidth/2)) || 
             (segmentedParts.find(part => part.part == "leftShoulder").position.x >= (screenWidth/2) && segmentedParts.find(part => part.part == "rightShoulder").position.x <= (screenWidth/2))) &&
-            segmentedParts.find(part => part.part == "leftShoulder").position.y <= (screenHeight/2) &&
-            segmentedParts.find(part => part.part == "leftHip").position.y >= (screenHeight/2) &&
-            segmentedParts.find(part => part.part == "leftShoulder").score >= 0.8 &&
-            segmentedParts.find(part => part.part == "rightShoulder").score >= 0.8)
+            segmentedParts.find(part => part.part == "leftShoulder").position.y <= (screenHeight/2))
     {
       console.log("Hitted by body, 50 dmg taken");
       damage = 50;
@@ -82,7 +81,7 @@ const detect = async (net) => {
     // In head: nose, leftEye, rightEye, leftEar, rightEar
     // In body: leftShoulder, rightShoulder, leftElbow, rightElbow, leftWrist, rightWrist, leftHip, rightHip, leftKnee, rightKnee, leftAnkle, rightAnkle
     person?.allPoses[0]?.keypoints.forEach(element => {
-      if(element.score >= 0){
+      if(element.score >= 0.8){
         newArray.push({part:element.part, score: element.score, position: element.position})
       }
     });
