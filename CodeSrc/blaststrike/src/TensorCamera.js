@@ -31,6 +31,15 @@ const takePicture = () => {
   setIsCheck(true);
 };
 
+function isInsideOfTolerance(actual_x, actual_y, predicted_x, predicted_y)
+{
+  tolerance_x = actual_x * 1.1;
+  tolerance_y = actual_y * 1.1;
+  if((predicted_x < tolerance_x && predicted_x > actual_x) &&
+      (predicted_y < tolerance_x && predicted_y > actual_y))
+      return true;
+  return false;
+}
 
 function detectHittedPart(segmentedParts){
   //damage = NULL;
@@ -42,11 +51,51 @@ function detectHittedPart(segmentedParts){
   if(segmentedParts.length > 0)
   {
     // Is person hitted by head
-    if(segmentedParts.find(part => part.part == "leftEar") &&
-      segmentedParts.find(part => part.part == "rightEar") && 
+    if(segmentedParts.find(part => part.part == "leftEar") && segmentedParts.find(part => part.part == "rightEar") && 
+    segmentedParts.find(part => part.part == "leftShoulder") && segmentedParts.find(part => part.part == "rightShoulder") && 
       ((segmentedParts.find(part => part.part == "leftEar").position.x >= (screenWidth/2) && segmentedParts.find(part => part.part == "rightEar").position.x <= (screenWidth/2)) ||
       (segmentedParts.find(part => part.part == "leftEar").position.x <= (screenWidth/2) && segmentedParts.find(part => part.part == "rightEar").position.x >= (screenWidth/2))) &&
       segmentedParts.find(part => part.part == "leftShoulder").position.y >= (screenHeight/2)) 
+    {
+      console.log("Hitted by head, 100 dmg taken");
+      damage = 100;
+    }
+
+    else if (segmentedParts.find(part => part.part == "nose" && (segmentedParts.find(part => part.part == "nose").score > 0.90 && 
+              isInsideOfTolerance(segmentedParts.find(part => part.part == "nose").position.x, part => part.part == "nose").position.y),
+                                  screenWidth/ 2, screenHeight / 2))
+    {
+      console.log("Hitted by head, 100 dmg taken");
+      damage = 100;
+    }
+
+    else if (segmentedParts.find(part => part.part == "leftEye" && (segmentedParts.find(part => part.part == "leftEye").score > 0.90 && 
+              isInsideOfTolerance(segmentedParts.find(part => part.part == "leftEye").position.x, part => part.part == "leftEye").position.y),
+                                  screenWidth/ 2, screenHeight / 2))
+    {
+      console.log("Hitted by head, 100 dmg taken");
+      damage = 100;
+    }
+
+    else if (segmentedParts.find(part => part.part == "rightEye" && (segmentedParts.find(part => part.part == "rightEye").score > 0.90 && 
+              isInsideOfTolerance(segmentedParts.find(part => part.part == "rightEye").position.x, part => part.part == "rightEye").position.y),
+                                  screenWidth/ 2, screenHeight / 2))
+    {
+      console.log("Hitted by head, 100 dmg taken");
+      damage = 100;
+    }
+
+    else if (segmentedParts.find(part => part.part == "leftEar" && (segmentedParts.find(part => part.part == "leftEar").score > 0.90 && 
+              isInsideOfTolerance(segmentedParts.find(part => part.part == "leftEar").position.x, part => part.part == "leftEar").position.y),
+                                  screenWidth/ 2, screenHeight / 2))
+    {
+      console.log("Hitted by head, 100 dmg taken");
+      damage = 100;
+    }
+
+    else if (segmentedParts.find(part => part.part == "rightEar" && (segmentedParts.find(part => part.part == "rightEar").score > 0.90 && 
+              isInsideOfTolerance(segmentedParts.find(part => part.part == "rightEar").position.x, part => part.part == "rightEar").position.y),
+                                  screenWidth/ 2, screenHeight / 2))
     {
       console.log("Hitted by head, 100 dmg taken");
       damage = 100;
@@ -57,6 +106,102 @@ function detectHittedPart(segmentedParts){
             ((segmentedParts.find(part => part.part == "leftShoulder").position.x <= (screenWidth/2) && segmentedParts.find(part => part.part == "rightShoulder").position.x >= (screenWidth/2)) || 
             (segmentedParts.find(part => part.part == "leftShoulder").position.x >= (screenWidth/2) && segmentedParts.find(part => part.part == "rightShoulder").position.x <= (screenWidth/2))) &&
             segmentedParts.find(part => part.part == "leftShoulder").position.y <= (screenHeight/2))
+    {
+      console.log("Hitted by body, 50 dmg taken");
+      damage = 50;
+    }
+
+    else if (segmentedParts.find(part => part.part == "leftShoulder" && (segmentedParts.find(part => part.part == "leftShoulder").score > 0.90 && 
+              isInsideOfTolerance(segmentedParts.find(part => part.part == "leftShoulder").position.x, part => part.part == "leftShoulder").position.y),
+                                  screenWidth/ 2, screenHeight / 2))
+    {
+      console.log("Hitted by body, 50 dmg taken");
+      damage = 50;
+    }
+    
+    else if ((segmentedParts.find(part => part.part == "rightShoulder" && segmentedParts.find(part => part.part == "rightShoulder").score > 0.90 && 
+              isInsideOfTolerance(segmentedParts.find(part => part.part == "rightShoulder").position.x, part => part.part == "rightShoulder").position.y),
+                                  screenWidth/ 2, screenHeight / 2))
+    {
+      console.log("Hitted by body, 50 dmg taken");
+      damage = 50;
+    }
+
+    else if ((segmentedParts.find(part => part.part == "leftElbow" && segmentedParts.find(part => part.part == "leftElbow").score > 0.90 && 
+              isInsideOfTolerance(segmentedParts.find(part => part.part == "leftElbow").position.x, part => part.part == "leftElbow").position.y),
+                                  screenWidth/ 2, screenHeight / 2))
+    {
+      console.log("Hitted by body, 50 dmg taken");
+      damage = 50;
+    }
+
+    else if ((segmentedParts.find(part => part.part == "righttElbow" && segmentedParts.find(part => part.part == "righttElbow").score > 0.90 && 
+              isInsideOfTolerance(segmentedParts.find(part => part.part == "righttElbow").position.x, part => part.part == "righttElbow").position.y),
+                                  screenWidth/ 2, screenHeight / 2))
+    {
+      console.log("Hitted by body, 50 dmg taken");
+      damage = 50;
+    }
+
+    else if ((segmentedParts.find(part => part.part == "leftWrist" && segmentedParts.find(part => part.part == "leftWrist").score > 0.90 && 
+              isInsideOfTolerance(segmentedParts.find(part => part.part == "leftWrist").position.x, part => part.part == "leftWrist").position.y),
+                                  screenWidth/ 2, screenHeight / 2))
+    {
+      console.log("Hitted by body, 50 dmg taken");
+      damage = 50;
+    }
+
+    else if ((segmentedParts.find(part => part.part == "rightWrist" && segmentedParts.find(part => part.part == "rightWrist").score > 0.90 && 
+              isInsideOfTolerance(segmentedParts.find(part => part.part == "rightWrist").position.x, part => part.part == "rightWrist").position.y),
+                                  screenWidth/ 2, screenHeight / 2))
+    {
+      console.log("Hitted by body, 50 dmg taken");
+      damage = 50;
+    }
+
+    else if ((segmentedParts.find(part => part.part == "leftHip" && segmentedParts.find(part => part.part == "leftHip").score > 0.90 && 
+              isInsideOfTolerance(segmentedParts.find(part => part.part == "leftHip").position.x, part => part.part == "leftHip").position.y),
+                                  screenWidth/ 2, screenHeight / 2))
+    {
+      console.log("Hitted by body, 50 dmg taken");
+      damage = 50;
+    }
+
+    else if ((segmentedParts.find(part => part.part == "rightHip" && segmentedParts.find(part => part.part == "rightHip").score > 0.90 && 
+              isInsideOfTolerance(segmentedParts.find(part => part.part == "rightHip").position.x, part => part.part == "rightHip").position.y),
+                                  screenWidth/ 2, screenHeight / 2))
+    {
+      console.log("Hitted by body, 50 dmg taken");
+      damage = 50;
+    }
+
+    else if ((segmentedParts.find(part => part.part == "leftKnee" && segmentedParts.find(part => part.part == "leftKnee").score > 0.90 && 
+              isInsideOfTolerance(segmentedParts.find(part => part.part == "leftKnee").position.x, part => part.part == "leftKnee").position.y),
+                                  screenWidth/ 2, screenHeight / 2))
+    {
+      console.log("Hitted by body, 50 dmg taken");
+      damage = 50;
+    }
+
+    else if ((segmentedParts.find(part => part.part == "rightKnee" && segmentedParts.find(part => part.part == "rightKnee").score > 0.90 && 
+              isInsideOfTolerance(segmentedParts.find(part => part.part == "rightKnee").position.x, part => part.part == "rightKnee").position.y),
+                                  screenWidth/ 2, screenHeight / 2))
+    {
+      console.log("Hitted by body, 50 dmg taken");
+      damage = 50;
+    }
+
+    else if ((segmentedParts.find(part => part.part == "leftAnkle" && segmentedParts.find(part => part.part == "leftAnkle").score > 0.90 && 
+              isInsideOfTolerance(segmentedParts.find(part => part.part == "leftAnkle").position.x, part => part.part == "leftAnkle").position.y),
+                                  screenWidth/ 2, screenHeight / 2))
+    {
+      console.log("Hitted by body, 50 dmg taken");
+      damage = 50;
+    }
+
+    else if ((segmentedParts.find(part => part.part == "rightAnkle" && segmentedParts.find(part => part.part == "rightAnkle").score > 0.90 && 
+              isInsideOfTolerance(segmentedParts.find(part => part.part == "rightAnkle").position.x, part => part.part == "rightAnkle").position.y),
+                                  screenWidth/ 2, screenHeight / 2))
     {
       console.log("Hitted by body, 50 dmg taken");
       damage = 50;
