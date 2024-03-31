@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Button } from 'react-native';
 import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
-import Popup from './Popup'; // Import the Popup component
+
+import SendingRequestPopup from './SendingRequestPopup';
 import axios from 'axios';
-import FriendRequestsPopup from './FriendRequestPopUp';
+import FriendRequestsView from './FriendRequestView';
 import { useFetchUserData } from '../../Hooks/useFetchUserData';
 import  CreateLobbyPopup from './CreateLobbyPopup';
 import JoinLobbyPopup from './JoinLobbyPopUp';
@@ -34,15 +35,20 @@ return (
     <Button title='Send Friendship Request' onPress={() => setPopupVisible(true)} />
     <Button title='Create a Lobby' onPress={() => setCreateLobbyPopupVisible(true)} />
     <Button title='lobby navigate' onPress={() => navigation.navigate('Lobby')} />
+<<<<<<< HEAD
     <Button title='join lobby ' onPress={() => setJoinLobbyPopupVisible(true)} />
         
+=======
+    <Button title="View Friend Requests" onPress={() => setFriendRequestPopupVisible(!friendRequestPopupVisible)} />
+>>>>>>> c324b69742d4277e35a2021e2daa1f086cf31eaa
     {/*<Button title='Create annn Lobby'  onPress={createLobby}></Button>*/}
 
-    <Popup
-      visible={popupVisible}
-      onClose={() => setPopupVisible(false)}
+    {friendRequestPopupVisible && <FriendRequestsView />}
       
-    />
+      <SendingRequestPopup
+        visible={popupVisible}
+        onClose={() => setPopupVisible(false)}
+      />
     <CreateLobbyPopup
         visible={createLobbyPopupVisible}
         onClose={() => setCreateLobbyPopupVisible(false)}
