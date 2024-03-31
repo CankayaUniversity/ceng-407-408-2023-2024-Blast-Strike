@@ -6,6 +6,7 @@ import HomeScreen from '../app/screens/HomeScreen';
 import RegisterScreen from '../app/screens/RegisterScreen'; // Adjust the path as necessary
 import Lobby from '../app/screens/Lobby';
 import CreateLobbyPopup from '../app/screens/CreateLobbyPopup';
+import JoinLobbyPopup from '../app/screens/JoinLobbyPopUp';
 
 
 const Stack = createNativeStackNavigator();
@@ -19,6 +20,8 @@ function App() {
         <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} /> 
         <Stack.Screen name="Lobby" component={Lobby} options={{ headerShown: false }} /> 
         <Stack.Screen name="CreateLobbyPopup" component={CreateLobbyPopup} options={{ headerShown: false }}  />
+        <Stack.Screen name="JoinLobbyPopup" component={JoinLobbyPopup} options={{ headerShown: false }}  />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

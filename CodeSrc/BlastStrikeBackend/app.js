@@ -70,4 +70,9 @@ app.post('/Lobby/getLobbyData',async (req,res) => {
     
 })
 
+app.put('/Lobby/joinLobby',async (req,res) => {
+    await addPlayer(db,req.body);
+    res.send({msg:'Player joined'})
+})
+
 app.listen(4000,()=>console.log("backend running"))
