@@ -35,12 +35,9 @@ return (
     <Button title='Send Friendship Request' onPress={() => setPopupVisible(true)} />
     <Button title='Create a Lobby' onPress={() => setCreateLobbyPopupVisible(true)} />
     <Button title='lobby navigate' onPress={() => navigation.navigate('Lobby')} />
-<<<<<<< HEAD
     <Button title='join lobby ' onPress={() => setJoinLobbyPopupVisible(true)} />
         
-=======
     <Button title="View Friend Requests" onPress={() => setFriendRequestPopupVisible(!friendRequestPopupVisible)} />
->>>>>>> c324b69742d4277e35a2021e2daa1f086cf31eaa
     {/*<Button title='Create annn Lobby'  onPress={createLobby}></Button>*/}
 
     {friendRequestPopupVisible && <FriendRequestsView />}

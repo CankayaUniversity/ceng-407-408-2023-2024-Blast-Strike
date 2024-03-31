@@ -98,7 +98,9 @@ useEffect(() => {
               <View style={styles.playerList}>
                 {/* Display list of players on Team 1 if documentData is not null and has teamBlue property */}
                {/*lobbyData.teamBlue.map(user => <Text>{user}</Text>)*/}
-                {lobbyData && lobbyData.teamBlue && lobbyData.teamBlue.map(user => <Text>{user}</Text>)}
+               {lobbyData && lobbyData.teamBlue && lobbyData.teamBlue.map((user, index) => (
+        <Text key={index}>{user}</Text>
+      ))}
               </View>
             </View>
             <View style={styles.team}>
@@ -106,7 +108,9 @@ useEffect(() => {
               <View style={styles.playerList}>
                 {/* Display list of players on Team 2 if documentData is not null and has teamRed property */}
                 {/*lobbyData.teamRed.map(user => <Text>{user}</Text>)*/}
-                {lobbyData && lobbyData.teamRed && lobbyData.teamRed.map(user => <Text>{user}</Text>)}
+                {lobbyData && lobbyData.teamRed && lobbyData.teamRed.map((user, index) => (
+        <Text key={index}>{user}</Text>
+      ))}
               </View>
             </View>
           </View>
