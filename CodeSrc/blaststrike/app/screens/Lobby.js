@@ -11,11 +11,12 @@ const auth = getAuth();
 
 const Lobby = ({ route })  =>{
     const { username, lobbyName} = route.params;
-   const [lobbyData, setLobbyData] = useState({});
+    const [lobbyData, setLobbyData] = useState({});
     const db = FIRESTORE_DB;
     const [LobbyExist,setLobbyExist]=useState(false);
     console.log("routed username and lobbyname",username,lobbyName);
     const [documentData, setDocumentData] = useState(null);
+    const Url='http://10.0.2.2:4000';
 /*
     const fetchUserData = async () => {
         const currentUser = auth.currentUser;
@@ -41,11 +42,11 @@ useEffect(() => {
   if (LobbyExist && lobbyData.documentId) {
     const unsubscribe = onSnapshot(doc(db, "Lobby", lobbyData.documentId), (doc) => {
       if (doc.exists()) {
-        setDocumentData({ ...doc.data(), id: doc.id });
+        setLobbyData({ ...doc.data(), id: doc.id });
         console.log("New Lobby:", doc.data());
       } else {
         // Document doesn't exist
-        setDocumentData(null);
+        setLobbyData(null);
         console.log("Document does not exist.");
       }
     });
@@ -59,25 +60,26 @@ useEffect(() => {
 
     ///////// TODO: LOBBY DOCUMENT ID create lobby pop updan alınabilir
     const fetchUserLobbyData = async () => {
-      
-        const currentUser = auth.currentUser;
-        console.log('fetchUserLobbyData RUNNING');
-        if (!currentUser) {
-            console.log('No user logged in');
-            return; // Exit the function if there's no logged-in user
-        }
-        try{
-            // Fetching current lobby data to show 
-            const response = await axios.post('http://10.0.2.2:4000/Lobby/getLobbyData', 
-            {
-              data: {
-                lobbyName:lobbyName
-              }
-            })
+      const currentUser = auth.currentUser;
+      console.log('fetchUserLobbyData RUNNING');
+      if (!currentUser) {
+        console.log('No user logged in');
+        return; // Exit the function if there's no logged-in user
+      }
+      try {
+        // Fetching current lobby data to show 
+        const response = await axios.post('http://10.0.2.2:4000/Lobby/getLobbyData', {
+          data: {
+            lobbyName: lobbyName
+          }
+        });
+        console.log("response.data", response.data);
         setLobbyData(response.data);
-        console.log(response.data)
+        console.log("lobbyData", response.data); // Log lobbyData after setting it
         setLobbyExist(true);
-        }catch(error){}
+      } catch (error) {
+        console.error("Error fetching lobby data:", error);
+      }
     }
 
     if(!LobbyExist){
@@ -95,14 +97,16 @@ useEffect(() => {
               <Text style={styles.teamHeading}>Team 1</Text>
               <View style={styles.playerList}>
                 {/* Display list of players on Team 1 if documentData is not null and has teamBlue property */}
-                {lobbyData.teamBlue.map(user => <Text>{user}</Text>)}
+               {/*lobbyData.teamBlue.map(user => <Text>{user}</Text>)*/}
+                {lobbyData && lobbyData.teamBlue && lobbyData.teamBlue.map(user => <Text>{user}</Text>)}
               </View>
             </View>
             <View style={styles.team}>
               <Text style={styles.teamHeading}>Team 2</Text>
               <View style={styles.playerList}>
                 {/* Display list of players on Team 2 if documentData is not null and has teamRed property */}
-                {lobbyData.teamRed.map(user => <Text>{user}</Text>)}
+                {/*lobbyData.teamRed.map(user => <Text>{user}</Text>)*/}
+                {lobbyData && lobbyData.teamRed && lobbyData.teamRed.map(user => <Text>{user}</Text>)}
               </View>
             </View>
           </View>
