@@ -41,11 +41,11 @@ const CreateLobbyPopup = ({ visible, onClose,navigation }) => {
                 // Include any data you want to send to the server in the request body
                 // For example:
                 // data: 'exampleData'
-                data:{
+                
                 lobbyName:nameOfLobby,
                 username:currentUsername,
                 selectedTeam:selectedTeam
-                }
+                
                 
               });
           // Instead of visible=false;

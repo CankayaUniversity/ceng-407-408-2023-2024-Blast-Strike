@@ -114,7 +114,7 @@ app.get('/getLobby',async (req,res)=> {
 })
 
 app.post('/createLobby',async (req,res)=> {
-    await createLobby(db,req.body.data);
+    await createLobby(db,req.body);
     res.send({msg:'Lobby Added'})
 })
 
@@ -125,16 +125,13 @@ app.put('/Lobby/addPlayer',async (req,res)=> {
 
 app.post('/Lobby/getLobbyData',async (req,res) => {
     let documentId = await getLobbyIdByLobbyName(db,req.body.data['lobbyName']);
-    console.log("1231231 documentId", documentId);
+    //console.log("documentId", documentId);
     let data = await getLobbyData(db,documentId );
-    console.log("1231231 data", data);
+   //console.log("1231231 data", data);
     res.json(data);
     
 })
 
-app.put('/Lobby/joinLobby',async (req,res) => {
-    await addPlayer(db,req.body);
-    res.send({msg:'Player joined'})
-})
+
 
 app.listen(4000,()=>console.log("backend running"))

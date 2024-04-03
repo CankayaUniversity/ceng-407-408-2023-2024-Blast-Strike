@@ -14,49 +14,29 @@ const Lobby = ({ route })  =>{
     const [lobbyData, setLobbyData] = useState({});
     const db = FIRESTORE_DB;
     const [LobbyExist,setLobbyExist]=useState(false);
-    console.log("routed username and lobbyname",username,lobbyName);
-    const [documentData, setDocumentData] = useState(null);
+    //console.log("routed username and lobbyname",username,lobbyName);
     const Url='http://10.0.2.2:4000';
-/*
-    const fetchUserData = async () => {
-        const currentUser = auth.currentUser;
-        if (!currentUser) {
-            console.log('No user logged in');
-            return; // Exit the function if there's no logged-in user
+
+  useEffect(() => {
+    if (LobbyExist && lobbyData.documentId) {
+      const unsubscribe = onSnapshot(doc(db, "Lobby", lobbyData.documentId), (doc) => {
+        if (doc.exists()) {
+          setLobbyData({ ...doc.data(), documentId: doc.id });
+          //console.log("New Lobby:", doc.data());
+        } else {
+          // Document doesn't exist
+          setLobbyData(null);
+          console.log("Document does not exist.");
         }
-        try {
-            // Fetching user data from your backend
-            const response = await axios.post('http://10.0.2.2:4000/fetchCurrentUserData', {
-            email: currentUser.email, // Sending current user's email to your backend
-            })
-        // usernameFromResponse = response.data.username; // Assuming the backend responds with the username
-        setCurrentUsername(response.data.username);
-        } catch (error) {
-            console.log('Error fetching user data:', error);
-            return; // Exit the function if there was an error fetching user data
-        }
+      });
+
+      return () => {
+        // Unsubscribe from the snapshots listener when component unmounts
+        unsubscribe();
+      };
     }
-*/
+  }, [lobbyData]);
 
-useEffect(() => {
-  if (LobbyExist && lobbyData.documentId) {
-    const unsubscribe = onSnapshot(doc(db, "Lobby", lobbyData.documentId), (doc) => {
-      if (doc.exists()) {
-        setLobbyData({ ...doc.data(), id: doc.id });
-        console.log("New Lobby:", doc.data());
-      } else {
-        // Document doesn't exist
-        setLobbyData(null);
-        console.log("Document does not exist.");
-      }
-    });
-
-    return () => {
-      // Unsubscribe from the snapshot listener when component unmounts
-      unsubscribe();
-    };
-  }
-}, []);
 
     ///////// TODO: LOBBY DOCUMENT ID create lobby pop updan alınabilir
     const fetchUserLobbyData = async () => {
@@ -75,7 +55,7 @@ useEffect(() => {
         });
         console.log("response.data", response.data);
         setLobbyData(response.data);
-        console.log("lobbyData", response.data); // Log lobbyData after setting it
+        console.log("lobbyData", lobbyData); // Log lobbyData after setting it
         setLobbyExist(true);
       } catch (error) {
         console.error("Error fetching lobby data:", error);

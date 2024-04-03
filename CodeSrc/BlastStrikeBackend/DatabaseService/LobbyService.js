@@ -54,7 +54,7 @@ async function addPlayer(db, data) {
        // const playerName= await getUser(data.username);
         let playerName= data.username;
         console.log("playerName",playerName);
-        console.log("data",data);
+        console.log(data);
 
        // enables to get and update lobby data fields
         const lobbyDocId =await getLobbyIdByLobbyName(db,data.lobbyName)
