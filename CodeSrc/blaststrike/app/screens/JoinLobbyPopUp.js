@@ -36,7 +36,7 @@ const JoinLobbyPopup = ({ visible, onClose,navigation }) => {
      fetchUserData();
       if (currentUsername) {
         try {
-            const response = await axios.put('http://192.168.1.37:4000/Lobby/addPlayer', {
+            const response = await axios.put('http://192.168.1.130:4000/Lobby/addPlayer', {
                 // Include any data you want to send to the server in the request body
                 // For example:
                 // data: 'exampleData'

@@ -19,7 +19,7 @@ const DisplayFriendList = () => {
     }
     try {
       // Replace with your actual URL to fetch the current user's data
-      const response = await axios.post('http://192.168.1.37:4000/fetchCurrentUserData', { email: currentUser.email });
+      const response = await axios.post('http://192.168.1.130:4000/fetchCurrentUserData', { email: currentUser.email });
       return response.data.username; // Assuming the response contains a username
     } catch (error) {
       console.log('Error fetching user data:', error);

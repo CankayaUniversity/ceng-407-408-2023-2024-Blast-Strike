@@ -39,7 +39,7 @@ const Lobby = ({ route }) => {
       return;
     }
     try {
-      const response = await axios.post('http://192.168.1.37:4000/Lobby/getLobbyData', {
+      const response = await axios.post('http://192.168.1.130:4000/Lobby/getLobbyData', {
         data: {
           lobbyName: lobbyName
         }

@@ -6,7 +6,7 @@ import axios from 'axios'; // Make sure to import axios
 
 const auth = getAuth();
 const firestore = getFirestore();
-const URL = 'http://192.168.1.37:4000/fetchCurrentUserData';
+const URL = 'http://192.168.1.130:4000/fetchCurrentUserData';
 
 const FriendRequestsView = () => {
   const [requests, setRequests] = useState([]);
