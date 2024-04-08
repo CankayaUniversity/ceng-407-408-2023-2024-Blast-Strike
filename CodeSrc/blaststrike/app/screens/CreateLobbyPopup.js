@@ -11,7 +11,7 @@ const CreateLobbyPopup = ({ visible, onClose,navigation }) => {
     const [nameOfLobby,setNameOfLobby]=useState('');
     const [currentUsername,setCurrentUsername]=useState('');
     var selectedTeam='';
-    const Url='http://10.0.2.2:4000';
+    const Url='http://192.168.1.37:4000';
     const fetchUserData = async () => {
         const currentUser = auth.currentUser;
         if (!currentUser) {

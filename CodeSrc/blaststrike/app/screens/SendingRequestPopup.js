@@ -8,7 +8,7 @@ import axios from 'axios';
 
 const auth = getAuth();
 const firestore = getFirestore();
-const URL='http://10.0.2.2:4000/fetchCurrentUserData'
+const URL='http://192.168.1.37:4000/fetchCurrentUserData'
 
   const SendingRequestPopup = ({ visible, onClose }) => {
     const [to_username, setToUsername] = useState('');
@@ -35,7 +35,7 @@ const URL='http://10.0.2.2:4000/fetchCurrentUserData'
       await fetchUserData();
       if (currentUserName) {
         try {
-          const response = await axios.post('http://10.0.2.2:4000/sendFriendRequest', {
+          const response = await axios.post('http://192.168.1.37:4000/sendFriendRequest', {
             data: {
               from_username: currentUserName,
               to_username: to_username,

@@ -6,7 +6,7 @@ import axios from 'axios'; // Make sure to import axios
 
 const auth = getAuth();
 const firestore = getFirestore();
-const URL = 'http://10.0.2.2:4000/fetchCurrentUserData';
+const URL = 'http://192.168.1.37:4000/fetchCurrentUserData';
 
 const FriendRequestsView = () => {
   const [requests, setRequests] = useState([]);
@@ -76,7 +76,7 @@ const FriendRequestsView = () => {
       const requestData = singleDoc.data(); // This extracts the document data into a JavaScript object
       const fromUsername = requestData.from_username;
 
-      const response = await axios.post('http://10.0.2.2:4000/addFriends', {
+      const response = await axios.post('http://192.168.1.37:4000/addFriends', {
         // Include any data you want to send to the server in the request body
         // For example:
         // data: 'exampleData'
@@ -85,7 +85,7 @@ const FriendRequestsView = () => {
         to_username:currentUserName,
         }})
    
-        const deleteAcceptedRequest = await axios.post('http://10.0.2.2:4000/deleteAcceptedRequests',
+        const deleteAcceptedRequest = await axios.post('http://192.168.1.37:4000/deleteAcceptedRequests',
         {
           data:
           {

@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import { getUsers,createUser,fetchCurrentUserData,sendFriendRequest,addFriends,deleteAcceptedRequest } from './DatabaseService/UsersService.js';
+import { getUsers,createUser,fetchCurrentUserData,sendFriendRequest,addFriends,deleteAcceptedRequest,displayFriends } from './DatabaseService/UsersService.js';
 import { getLobby,createLobby,addPlayer,getLobbyData,getLobbyIdByLobbyName } from './DatabaseService/LobbyService.js';
 import { db } from './DatabaseService/firebaseConfig.js';
 
@@ -71,6 +71,7 @@ app.post('/addFriends',async(req,res)=>
 {
     console.log("addFriends endpoint hit");
     const data=req.body;
+ 
     addFriends(db,data.data);
     res.send({msg:'Request sended'});
 });
@@ -100,11 +101,24 @@ app.post('/deleteAcceptedRequests', async (req, res) => {
       
         res.send({ msg:"Successfully deleted" });
     } catch (error) {
-        console.error('Server error fetching user data:', error);
+        console.error('Delete accepted request error', error);
         // It's a good practice to return a meaningful HTTP status code
+        res.status(500).send({ msg: 'delete accepted request error' });
+    }
+});
+app.post('/displayFriends', async (req, res) => {
+    console.log("Display friends endpoint");
+    try {
+        const data = req.body // Assuming the body contains a 'username'
+        console.log("data is",data);
+        const friendsList = await displayFriends(db,data); // Corrected data structure
+        res.json(friendsList); // Respond with the friend list
+    } catch (error) {
+        console.error('Server error fetching user data:', error);
         res.status(500).send({ msg: 'Server error fetching user data' });
     }
 });
+
 
 //Lobby
 

@@ -174,6 +174,30 @@ async function fetchCurrentUserData(db,data) {
 }
 
  }
+
+async function displayFriends(db,data)
+{
+  try
+  {
+  console.log(data);
+  const usersRef = collection(db, 'Users');
+  const q = query(usersRef, where("username", "==", data.username));
+  const querySnapshot = await getDocs(q);
+  const friendListArray=[]
+  if (!querySnapshot.empty) {
+    querySnapshot.forEach(async (doc) => {
+      friendListArray.push(doc.data().friends)
+
+    })}
+    return friendListArray;
+
+  }
+  catch(error)
+  {
+    console.log("Error in display friends",error);
+  }
+}
+
  async function deleteAcceptedRequest(db, data) {
   // Check if the necessary data is present and not undefined.
   if (!data.to_username || !data.from_username) {
@@ -210,4 +234,4 @@ async function fetchCurrentUserData(db,data) {
 }
 
 
-export { getUsers, createUser,getUser,fetchCurrentUserData,sendFriendRequest,addFriends,fetchFriendRequests,deleteAcceptedRequest };
+export { getUsers, createUser,getUser,fetchCurrentUserData,sendFriendRequest,addFriends,fetchFriendRequests,deleteAcceptedRequest,displayFriends };
