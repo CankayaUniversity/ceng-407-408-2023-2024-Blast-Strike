@@ -45,8 +45,7 @@ const CreateLobbyPopup = ({ visible, onClose,navigation }) => {
                 lobbyName:nameOfLobby,
                 username:currentUsername,
                 selectedTeam:selectedTeam
-                
-                
+
               });
           // Instead of visible=false;
           onClose(); // This will call the function passed from the parent component to close the modal.
@@ -54,7 +53,8 @@ const CreateLobbyPopup = ({ visible, onClose,navigation }) => {
           console.log("Lobby Created!");
           navigation.navigate('Lobby',{
           lobbyName:nameOfLobby,
-          username:currentUsername
+          username:currentUsername,
+          selectedTeam:selectedTeam
           });
         } catch (error) {
           console.error('CreateLobby pop Error creating lobby:', error);

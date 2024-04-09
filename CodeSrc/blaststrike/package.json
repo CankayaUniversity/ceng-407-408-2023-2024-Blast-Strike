@@ -20,7 +20,7 @@
     "axios": "^1.6.7",
     "expo": "~50.0.6",
     "expo-2d-context": "^0.0.4",
-    "expo-camera": "^13.4.4",
+    "expo-camera": "^13.9.0",
     "expo-image-manipulator": "^11.8.0",
     "expo-image-picker": "^14.7.1",
     "expo-status-bar": "~1.11.1",
@@ -38,7 +38,6 @@
     "react-webcam": "^7.2.0",
     "sharp": "^0.33.2"
   },
-
   "devDependencies": {
     "@babel/core": "^7.20.0"
   },

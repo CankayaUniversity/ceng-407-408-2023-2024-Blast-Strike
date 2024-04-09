@@ -9,7 +9,7 @@ import TensorCamera from '../../src/TensorCamera';
 const auth = getAuth();
 
 const Lobby = ({ route }) => {
-  const { username, lobbyName } = route.params;
+  const { username, lobbyName, selectedTeam } = route.params;
   const [lobbyData, setLobbyData] = useState({});
   const db = FIRESTORE_DB;
   const [LobbyExist, setLobbyExist] = useState(false);
@@ -65,7 +65,7 @@ const Lobby = ({ route }) => {
             <Text style={styles.teamHeading}>Team 1</Text>
             <View style={styles.playerList}>
               {lobbyData && lobbyData.teamBlue && lobbyData.teamBlue.map((user, index) => (
-                <Text key={index}>{user}</Text>
+                <Text key={index}>{user.username}</Text>
               ))}
             </View>
           </View>
@@ -73,7 +73,7 @@ const Lobby = ({ route }) => {
             <Text style={styles.teamHeading}>Team 2</Text>
             <View style={styles.playerList}>
               {lobbyData && lobbyData.teamRed && lobbyData.teamRed.map((user, index) => (
-                <Text key={index}>{user}</Text>
+                <Text key={index}>{user.username}</Text>
               ))}
             </View>
           </View>
@@ -92,7 +92,7 @@ const Lobby = ({ route }) => {
         onRequestClose={() => {
           setIsCameraOpen(!isCameraOpen);
         }}>
-        <TensorCamera />
+        <TensorCamera lobbyData={lobbyData}  selectedTeam={selectedTeam} />
       </Modal>
     </View>
   );

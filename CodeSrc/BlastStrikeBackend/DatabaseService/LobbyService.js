@@ -56,6 +56,13 @@ async function addPlayer(db, data) {
         console.log("playerName",playerName);
         console.log(data);
 
+        let lobbyData = {
+            "username" :playerName,
+            "health" : 100
+        }
+        
+
+
        // enables to get and update lobby data fields
         const lobbyDocId =await getLobbyIdByLobbyName(db,data.lobbyName)
 
@@ -75,7 +82,7 @@ async function addPlayer(db, data) {
             if(lobby[data.selectedTeam].length<6)
             {
                 let newTeam = lobby[data.selectedTeam];
-                newTeam.push(data.username);
+                newTeam.push(lobbyData)
                 console.log("newTeam",newTeam);
                 //adding player
                 await updateDoc(docRef, {

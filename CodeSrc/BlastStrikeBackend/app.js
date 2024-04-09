@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { getUsers,createUser,fetchCurrentUserData,sendFriendRequest,addFriends,deleteAcceptedRequest,displayFriends } from './DatabaseService/UsersService.js';
 import { getLobby,createLobby,addPlayer,getLobbyData,getLobbyIdByLobbyName } from './DatabaseService/LobbyService.js';
+import { hitPlayer } from './DatabaseService/gameService.js';
 import { db } from './DatabaseService/firebaseConfig.js';
 
 const app = express();
@@ -145,6 +146,16 @@ app.post('/Lobby/getLobbyData',async (req,res) => {
     res.json(data);
     
 })
+
+
+app.put('/Game/hit',async (req,res) => {
+
+    //let documentId = req.body.data['documentId'];
+    
+    await hitPlayer(db,req.body.data);
+    res.json(true);
+})
+
 
 
 

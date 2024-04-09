@@ -5,7 +5,9 @@ import {cameraWithTensors} from '@tensorflow/tfjs-react-native'
 import { Button, StyleSheet, Text, TouchableOpacity,Platform, View, Dimensions } from 'react-native';
 import { Camera, CameraType } from 'expo-camera';
 
-export default function TensorCamera() {
+export default function TensorCamera({lobbyData,selectedTeam }) {
+  let documentId=lobbyData.documentId;
+  let selectedTeam=selectedTeam;
   const [permission, requestPermission] = Camera.useCameraPermissions();
   const [video, setVideo] = useState(null)
 
@@ -51,7 +53,7 @@ function isInsideOfTolerance(actual_x, actual_y, predicted_x, predicted_y)
   return false;
 }
 
-function detectHittedPart(segmentedParts) {
+  async function detectHittedPart(segmentedParts) {
   console.log(segmentedParts);
 
   if (segmentedParts.length > 0) {
@@ -324,6 +326,26 @@ function detectHittedPart(segmentedParts) {
       } else {
       console.log("Cant hit to someone");
     }
+
+    if(damage>0)
+    {
+
+       try {
+           // Fetching user data from your backend
+          const response = await axios.post('http://192.168.1.37:4000/Game/hit', {
+            data: {
+              playerTeam:selectedTeam,
+              documentId:documentId,
+              damage:damage
+            }
+           })
+      } catch (error) {
+          console.log('Error fetching user data:', error);
+          return; // Exit the function if there was an error fetching user data
+       }
+    }
+
+
   }
 }
 
