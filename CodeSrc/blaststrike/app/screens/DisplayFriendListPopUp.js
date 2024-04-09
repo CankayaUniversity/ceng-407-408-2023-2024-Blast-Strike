@@ -1,75 +1,59 @@
-
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
-import axios from 'axios'; // Import axios for API calls
-import { getAuth } from 'firebase/auth'; // Import Firebase authentication
+import { View, Text, FlatList, StyleSheet, Button, Dimensions } from 'react-native';
+import axios from 'axios';
 
-// Initialize Firebase Auth
-const auth = getAuth();
+const screenWidth = Dimensions.get('window').width;
+const screenHeight = Dimensions.get('window').height;
 
-const DisplayFriendList = () => {
+const DisplayFriendListPopUp = ({ visible, onClose, username }) => {
   const [friendList, setFriendList] = useState([]);
 
-  // Function to fetch the current user's username
-  const fetchUserData = async () => {
-    const currentUser = auth.currentUser;
-    if (!currentUser) {
-      console.log('No user logged in');
-      return null; // Return null if there's no logged-in user
-    }
-    try {
-      // Replace with your actual URL to fetch the current user's data
-      const response = await axios.post('http://192.168.1.130:4000/fetchCurrentUserData', { email: currentUser.email });
-      return response.data.username; // Assuming the response contains a username
-    } catch (error) {
-      console.log('Error fetching user data:', error);
-      return null; // Return null if there was an error
-    }
-  };
-
-  // Function to fetch the friend list for the current user
-  const fetchFriendsList = async () => {
-    const username = await fetchUserData(); // Fetch current user's username
-    if (!username) {
-      console.log('Failed to fetch user data or no user logged in');
-      return;
-    }
-    try {
-      // Replace with your actual URL to fetch the friends list
-      const response = await axios.post('http://192.168.1.37:4000/displayFriends', { username });
-      setFriendList(response.data); // Set the friend list in state
-    } catch (error) {
-      console.log('Error fetching friends list:', error);
-    }
-  };
-
-  // Fetch friends list once component is mounted
   useEffect(() => {
-    fetchFriendsList();
-  }, []); // Empty dependency array means this effect runs once on mount
+    const fetchFriendsList = async () => {
+      if (!username) return;
 
-  // Render the friend list using FlatList
+      try {
+        const response = await axios.post('http://192.168.1.101:4000/displayFriends', { username });
+        setFriendList(response.data); // Assuming response.data is the list of friends
+      } catch (error) {
+        console.error('Error fetching friends list:', error);
+      }
+    };
+
+    if (visible) {
+      fetchFriendsList();
+    }
+  }, [username, visible]);
+
   return (
     <View style={styles.container}>
       <FlatList
         data={friendList}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => <Text style={styles.friendItem}>{item}</Text>} // Adjust according to your data structure
+        renderItem={({ item }) => <Text style={styles.friendItem}>{item}</Text>}
       />
+      <Button title="Close" onPress={onClose} />
     </View>
   );
 };
 
-// Styles for the component
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    marginTop: 20,
+    marginTop: 100,
+    padding: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    position: 'absolute',
+    width: screenWidth * 0.8, // Set width to 80% of screen width
+    maxHeight: screenHeight * 0.6, // Set maxHeight to 60% of screen height
+    alignItems: 'center',
+    alignSelf: 'center', // Ensure the popup is centered horizontally
+    overflow: 'hidden', // Prevents content from overflowing
   },
   friendItem: {
-    padding: 10,
+    padding: 5,
     fontSize: 18,
   },
 });
 
-export default DisplayFriendList;
+export default DisplayFriendListPopUp;
