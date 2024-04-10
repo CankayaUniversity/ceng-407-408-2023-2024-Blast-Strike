@@ -97,7 +97,7 @@ app.post('/deleteAcceptedRequests', async (req, res) => {
     try {
         const data = req.body;
         // Await the completion of the fetchFriendRequests function to get the data
-        await deleteAcceptedRequest(db,data.data);
+        await deleteAcceptedRequest(db,data);
       
       
         res.send({ msg:"Successfully deleted" });
@@ -151,7 +151,7 @@ app.post('/Lobby/getLobbyData',async (req,res) => {
 app.put('/Game/hit',async (req,res) => {
 
     //let documentId = req.body.data['documentId'];
-    
+    console.log("232")
     await hitPlayer(db,req.body.data);
     res.json(true);
 })

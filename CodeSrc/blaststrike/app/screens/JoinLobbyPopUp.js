@@ -20,7 +20,7 @@ const JoinLobbyPopup = ({ visible, onClose,navigation }) => {
         }
         try {
             // Fetching user data from your backend
-            const response = await axios.post('http://192.168.1.37:4000/fetchCurrentUserData', {
+            const response = await axios.post('http://192.168.1.130:4000/fetchCurrentUserData', {
             email: currentUser.email, // Sending current user's email to your backend
             })
         // usernameFromResponse = response.data.username; // Assuming the backend responds with the username

@@ -4,10 +4,10 @@ import * as bodyPix from "@tensorflow-models/body-pix";
 import {cameraWithTensors} from '@tensorflow/tfjs-react-native'
 import { Button, StyleSheet, Text, TouchableOpacity,Platform, View, Dimensions } from 'react-native';
 import { Camera, CameraType } from 'expo-camera';
+import axios from 'axios';
 
-export default function TensorCamera({lobbyData,selectedTeam }) {
-  let documentId=lobbyData.documentId;
-  let selectedTeam=selectedTeam;
+export default function TensorCamera({ route }) {
+  const {lobbyData,selectedTeam}=route.params;
   const [permission, requestPermission] = Camera.useCameraPermissions();
   const [video, setVideo] = useState(null)
 
@@ -329,18 +329,19 @@ function isInsideOfTolerance(actual_x, actual_y, predicted_x, predicted_y)
 
     if(damage>0)
     {
-
+      console.log(lobbyData);
        try {
+          console.log(1111)
            // Fetching user data from your backend
-          const response = await axios.post('http://192.168.1.37:4000/Game/hit', {
+          const response = await axios.put('http://192.168.1.130:4000/Game/hit', {
             data: {
               playerTeam:selectedTeam,
-              documentId:documentId,
+              documentId:lobbyData.documentId,
               damage:damage
             }
            })
       } catch (error) {
-          console.log('Error fetching user data:', error);
+          console.log('Error hit:', error);
           return; // Exit the function if there was an error fetching user data
        }
     }

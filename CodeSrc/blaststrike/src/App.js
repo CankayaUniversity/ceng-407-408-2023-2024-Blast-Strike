@@ -7,7 +7,7 @@ import RegisterScreen from '../app/screens/RegisterScreen'; // Adjust the path a
 import Lobby from '../app/screens/Lobby';
 import CreateLobbyPopup from '../app/screens/CreateLobbyPopup';
 import JoinLobbyPopup from '../app/screens/JoinLobbyPopUp';
-
+import TensorCamera from './TensorCamera';
 
 const Stack = createNativeStackNavigator();
 
@@ -21,7 +21,8 @@ function App() {
         <Stack.Screen name="Lobby" component={Lobby} options={{ headerShown: false }} /> 
         <Stack.Screen name="CreateLobbyPopup" component={CreateLobbyPopup} options={{ headerShown: false }}  />
         <Stack.Screen name="JoinLobbyPopup" component={JoinLobbyPopup} options={{ headerShown: false }}  />
-
+        <Stack.Screen name="TensorCamera" component={TensorCamera} options={{ headerShown: false }} />
+      
       </Stack.Navigator>
     </NavigationContainer>
   );

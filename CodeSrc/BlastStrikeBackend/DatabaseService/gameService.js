@@ -4,7 +4,8 @@ import { db } from './firebaseConfig.js';
 async function hitPlayer(db, data) {
     let documentId = data['documentId'];
     let damage = data['damage'];
-    let enemyTeam = data['playerTeam']=="teamBlue" ? "teamRed" :"teamBlue";
+    let enemyTeam = data['playerTeam']=="teamBlue" ? "teamRed" :"teamBlue";  /// iki ikişilik demoda karıyı vurmak için
+    //let enemyTeam = data['playerTeam'];
     console.log("enemyTeam", enemyTeam);
     try {
         // Reference to the document using its ID

@@ -8,12 +8,13 @@ import TensorCamera from '../../src/TensorCamera';
 
 const auth = getAuth();
 
-const Lobby = ({ route }) => {
+const Lobby = ({ navigation,route }) => {
   const { username, lobbyName, selectedTeam } = route.params;
   const [lobbyData, setLobbyData] = useState({});
   const db = FIRESTORE_DB;
   const [LobbyExist, setLobbyExist] = useState(false);
   const [isCameraOpen, setIsCameraOpen] = useState(false); // State to control camera modal visibility
+
 
   useEffect(() => {
     if (LobbyExist && lobbyData.documentId) {
@@ -46,6 +47,7 @@ const Lobby = ({ route }) => {
       });
       setLobbyData(response.data);
       setLobbyExist(true);
+
     } catch (error) {
       console.error("Error fetching lobby data:", error);
     }
@@ -79,21 +81,13 @@ const Lobby = ({ route }) => {
           </View>
         </View>
         <View style={styles.startGameBtnContainer}>
-          <TouchableOpacity style={styles.startGameBtn} onPress={() => setIsCameraOpen(true)}>
-            <Text style={styles.startGameBtnText}>Start Game</Text>
-          </TouchableOpacity>
+        <TouchableOpacity
+        style={styles.startGameBtn}
+        onPress={() => navigation.replace('TensorCamera', { lobbyData:lobbyData,selectedTeam:selectedTeam })}>
+        <Text style={styles.startGameBtnText}>Start Game</Text>
+        </TouchableOpacity>
         </View>
       </View>
-      {/* Modal for TensorCamera */}
-      <Modal
-        animationType="slide"
-        transparent={false}
-        visible={isCameraOpen}
-        onRequestClose={() => {
-          setIsCameraOpen(!isCameraOpen);
-        }}>
-        <TensorCamera lobbyData={lobbyData}  selectedTeam={selectedTeam} />
-      </Modal>
     </View>
   );
 };
