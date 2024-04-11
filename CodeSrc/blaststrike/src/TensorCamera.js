@@ -6,12 +6,14 @@ import { Button, StyleSheet, Text, TouchableOpacity,Platform, View, Dimensions }
 import { ImageManipulator } from 'expo-image-manipulator';
 import { Camera, CameraType } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
+import processImageForClassification from './CameraConverter';
+import * as FileSystem from 'expo-file-system';
 
 export default function TensorCamera() {
   const [permission, requestPermission] = Camera.useCameraPermissions();
   const [video, setVideo] = useState(null)
   const cameraRef = useRef(null);
-  const TensorCamera = cameraWithTensors(Camera);
+  //const TensorCamera = cameraWithTensors(Camera);
   const [isCheck, setIsCheck] = useState(false);
 
   const textureDims = Platform.OS === 'ios' ?
@@ -45,16 +47,35 @@ Width=textureDims.width;
     console.log('Midpoint of Y: ', midY);
   }, [])
 
-
-const takePicture = () => {
-  setIsCheck(true);
+const takePicture = async () => {
+  if (cameraRef.current) {
+    const { uri } = await cameraRef.current.takePictureAsync();
+    runBodysegment(uri)
+  }
+  //setIsCheck(true);
 };
 
 
-  const runBodysegment = async (images) => {
+  const runBodysegment = async (uri) => {
     const net = await bodyPix.load();
     console.log("BodyPix model loaded.");
-    setVideo(images?.next().value)
+    //setVideo(images?.next().value)
+    //const image = tf.browser.fromPixels({ uri });
+    //let imageBuffer = tf.node.decodeImage(uri);
+    //const image = tf.tensor(imageBuffer);
+    //setVideo(image)
+    //const processedImg = processImageForClassification(uri)
+    //setVideo(processedImg)
+
+    const img64 = await FileSystem.readAsStringAsync(uri, {encoding:FileSystem.EncodingType.Base64})
+    const imgBuffer =  tf.util.encodeString(img64, 'base64').buffer
+    const raw = new Uint8Array(imgBuffer)
+    let imgTensor = decodeJpeg(raw)
+    const scalar = tf.scalar(255)
+    imgTensor = tf.image.resizeNearestNeighbor(imgTensor, [300, 300])
+    const tensorScaled = imgTensor.div(scalar)
+    const img = tf.reshape(tensorScaled, [1,300,300,3])
+    setVideo(img)
     detect(net)
   };
    
@@ -62,6 +83,7 @@ const takePicture = () => {
     // Check data is available
     //console.log(video)
     if(video){
+      console.log("video")
       const person = await net.segmentPersonParts(video);
       const newArray = []
       person?.allPoses[0]?.keypoints.forEach(element => {
@@ -101,11 +123,11 @@ const takePicture = () => {
 
   return (
     <View style={styles.container}>
-     <TensorCamera 
+     <Camera 
         ref={cameraRef}
         style={styles.camera} 
         type={Camera.Constants.Type.front}
-        onReady={isCheck ? runBodysegment : null}
+        //onReady={isCheck ? runBodysegment : null}
         resizeHeight={1920}
         resizeWidth={1080}
         resizeDepth={3}
