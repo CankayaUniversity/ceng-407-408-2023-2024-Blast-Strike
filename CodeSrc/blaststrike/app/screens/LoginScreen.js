@@ -25,7 +25,8 @@ export default function LoginScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
+      <Text style = {[{color: 'brown'}, {fontSize: 20}, {fontStyle: 'italic'}]}>Welcome to BlastStrike!</Text>
+      <Text style={styles.title}>Login to play!</Text>
       <TextInput
         placeholder="Email"
         value={email}
@@ -61,7 +62,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#fff3e6',
   },
   title: {
     fontSize: 24,
@@ -80,7 +81,7 @@ const styles = StyleSheet.create({
   button: {
     width: '100%',
     padding: 15,
-    backgroundColor: '#007bff',
+    backgroundColor: '#firebrick',
     alignItems: 'center',
     borderRadius: 5,
     marginTop: 10,
@@ -93,6 +94,6 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   registerButtonText: {
-    color: '#007bff',
+    color: '#brown',
   },
 });

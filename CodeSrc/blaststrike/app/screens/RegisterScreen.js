@@ -36,6 +36,7 @@ export default function RegisterScreen({ navigation }) {
   return (
     <View style={styles.container}>
       {/* Existing TextInput and Button elements */}
+      <Text style = {{color: 'brown', fontSize:20}}>Register to play!</Text>
       <TextInput
         placeholder="Username"
         value={username}
@@ -58,7 +59,9 @@ export default function RegisterScreen({ navigation }) {
       {isLoading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
-        <Button title="Sign Up" onPress={handleSignUp} />
+        <TouchableOpacity style = {styles.button} onPress={handleSignUp}>
+          <Text style = {{color:'white', fontSize:15}}>SIGN UP</Text>
+        </TouchableOpacity>
       )}
       {/* Back to Login Button */}
       <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.backButton}>
@@ -75,6 +78,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+    backgroundColor: '#fff3e6'
   },
   input: {
     width: '100%',
@@ -89,7 +93,15 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   backButtonText: {
-    color: '#007bff',
+    color: '#brown',
+  },
+  button: {
+    width: '100%',
+    padding: 15,
+    backgroundColor: 'firebrick',
+    alignItems: 'center',
+    borderRadius: 5,
+    marginTop: 10,
   },
   // Existing styles...
 });
