@@ -23,7 +23,7 @@ async function hitPlayer(db, data) {
             data[enemyTeam][0].health -=damage;
             console.log("data",data);
             await updateDoc(docRef, {
-                [`${"teamBlue"}.0`]:data["teamBlue"][0]
+                [`${enemyTeam}.0`]: data[enemyTeam][0] 
             });
 
         } else {

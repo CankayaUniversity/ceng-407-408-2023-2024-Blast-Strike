@@ -10,7 +10,7 @@ const auth = getAuth();
 const JoinLobbyPopup = ({ visible, onClose,navigation }) => {
     const [nameOfLobby,setNameOfLobby]=useState('');
     const [currentUsername,setCurrentUsername]=useState('');
-    var selectedTeam='';
+    const [selectedTeam,setSelectedTeam]=useState('');
 
     const fetchUserData = async () => {
         const currentUser = auth.currentUser;
@@ -49,13 +49,15 @@ const JoinLobbyPopup = ({ visible, onClose,navigation }) => {
               });
           // Instead of visible=false;
           onClose(); // This will call the function passed from the parent component to close the modal.
-  
-          
+          console.log("response",response.data.lobbyDocId);
+          console.log("Lobby joineded!");
           navigation.navigate('Lobby',{
           lobbyName:nameOfLobby,
-          username:currentUsername
+          username:currentUsername,
+          lobbyDocId:response.data.lobbyDocId,
+          selectedTeam:selectedTeam
           });
-          console.log("Lobby joineded!");
+          
         } catch (error) {
           console.error('joinLobby pop Error joining lobby:', error);
         }
@@ -85,7 +87,7 @@ const JoinLobbyPopup = ({ visible, onClose,navigation }) => {
                     <Button 
                         title='Join Team Blue' 
                         onPress={() => {
-                            selectedTeam='teamBlue';
+                          setSelectedTeam('teamBlue');
                             handleLobbyJoin();
                             }}
                     />
@@ -93,8 +95,8 @@ const JoinLobbyPopup = ({ visible, onClose,navigation }) => {
                 <View style={{ marginLeft: 10 }}>
                     <Button 
                         title="Join Team Red" 
-                        onPress={() => {
-                            selectedTeam='teamRed';
+                        onPress={() => {            
+                            setSelectedTeam('teamRed');
                             handleLobbyJoin();
                             }}
                     />

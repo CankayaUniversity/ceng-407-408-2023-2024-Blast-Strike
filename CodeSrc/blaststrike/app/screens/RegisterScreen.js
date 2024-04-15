@@ -25,7 +25,7 @@ export default function RegisterScreen({ navigation }) {
           email: user.email,
         });
         Alert.alert("Registration Successful", "You are now registered and logged in.");
-        navigation.navigate("LoginScreen"); // Assuming "Login" is the name used in your stack navigator for the LoginScreen
+        navigation.navigate("Login"); // Assuming "Login" is the name used in your stack navigator for the LoginScreen
       })
       .catch((error) => {
         Alert.alert("Registration Failed", error.message);

@@ -66,15 +66,19 @@ async function addPlayer(db, data) {
        // enables to get and update lobby data fields
         const lobbyDocId =await getLobbyIdByLobbyName(db,data.lobbyName)
 
+        console.log("lobbyydocccc add player",lobbyDocId);
         // ref to doc with id
         const docRef = doc(db, 'Lobby', lobbyDocId);
 
         //our main control object    
-        let lobby =await getLobbyData(db,await getLobbyIdByLobbyName(db,data.lobbyName));
+        let lobby =await getLobbyData(db,lobbyDocId);
 
+        console.log("lobby",lobby);
+        console.log("data",data);
+        
         if(lobby!==undefined)
         {
-            // console.log("lobby.teamBlue.length",lobby[data.selectedTeam].length);
+            console.log("lobby[data.selectedTeam]",lobby[data.selectedTeam]);
             // console.log("lobby.teamRed.length",lobby.teamRed.length);
 
             //checking for team decided to join got space to 
@@ -92,6 +96,7 @@ async function addPlayer(db, data) {
             else
                 throw new error("Team is full!!!");
 
+                return lobbyDocId;
         }
         else
             throw new error("Lobby cannot found!!!");

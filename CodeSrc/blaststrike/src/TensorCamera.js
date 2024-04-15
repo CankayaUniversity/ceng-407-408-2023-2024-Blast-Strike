@@ -28,6 +28,7 @@ export default function TensorCamera({ route }) {
     }
   })
 
+  console.log(route.params)
 
 const takePicture = () => {
   setIsCheck(true);
@@ -461,25 +462,28 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 9999,
   },
   crossVertical: {
     position: 'absolute',
     backgroundColor: 'red',
     width: 2,
     height: 20,
+    zIndex: 9999,
   },
   crossHorizontal: {
     position: 'absolute',
     backgroundColor: 'red',
     width: 20,
     height: 2,
+    zIndex: 9999,
   },
   buttonContainer: {
     position: 'absolute',
     bottom: 20,
     width: '100%',
     alignItems: 'center',
-    zIndex: 1
+    zIndex: 9999
   },
   button: {
     backgroundColor: 'blue',

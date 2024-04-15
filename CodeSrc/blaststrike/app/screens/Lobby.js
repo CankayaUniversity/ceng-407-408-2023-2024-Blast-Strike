@@ -9,16 +9,18 @@ import TensorCamera from '../../src/TensorCamera';
 const auth = getAuth();
 
 const Lobby = ({ navigation,route }) => {
-  const { username, lobbyName, selectedTeam } = route.params;
+  const { username, lobbyName, selectedTeam,lobbyDocId } = route.params;
   const [lobbyData, setLobbyData] = useState({});
   const db = FIRESTORE_DB;
   const [LobbyExist, setLobbyExist] = useState(false);
   const [isCameraOpen, setIsCameraOpen] = useState(false); // State to control camera modal visibility
 
-
   useEffect(() => {
-    if (LobbyExist && lobbyData.documentId) {
-      const unsubscribe = onSnapshot(doc(db, "Lobby", lobbyData.documentId), (doc) => {
+    console.log("111lobbyDocId",lobbyDocId);
+    console.log("selectedTeam",selectedTeam);
+    console.log("111lobbyData.documentId",lobbyData.documentId);
+    if ((LobbyExist && lobbyData.documentId)||lobbyDocId ) {
+      const unsubscribe = onSnapshot(doc(db, "Lobby", (lobbyData.documentId || lobbyDocId)), (doc) => {
         if (doc.exists()) {
           setLobbyData({ ...doc.data(), documentId: doc.id });
         } else {
@@ -40,6 +42,7 @@ const Lobby = ({ navigation,route }) => {
       return;
     }
     try {
+      console.log("lobbyName",lobbyName);
       const response = await axios.post('http://192.168.1.130:4000/Lobby/getLobbyData', {
         data: {
           lobbyName: lobbyName
@@ -53,18 +56,18 @@ const Lobby = ({ navigation,route }) => {
     }
   }
 
+
   if (!LobbyExist) {
     fetchUserLobbyData();
     setLobbyExist(true);
   }
-
   return (
     <View style={styles.container}>
       <View style={styles.rotatedContainer}>
         <Text style={styles.heading}>5v5 FPS Shooter Game Lobby</Text>
         <View style={styles.teamSelection}>
           <View style={styles.team}>
-            <Text style={styles.teamHeading}>Team 1</Text>
+            <Text style={styles.teamHeading}>Team Blue</Text>
             <View style={styles.playerList}>
               {lobbyData && lobbyData.teamBlue && lobbyData.teamBlue.map((user, index) => (
                 <Text key={index}>{user.username}</Text>
@@ -72,7 +75,7 @@ const Lobby = ({ navigation,route }) => {
             </View>
           </View>
           <View style={styles.team}>
-            <Text style={styles.teamHeading}>Team 2</Text>
+            <Text style={styles.teamHeading}>Team Red</Text>
             <View style={styles.playerList}>
               {lobbyData && lobbyData.teamRed && lobbyData.teamRed.map((user, index) => (
                 <Text key={index}>{user.username}</Text>
@@ -83,7 +86,12 @@ const Lobby = ({ navigation,route }) => {
         <View style={styles.startGameBtnContainer}>
         <TouchableOpacity
         style={styles.startGameBtn}
-        onPress={() => navigation.replace('TensorCamera', { lobbyData:lobbyData,selectedTeam:selectedTeam })}>
+        onPress={() =>
+          navigation.replace('TensorCamera', {
+            lobbyData: lobbyData,
+            selectedTeam: selectedTeam
+          })
+        }>
         <Text style={styles.startGameBtnText}>Start Game</Text>
         </TouchableOpacity>
         </View>

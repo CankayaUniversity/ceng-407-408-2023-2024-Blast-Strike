@@ -21,7 +21,6 @@ const HomeScreen = ({ navigation }) => {
       <Text>Welcome, {userData ? userData.username : ''}</Text>
       <Button title='Send Friendship Request' onPress={() => setPopupVisible(true)} />
       <Button title='Create a Lobby' onPress={() => setCreateLobbyPopupVisible(true)} />
-      <Button title='Lobby Navigate' onPress={() => navigation.navigate('Lobby')} />
       <Button title='Join Lobby' onPress={() => setJoinLobbyPopupVisible(true)} />
       <Button title='Friend List' onPress={() => setDisplayFriendsPopUpVisible(true)} />
       <Button title="View Friend Requests" onPress={() => setFriendRequestPopupVisible(!friendRequestPopupVisible)} />

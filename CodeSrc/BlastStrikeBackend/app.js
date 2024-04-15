@@ -134,8 +134,8 @@ app.post('/createLobby',async (req,res)=> {
 })
 
 app.put('/Lobby/addPlayer',async (req,res)=> {
-    await addPlayer(db,req.body);
-    res.send({msg:'Player joined'})
+    let lobbyDocId =await addPlayer(db,req.body);
+    res.send({lobbyDocId})
 })
 
 app.post('/Lobby/getLobbyData',async (req,res) => {
