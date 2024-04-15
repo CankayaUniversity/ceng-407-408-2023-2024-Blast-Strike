@@ -94,6 +94,6 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   registerButtonText: {
-    color: '#brown',
+    color: 'brown',
   },
 });
