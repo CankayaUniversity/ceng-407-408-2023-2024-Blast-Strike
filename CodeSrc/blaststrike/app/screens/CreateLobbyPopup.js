@@ -1,6 +1,6 @@
 // CreateLobbyPopup.js
 import React, { useEffect, useState } from 'react';
-import { Modal, View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { Modal, View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
 import { getFirestore} from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import axios from 'axios';
@@ -82,24 +82,28 @@ const CreateLobbyPopup = ({ visible, onClose,navigation }) => {
               onChangeText={setNameOfLobby}
               style={styles.input}
             />
-            <View style={{flexDirection: 'row'}}>
-                <View style={{ marginRight: 10 }}>
-                    <Button 
-                        title='Join Team Blue' 
-                        onPress={() => {
-                            selectedTeam='teamBlue';
-                             handleLobbyCreate();
-                            }}
-                    />
+            <View style={{flexDirection: 'vertical'}}>
+              <View>
+                  <TouchableOpacity 
+                    style = {[styles.button, {backgroundColor: 'deepskyblue'}]}
+                    onPress={() => {
+                      selectedTeam='teamBlue';
+                      handleLobbyCreate();
+                    }}
+                  >
+                    <Text>Join Team Blue</Text>
+                  </TouchableOpacity>
                </View>
-                <View style={{ marginLeft: 10 }}>
-                    <Button 
-                        title="Join Team Red" 
-                        onPress={() => {
-                            selectedTeam='teamRed';
-                            handleLobbyCreate();
-                            }}
-                    />
+                <View>
+                    <TouchableOpacity 
+                      style = {[styles.button, {backgroundColor: 'red'}]}
+                      onPress={() => {
+                        selectedTeam='teamRed';
+                        handleLobbyCreate();
+                      }}
+                    >
+                      <Text>Join Team Red</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
           </View>
@@ -116,7 +120,7 @@ const CreateLobbyPopup = ({ visible, onClose,navigation }) => {
     },
     modalView: {
       margin: 20,
-      backgroundColor: 'white',
+      backgroundColor: 'linen',
       borderRadius: 20,
       padding: 35,
       alignItems: 'center',
@@ -136,7 +140,19 @@ const CreateLobbyPopup = ({ visible, onClose,navigation }) => {
       padding: 10,
       width: '100%',
     },
-
+    buttonContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      width: '100%',
+    },
+    button: {
+      backgroundColor: 'darkorange',
+      borderRadius: 4,
+      paddingVertical: 12,
+      paddingHorizontal: 32,
+      marginBottom: 20,
+    },
   });
   
   export default CreateLobbyPopup;
