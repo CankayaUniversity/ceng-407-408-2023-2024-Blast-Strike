@@ -6,15 +6,26 @@ const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
 const DisplayFriendListPopUp = ({ visible, onClose, username }) => {
-  const [friendList, setFriendList] = useState([]);
+const [friendList, setFriendList] = useState([]);
+
+const renderItem = ({ item }) => (
+  <View style={styles.itemContainer}>
+    <Text style={styles.bullet}>•</Text>
+    <Text>{item}</Text>
+  </View>
+);
 
   useEffect(() => {
     const fetchFriendsList = async () => {
       if (!username) return;
 
       try {
-        const response = await axios.post('http://192.168.1.101:4000/displayFriends', { username });
-        setFriendList(response.data); // Assuming response.data is the list of friends
+        const response = await axios.post('http://192.168.1.105:4000/displayFriends', { username });
+        let friend_list  = response.data;
+        friend_list = friend_list[0];
+        friend_list = friend_list.filter(item => item !== "");
+        setFriendList(friend_list); // Assuming response.data is the list of friends
+
       } catch (error) {
         console.error('Error fetching friends list:', error);
       }
@@ -30,7 +41,7 @@ const DisplayFriendListPopUp = ({ visible, onClose, username }) => {
       <FlatList
         data={friendList}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => <Text style={styles.friendItem}>{item}</Text>}
+        renderItem={renderItem}
       />
       <Button title="Close" onPress={onClose} />
     </View>
@@ -53,6 +64,15 @@ const styles = StyleSheet.create({
   friendItem: {
     padding: 5,
     fontSize: 18,
+  },
+  itemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 5,
+  },
+  bullet: {
+    marginRight: 5,
+    fontSize: 20,
   },
 });
 
