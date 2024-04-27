@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { getUsers,createUser,fetchCurrentUserData,sendFriendRequest,addFriends,deleteAcceptedRequest,displayFriends } from './DatabaseService/UsersService.js';
-import { getLobby,createLobby,addPlayer,getLobbyData,getLobbyIdByLobbyName } from './DatabaseService/LobbyService.js';
+import { getLobby,createLobby,addPlayer,getLobbyData,getLobbyIdByLobbyName,startLobby } from './DatabaseService/LobbyService.js';
 import { hitPlayer } from './DatabaseService/gameService.js';
 import { db } from './DatabaseService/firebaseConfig.js';
 
@@ -147,7 +147,13 @@ app.post('/Lobby/getLobbyData',async (req,res) => {
     
 })
 
+app.put('/Lobby/start',async (req,res)=> {
+    console.log("req.body.data",req.body.data);
+    await startLobby(db,req.body.data);
+    res.send({msg:'Lobby Started'})
+})
 
+//Game
 app.put('/Game/hit',async (req,res) => {
 
     //let documentId = req.body.data['documentId'];

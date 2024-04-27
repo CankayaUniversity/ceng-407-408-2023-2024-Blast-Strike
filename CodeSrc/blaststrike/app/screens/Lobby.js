@@ -16,12 +16,14 @@ const Lobby = ({ navigation,route }) => {
   const [isCameraOpen, setIsCameraOpen] = useState(false); // State to control camera modal visibility
 
   useEffect(() => {
-    console.log("111lobbyDocId",lobbyDocId);
-    console.log("selectedTeam",selectedTeam);
-    console.log("111lobbyData.documentId",lobbyData.documentId);
+    //console.log("111lobbyDocId",lobbyDocId);
+    //console.log("selectedTeam",selectedTeam);
+    //console.log("111lobbyData.documentId",lobbyData.documentId);
     if ((LobbyExist && lobbyData.documentId)||lobbyDocId ) {
       const unsubscribe = onSnapshot(doc(db, "Lobby", (lobbyData.documentId || lobbyDocId)), (doc) => {
         if (doc.exists()) {
+         // console.log("doc",{ ...doc.data(), documentId: doc.id });
+         // console.log("lob",lobbyData);
           setLobbyData({ ...doc.data(), documentId: doc.id });
         } else {
           console.log("Document does not exist.");
@@ -56,11 +58,32 @@ const Lobby = ({ navigation,route }) => {
     }
   }
 
+  const startLobby = async  () => {
+    try {
+      const response = await axios.put('http://192.168.1.130:4000/Lobby/start',{
+      data: {
+        lobbyDocId: lobbyData.documentId
+      }
+    });
+    } catch (error) {
+      console.error("Error starting lobby data:", error);
+    }
+  }
+
 
   if (!LobbyExist) {
     fetchUserLobbyData();
     setLobbyExist(true);
   }
+
+  if(lobbyData.inGame)
+  {
+    navigation.replace('TensorCamera', {
+      lobbyData: lobbyData,
+      selectedTeam: selectedTeam
+    })
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.rotatedContainer}>
@@ -83,18 +106,15 @@ const Lobby = ({ navigation,route }) => {
             </View>
           </View>
         </View>
-        <View style={styles.startGameBtnContainer}>
-        <TouchableOpacity
-        style={styles.startGameBtn}
-        onPress={() =>
-          navigation.replace('TensorCamera', {
-            lobbyData: lobbyData,
-            selectedTeam: selectedTeam
-          })
-        }>
-        <Text style={styles.startGameBtnText}>Start Game</Text>
-        </TouchableOpacity>
-        </View>
+        { lobbyData.lobbyAdmin == username &&
+                <View style={styles.startGameBtnContainer}>
+                <TouchableOpacity
+                style={styles.startGameBtn}
+                onPress={ startLobby }>
+                <Text style={styles.startGameBtnText}>Start Game</Text>
+                </TouchableOpacity>
+                </View> } 
+
       </View>
     </View>
   );

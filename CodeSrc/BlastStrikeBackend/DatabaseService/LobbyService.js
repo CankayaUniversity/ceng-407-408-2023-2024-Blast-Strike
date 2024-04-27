@@ -24,6 +24,8 @@ async function createLobby(db, data) {
         });
 
          const docRef = await addDoc(collection(db, 'Lobby'), {
+            lobbyAdmin:data.username,
+            inGame:false,
             lobbyName: data.lobbyName,
             teamRed:[],
             teamBlue:[]    
@@ -161,6 +163,25 @@ async function getLobbyData(db,documentId) {
     }
 }
 
+async function startLobby (db,data) {
+    var documentId=data.lobbyDocId;
+    try {
+        // Reference to the document using its ID
+        const docRef = doc(db, 'Lobby', documentId);
+        if (docRef) {
+            await updateDoc(docRef, 
+                {inGame: true}
+            );
+        } else {
+            console.log('Document does not exist');
+            return null;
+        }
+    } catch (error) {
+        console.error('Error getting document data:', error);
+        throw error;
+    }
+}
+
 
 
 async function deleteLobby(db) {
@@ -173,4 +194,4 @@ async function deleteLobby(db) {
 
 
 
-export { getLobby, createLobby,addPlayer,getLobbyData,getLobbyIdByLobbyName };
+export { getLobby, createLobby,addPlayer,getLobbyData,getLobbyIdByLobbyName,startLobby };
