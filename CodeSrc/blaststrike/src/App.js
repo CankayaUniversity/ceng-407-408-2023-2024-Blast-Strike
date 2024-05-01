@@ -12,7 +12,7 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login">
-        <Stack.Screen name="Login" component={CameraToTF} options={{ headerShown: false }} />
+        <Stack.Screen name="Login" component={TensorCamera} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

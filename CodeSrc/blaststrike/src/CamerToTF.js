@@ -1,18 +1,16 @@
 import * as tf from '@tensorflow/tfjs'
-import {bundleResourceIO, decodeJpeg} from '@tensorflow/tfjs-react-native'
+import {decodeJpeg} from '@tensorflow/tfjs-react-native'
 import * as bodyPix from "@tensorflow-models/body-pix";
 import * as FileSystem from 'expo-file-system';
-import { Camera, getAvailablePictureSizesAsync } from 'expo-camera';
-import { Button, StyleSheet, Text, TouchableOpacity,Platform, View, Dimensions, Image } from 'react-native';
+import { Camera } from 'expo-camera';
+import { Button, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import { useState, useRef, useEffect } from 'react';
 import { manipulateAsync } from 'expo-image-manipulator';
 
 export default function CameraToTF(){
 
     const [permission, requestPermission] = Camera.useCameraPermissions();
-    const [photoUri, setPhotoUri] = useState(null);
     const cameraRef = useRef(null);
-    const [pictureSize, setPictureSize] = useState("1280x720");
 
     useEffect(() => {
         (async () => {
@@ -68,10 +66,10 @@ export default function CameraToTF(){
             height: 960, // Set target height
           });
           const resizedUri = await resizeImage(photo.uri);
-          setPhotoUri(resizedUri); // Here, you get the URI of the captured photo
+          //setPhotoUri(resizedUri); // Here, you get the URI of the captured photo
 
-          console.log("uri = " + photoUri);
-          imgTensor = await transformImageToTensor(photoUri);
+          console.log("uri = " + resizedUri);
+          imgTensor = await transformImageToTensor(resizedUri);
 
           if(imgTensor !== undefined)
           {
@@ -79,7 +77,6 @@ export default function CameraToTF(){
             console.log("BodyPix model loaded."); 
             detect(net, imgTensor);
           }
-
           //console.log(photoUri);
         }
       };
@@ -109,13 +106,6 @@ export default function CameraToTF(){
             return imgTensor
         }
       }
-
-      const runBodysegment = async (images) => {
-        const net = await bodyPix.load();
-        console.log("BodyPix model loaded."); 
-        setVideo(images?.next().value)
-        detect(net)
-      };
 
 
         if (!permission) {
