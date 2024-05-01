@@ -2,15 +2,17 @@ import * as tf from '@tensorflow/tfjs'
 import {bundleResourceIO, decodeJpeg} from '@tensorflow/tfjs-react-native'
 import * as bodyPix from "@tensorflow-models/body-pix";
 import * as FileSystem from 'expo-file-system';
-import { Camera } from 'expo-camera';
+import { Camera, getAvailablePictureSizesAsync } from 'expo-camera';
 import { Button, StyleSheet, Text, TouchableOpacity,Platform, View, Dimensions, Image } from 'react-native';
 import { useState, useRef, useEffect } from 'react';
+import { manipulateAsync } from 'expo-image-manipulator';
 
 export default function CameraToTF(){
 
     const [permission, requestPermission] = Camera.useCameraPermissions();
     const [photoUri, setPhotoUri] = useState(null);
     const cameraRef = useRef(null);
+    const [pictureSize, setPictureSize] = useState("1280x720");
 
     useEffect(() => {
         (async () => {
@@ -49,6 +51,15 @@ export default function CameraToTF(){
         }
       }
 
+      const resizeImage = async (uri) => {
+        const resizedImage = await manipulateAsync(
+          uri,
+          [{ resize: { width: 540 } }], // Adjust width as needed
+          { compress: 0.7 } // Adjust compression quality as needed
+        );
+        return resizedImage.uri;
+      };
+
     const takePicture = async () => {
         if (cameraRef.current) {
           const photo = await cameraRef.current.takePictureAsync({
@@ -56,7 +67,8 @@ export default function CameraToTF(){
             width: 540, // Set target width
             height: 960, // Set target height
           });
-          setPhotoUri(photo.uri); // Here, you get the URI of the captured photo
+          const resizedUri = await resizeImage(photo.uri);
+          setPhotoUri(resizedUri); // Here, you get the URI of the captured photo
 
           console.log("uri = " + photoUri);
           imgTensor = await transformImageToTensor(photoUri);
@@ -122,7 +134,10 @@ export default function CameraToTF(){
         }
           return (
             <View style={{ flex: 1 }}>
-              <Camera ref={cameraRef} style={{ flex: 1 }} />
+              <Camera 
+                ref={cameraRef} 
+                style={{ flex: 1 }}
+                 />
 
             <View style={styles.buttonContainer}>
                 <TouchableOpacity onPress={takePicture} style={styles.button}>
@@ -130,7 +145,7 @@ export default function CameraToTF(){
                 </TouchableOpacity>
             </View>
 
-              {photoUri && <Image source={{ uri: photoUri }} style={{ width: 100, height: 100 , opacity:1}} />}
+              {/*photoUri && <Image source={{ uri: photoUri }} style={{ width: 100, height: 100 , opacity:1}} />*/}
             </View>
           );
 }
