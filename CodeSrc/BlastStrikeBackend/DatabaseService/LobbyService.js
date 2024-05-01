@@ -24,9 +24,11 @@ async function createLobby(db, data) {
         });
 
          const docRef = await addDoc(collection(db, 'Lobby'), {
+            lobbyName: data.lobbyName,
             lobbyAdmin:data.username,
             inGame:false,
-            lobbyName: data.lobbyName,
+            scoreRed:0,
+            scoreBlue:0,
             teamRed:[],
             teamBlue:[]    
         });

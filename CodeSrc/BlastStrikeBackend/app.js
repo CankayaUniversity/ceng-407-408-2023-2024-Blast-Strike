@@ -157,7 +157,6 @@ app.put('/Lobby/start',async (req,res)=> {
 app.put('/Game/hit',async (req,res) => {
 
     //let documentId = req.body.data['documentId'];
-    console.log("232")
     await hitPlayer(db,req.body.data);
     res.json(true);
 })
