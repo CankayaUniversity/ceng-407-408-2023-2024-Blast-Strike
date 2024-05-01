@@ -57,6 +57,15 @@ async function hitPlayer(db, data) {
             else
                 newHealth=docData[enemyTeam][0].health-damage;
             
+            ////check if game ended 
+            if(docData.scoreBlue==10 || docData.scoreRed==10)
+            {
+                await updateDoc(docRef, {
+                    inGame: false
+                });
+            }
+                
+
             //update player  got killed health to 0
             docData[enemyTeam][0].health = newHealth;
             console.log("data",data);
