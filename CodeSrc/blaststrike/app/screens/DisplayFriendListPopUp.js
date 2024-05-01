@@ -1,19 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, Button, Dimensions } from 'react-native';
 import axios from 'axios';
-
+import Constants from 'expo-constants'; // Ensure Constants is correctly imported
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
 const DisplayFriendListPopUp = ({ visible, onClose, username }) => {
   const [friendList, setFriendList] = useState([]);
 
+  const URLdisplayFriends = Constants?.expoConfig?.hostUri
+  ? `http://${Constants.expoConfig.hostUri.split(':').shift()}:4000/displayFriends`
+  : 'https://yourapi.com/fetchCurrentUserData';
+  
+
   useEffect(() => {
     const fetchFriendsList = async () => {
       if (!username) return;
 
       try {
-        const response = await axios.post('http://192.168.1.101:4000/displayFriends', { username });
+        const response = await axios.post(URLdisplayFriends, { username });
         setFriendList(response.data); // Assuming response.data is the list of friends
       } catch (error) {
         console.error('Error fetching friends list:', error);

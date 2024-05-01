@@ -5,7 +5,7 @@ import { doc, onSnapshot } from 'firebase/firestore';
 import { FIRESTORE_DB } from '../../Database/Firebase';
 import axios from 'axios';
 import TensorCamera from '../../src/TensorCamera';
-
+import Constants from 'expo-constants'; // Ensure Constants is correctly imported
 const auth = getAuth();
 
 const Lobby = ({ navigation,route }) => {
@@ -14,6 +14,17 @@ const Lobby = ({ navigation,route }) => {
   const db = FIRESTORE_DB;
   const [LobbyExist, setLobbyExist] = useState(false);
   const [isCameraOpen, setIsCameraOpen] = useState(false); // State to control camera modal visibility
+  
+  const URLgetLobbyData = Constants?.expoConfig?.hostUri
+? `http://${Constants.expoConfig.hostUri.split(':').shift()}:4000/Lobby/getLobbyData`
+: 'https://yourapi.com/fetchCurrentUserData';
+
+const URLlobbyStart = Constants?.expoConfig?.hostUri
+? `http://${Constants.expoConfig.hostUri.split(':').shift()}:4000/Lobby/start`
+: 'https://yourapi.com/fetchCurrentUserData';
+
+
+
 
   useEffect(() => {
     //console.log("111lobbyDocId",lobbyDocId);
@@ -45,7 +56,7 @@ const Lobby = ({ navigation,route }) => {
     }
     try {
       console.log("lobbyName",lobbyName);
-      const response = await axios.post('http://192.168.1.130:4000/Lobby/getLobbyData', {
+      const response = await axios.post(URLgetLobbyData, {
         data: {
           lobbyName: lobbyName
         }
@@ -60,7 +71,7 @@ const Lobby = ({ navigation,route }) => {
 
   const startLobby = async  () => {
     try {
-      const response = await axios.put('http://192.168.1.130:4000/Lobby/start',{
+      const response = await axios.put(URLlobbyStart,{
       data: {
         lobbyDocId: lobbyData.documentId
       }

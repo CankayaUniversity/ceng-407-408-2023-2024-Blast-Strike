@@ -4,14 +4,23 @@ import { Modal, View, Text, TextInput, Button, StyleSheet, TouchableOpacity } fr
 import { getFirestore} from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import axios from 'axios';
-
+import Constants from 'expo-constants'; // Ensure Constants is correctly imported
 const auth = getAuth();
 
 const CreateLobbyPopup = ({ visible, onClose,navigation }) => {
     const [nameOfLobby,setNameOfLobby]=useState('');
     const [currentUsername,setCurrentUsername]=useState('');
+
+    const URLfetchCurrentUserData = Constants?.expoConfig?.hostUri
+? `http://${Constants.expoConfig.hostUri.split(':').shift()}:4000/fetchCurrentUserData`
+: 'https://yourapi.com/fetchCurrentUserData';
+
+const URLcreateLobby = Constants?.expoConfig?.hostUri
+? `http://${Constants.expoConfig.hostUri.split(':').shift()}:4000/createLobby`
+: 'https://yourapi.com/fetchCurrentUserData';
+
     var selectedTeam='';
-    const Url='http://192.168.1.130:4000';
+    
     const fetchUserData = async () => {
         const currentUser = auth.currentUser;
         if (!currentUser) {
@@ -20,7 +29,7 @@ const CreateLobbyPopup = ({ visible, onClose,navigation }) => {
         }
         try {
             // Fetching user data from your backend
-            const response = await axios.post(Url+'/fetchCurrentUserData', {
+            const response = await axios.post(URLfetchCurrentUserData, {
             email: currentUser.email, // Sending current user's email to your backend
             })
         // usernameFromResponse = response.data.username; // Assuming the backend responds with the username
@@ -37,7 +46,7 @@ const CreateLobbyPopup = ({ visible, onClose,navigation }) => {
       // Proceed to send a friend request only if we successfully got the username
       if (currentUsername) {
         try {
-            const response = await axios.post(Url+'/createLobby', {
+            const response = await axios.post(URLcreateLobby, {
                 // Include any data you want to send to the server in the request body
                 // For example:
                 // data: 'exampleData'

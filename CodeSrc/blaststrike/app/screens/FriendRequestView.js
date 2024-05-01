@@ -2,11 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, Button, StyleSheet } from 'react-native';
 import { getFirestore, collection, query, where, onSnapshot } from 'firebase/firestore';
 import axios from 'axios';
-
+import Constants from 'expo-constants'; // Ensure Constants is correctly imported
 const firestore = getFirestore();
 
 const FriendRequestsView = ({ userData }) => {
   const [requests, setRequests] = useState([]);
+
+  const URLaddFriends = Constants?.expoConfig?.hostUri
+  ? `http://${Constants.expoConfig.hostUri.split(':').shift()}:4000/addFriends`
+  : 'https://yourapi.com/fetchCurrentUserData';
+  const URLdeleteAcceptedRequest = Constants?.expoConfig?.hostUri
+  ? `http://${Constants.expoConfig.hostUri.split(':').shift()}:4000/deleteAcceptedRequests`
+  : 'https://yourapi.com/fetchCurrentUserData';
+  
 
   useEffect(() => {
     let unsubscribe = () => {};
@@ -30,12 +38,12 @@ const FriendRequestsView = ({ userData }) => {
 
   const acceptRequest = async (fromUsername) => {
     try {
-      await axios.post('http://192.168.1.37:4000/addFriends', {
+      await axios.post(URLaddFriends, {
         from_username: fromUsername,
         to_username: userData.username,
       });
       
-      await axios.post('http://192.168.1.37:4000/deleteAcceptedRequests', {
+      await axios.post(URLdeleteAcceptedRequest, {
         from_username: fromUsername,
         to_username: userData.username,
       });

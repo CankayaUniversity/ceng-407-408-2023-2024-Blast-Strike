@@ -5,10 +5,20 @@ import { ref, set } from 'firebase/firestore';
 import { getFirestore, collection, query, where, getDocs,addDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import axios from 'axios';
+import Constants from 'expo-constants'; // Ensure Constants is correctly imported
 
 const auth = getAuth();
 const firestore = getFirestore();
-const URL='http://192.168.1.130:4000/fetchCurrentUserData'
+
+const URLfetchCurrentUserData = Constants?.expoConfig?.hostUri
+? `http://${Constants.expoConfig.hostUri.split(':').shift()}:4000/fetchCurrentUserData`
+: 'https://yourapi.com/fetchCurrentUserData';
+
+const URLsendFriendRequest = Constants?.expoConfig?.hostUri
+? `http://${Constants.expoConfig.hostUri.split(':').shift()}:4000/sendFriendRequest`
+: 'https://yourapi.com/fetchCurrentUserData';
+
+
 
   const SendingRequestPopup = ({ visible, onClose }) => {
     const [to_username, setToUsername] = useState('');
@@ -23,7 +33,7 @@ const URL='http://192.168.1.130:4000/fetchCurrentUserData'
         return; // Exit the function if there's no logged-in user
       }
       try {
-        const response = await axios.post(URL, { email: currentUser.email });
+        const response = await axios.post(URLfetchCurrentUserData, { email: currentUser.email });
         setCurrentUserName(response.data.username);
       } catch (error) {
         console.log('Error fetching user data:', error);
@@ -35,7 +45,7 @@ const URL='http://192.168.1.130:4000/fetchCurrentUserData'
       await fetchUserData();
       if (currentUserName) {
         try {
-          const response = await axios.post('http://192.168.1.130:4000/sendFriendRequest', {
+          const response = await axios.post(URLsendFriendRequest, {
             data: {
               from_username: currentUserName,
               to_username: to_username,

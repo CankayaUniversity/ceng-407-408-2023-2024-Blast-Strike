@@ -4,13 +4,22 @@ import { Modal, View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { getFirestore} from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import axios from 'axios';
-
+import Constants from 'expo-constants'; // Ensure Constants is correctly imported
 const auth = getAuth();
 
 const JoinLobbyPopup = ({ visible, onClose,navigation }) => {
     const [nameOfLobby,setNameOfLobby]=useState('');
     const [currentUsername,setCurrentUsername]=useState('');
     const [selectedTeam,setSelectedTeam]=useState('');
+
+    const URLfetchCurrentUserData = Constants?.expoConfig?.hostUri
+    ? `http://${Constants.expoConfig.hostUri.split(':').shift()}:4000/fetchCurrentUserData`
+    : 'https://yourapi.com/fetchCurrentUserData';
+
+    const URLaddPlayer = Constants?.expoConfig?.hostUri
+    ? `http://${Constants.expoConfig.hostUri.split(':').shift()}:4000/Lobby/addPlayer`
+    : 'https://yourapi.com/fetchCurrentUserData';
+    
 
     const fetchUserData = async () => {
         const currentUser = auth.currentUser;
@@ -20,7 +29,7 @@ const JoinLobbyPopup = ({ visible, onClose,navigation }) => {
         }
         try {
             // Fetching user data from your backend
-            const response = await axios.post('http://192.168.1.130:4000/fetchCurrentUserData', {
+            const response = await axios.post(URLfetchCurrentUserData, {
             email: currentUser.email, // Sending current user's email to your backend
             })
         // usernameFromResponse = response.data.username; // Assuming the backend responds with the username
@@ -36,7 +45,7 @@ const JoinLobbyPopup = ({ visible, onClose,navigation }) => {
      fetchUserData();
       if (currentUsername) {
         try {
-            const response = await axios.put('http://192.168.1.130:4000/Lobby/addPlayer', {
+            const response = await axios.put(URLaddPlayer, {
                 // Include any data you want to send to the server in the request body
                 // For example:
                 // data: 'exampleData'
