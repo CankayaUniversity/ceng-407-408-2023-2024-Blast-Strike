@@ -332,6 +332,7 @@ const detect = async (net) => {
   // Check data is available
   //console.log(video)
   if(video){
+    console.log(video);
     const person = await net.segmentPersonParts(video);
     const newArray = []
     // Returned: "part", "position": {"x", "y"}, "score"... 
