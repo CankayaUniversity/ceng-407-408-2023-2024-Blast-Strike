@@ -22,8 +22,7 @@ async function getGpsLocation(db, data) {
         if (docSnapshot.exists()) {
             // Access the field values from the document data
             const data = docSnapshot.data();
-            console.log("dataaaaaa",data);
-
+        
             
             data[playerTeam][0].locations = geoPoint;
 

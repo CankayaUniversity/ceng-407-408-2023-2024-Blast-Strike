@@ -59,7 +59,13 @@ export default function TensorCamera({ route }) {
       }
     };
 
-    sendLocation();
+    const intervalId = setInterval(() => {
+      sendLocation();
+    }, 2000); 
+
+    return () => {
+      clearInterval(intervalId); 
+    };
   }, []);
 
 console.log(route.params)
