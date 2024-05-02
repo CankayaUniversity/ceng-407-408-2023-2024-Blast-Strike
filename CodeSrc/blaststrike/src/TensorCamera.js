@@ -1,6 +1,7 @@
 import { useState,useRef, useEffect } from 'react';
 import * as tf from "@tensorflow/tfjs";
 import * as bodyPix from "@tensorflow-models/body-pix";
+import * as Location from "expo-location";
 import {cameraWithTensors} from '@tensorflow/tfjs-react-native'
 import { Button, StyleSheet, Text, TouchableOpacity,Platform, View, Dimensions } from 'react-native';
 import { Camera, CameraType } from 'expo-camera';
@@ -28,7 +29,40 @@ export default function TensorCamera({ route }) {
     }
   })
 
-  console.log(route.params)
+  useEffect(() => {
+    const sendLocation = async () => {
+      try {
+        
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+          console.error('Permission to access location was denied');
+          return;
+        }
+
+        let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High });
+        console.log('Location:', location);
+
+        
+        const locationResponse = await axios.put('http://192.168.1.109:4000/Game/Gps', {
+          data: {
+            playerTeam:selectedTeam,
+            documentId:lobbyData.documentId,
+            location: {
+              latitude: location.coords.latitude,
+              longitude: location.coords.longitude
+            }
+          }
+        });
+        console.log('Location server response:', locationResponse.data);
+      } catch (error) {
+        console.error('Error fetching and sending location:', error);
+      }
+    };
+
+    sendLocation();
+  }, []);
+
+console.log(route.params)
 
 const takePicture = () => {
   setIsCheck(true);
@@ -54,7 +88,7 @@ function isInsideOfTolerance(actual_x, actual_y, predicted_x, predicted_y)
   return false;
 }
 
-  async function detectHittedPart(segmentedParts) {
+async function detectHittedPart(segmentedParts) {
   console.log(segmentedParts);
 
   if (segmentedParts.length > 0) {
@@ -331,22 +365,24 @@ function isInsideOfTolerance(actual_x, actual_y, predicted_x, predicted_y)
     if(damage>0)
     {
       console.log(lobbyData);
-       try {
+      
+
+      try {
           console.log(1111)
            // Fetching user data from your backend
-          const response = await axios.put('http://192.168.1.130:4000/Game/hit', {
+          const hitResponse = await axios.put('http://192.168.1.109:4000/Game/hit', {
             data: {
               playerTeam:selectedTeam,
               documentId:lobbyData.documentId,
               damage:damage
             }
            })
+
       } catch (error) {
           console.log('Error hit:', error);
           return; // Exit the function if there was an error fetching user data
        }
     }
-
 
   }
 }
