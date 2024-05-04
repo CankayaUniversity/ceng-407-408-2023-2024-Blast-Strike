@@ -47,14 +47,12 @@ async function hitPlayer(db, data) {
                     });
                 }
 
-
-                
-                setTimeout( async() => {   
-                    //vurulanın   canını 100 yap   
-                    await updateDoc(docRef, {
-                        [`${enemyTeam}.0.health`] :100
-                    });}, 5000); // Call myFunction after 5 seconds
-                    
+                    setTimeout( async() => {   
+                        docData[enemyTeam][0].health = 100;
+                        //vurulanın   canını 100 yap   
+                        await updateDoc(docRef, {
+                            [`${enemyTeam}.0`]: docData[enemyTeam][0] 
+                        });}, 5000); // Call myFunction after 5 seconds
             }
             else
             {
@@ -65,6 +63,12 @@ async function hitPlayer(db, data) {
             ////check if game ended 
             if(docData.scoreBlue==10 || docData.scoreRed==10)
             {
+                //update player health
+                docData[enemyTeam][0].health = newHealth;
+                //console.log("data",data);
+                await updateDoc(docRef, {
+                [`${enemyTeam}.0`]: docData[enemyTeam][0] 
+                });
                 await updateDoc(docRef, {
                     inGame: false
                 });
@@ -72,12 +76,12 @@ async function hitPlayer(db, data) {
             else{
                 if( docData[enemyTeam][0].health > 0)
                     {
-                    //update player health
-                    docData[enemyTeam][0].health = newHealth;
-                    //console.log("data",data);
-                    await updateDoc(docRef, {
-                        [`${enemyTeam}.0`]: docData[enemyTeam][0] 
-                    });
+                        //update player health
+                        docData[enemyTeam][0].health = newHealth;
+                        //console.log("data",data);
+                        await updateDoc(docRef, {
+                            [`${enemyTeam}.0`]: docData[enemyTeam][0] 
+                        });
                     }    
             }
    
