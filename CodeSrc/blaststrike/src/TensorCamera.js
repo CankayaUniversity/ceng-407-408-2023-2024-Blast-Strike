@@ -7,9 +7,17 @@ import { Button, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import { useState, useRef, useEffect } from 'react';
 import { manipulateAsync } from 'expo-image-manipulator';
 import Constants from 'expo-constants'; // Ensure Constants is correctly imported
+import { doc, onSnapshot } from 'firebase/firestore';
+import { FIRESTORE_DB as db } from '../Database/Firebase';
 import axios from 'axios';
 
 export default function TensorCamera({ route }) {
+
+  const URLhit = Constants?.expoConfig?.hostUri
+  ? `http://${Constants.expoConfig.hostUri.split(':').shift()}:4000/Game/hit`
+  : 'https://yourapi.com/Game/hit';
+
+
   const {lobbyData,selectedTeam}=route.params;
 
   const [permission, requestPermission] = Camera.useCameraPermissions();
@@ -18,10 +26,16 @@ export default function TensorCamera({ route }) {
   let screenHeight;
   let screenWidth = 360;
 
-  const URLhit = Constants?.expoConfig?.hostUri
-  ? `http://${Constants.expoConfig.hostUri.split(':').shift()}:4000/Game/hit`
-  : 'https://yourapi.com/Game/hit';
+  const [updateOnce, setUpdateOnce] = useState(true);
 
+  const [scoreRed, setScoreRed] = useState(0);
+  const [scoreBlue, setScoreBlue] = useState(0);
+
+
+
+  //data snapshot listening for lobby information start
+  const docId=lobbyData.documentId;
+  const docRef = doc(db, "Lobby", docId);
 
   useEffect(() => {
     (async () => {
@@ -40,7 +54,62 @@ export default function TensorCamera({ route }) {
     }
   })
 
-  console.log(route.params)
+
+  const unsubscribe = onSnapshot(docRef, (doc) => {
+    // console.log("doc.data()['scoreBlue']",doc.data().scoreBlue);
+    // console.log("scoreBlue.current",scoreBlue.current);
+    // console.log("doc.data().scoreBlue!=scoreBlue.current",doc.data().scoreBlue!=scoreBlue.current);
+     //scoreBlue.current=doc.data()['scoreBlue'];
+ 
+      
+     if((doc.data().scoreRed!=scoreRed || doc.data().scoreBlue!=scoreBlue ))
+       {
+         if(updateOnce){
+           console.log("inside");
+           setScoreBlue(doc.data()['scoreBlue']);
+           setScoreRed(doc.data()['scoreRed']);
+           //scoreBlue.current=doc.data()['scoreBlue'];
+           //scoreRed.current=doc.data()['scoreRed'];
+         }
+ 
+         setUpdateOnce(false);
+       }
+ 
+    /*
+     if((doc.data().scoreRed!=scoreRed.current ||doc.data().scoreBlue!=scoreBlue.current ))
+       {
+         setDummy(true);
+         if (doc.exists() && dummy) {
+           //console.log("Document data:", doc.data());
+ 
+           console.log("doc.data()['scoreRed']",doc.data().scoreRed);
+           console.log("scoreRed.current",scoreRed.current);
+ 
+           console.log("doc.data()['scoreBlue']",doc.data().scoreBlue);
+           console.log("scoreBlue.current",scoreBlue.current);
+ 
+ 
+           if(doc.data()['scoreRed']!=scoreRed.current)
+             {
+               scoreRed.current=doc.data()['scoreRed'];
+               //setScoreRed(doc.data()['scoreRed']);
+             }
+     
+           if(doc.data()['scoreBlue']!=scoreBlue.current)
+             {
+               scoreBlue.current=doc.data()['scoreBlue'];
+               //setScoreBlue(doc.data()['scoreBlue']);
+             }
+             console.log(scoreRed);
+         } 
+         setDummy(false);
+       }
+    */
+     
+   }, (error) => {
+     console.log("Error getting document:", error);
+   });
+
 
 function isInsideOfTolerance(actual_x, actual_y, predicted_x, predicted_y)
 {
@@ -463,7 +532,12 @@ const transformImageToTensor = async (uri)=>{
       {/* Button Container */}
       <View style={styles.buttonContainer}>
         <TouchableOpacity onPress={takePicture} style={styles.button}>
-          <Text style={styles.buttonText}>Click me</Text>
+          <Text style={styles.buttonText}>{scoreRed/*scoreRed.current*/}</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={{ position: 'absolute', bottom: 20, width: '100%', alignItems: 'flex-end', zIndex: 9999 }}>
+        <TouchableOpacity onPress={takePicture} style={styles.button}>
+          <Text style={styles.buttonText}>{scoreBlue/*scoreRed.current*/}</Text>
         </TouchableOpacity>
       </View>
       {/*photoUri && <Image source={{ uri: photoUri }} style={{ width: 100, height: 100 , opacity:1}} />*/}
