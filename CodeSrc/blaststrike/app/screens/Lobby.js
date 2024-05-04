@@ -48,6 +48,22 @@ const URLlobbyStart = Constants?.expoConfig?.hostUri
     }
   }, [lobbyData]);
 
+  useEffect(() => {
+
+  if (!LobbyExist) {
+    fetchUserLobbyData();
+    setLobbyExist(true);
+  }
+
+  if(lobbyData.inGame)
+  {
+    navigation.replace('TensorCamera', {
+      lobbyData: lobbyData,
+      selectedTeam: selectedTeam
+    })
+  }
+  },);
+
   const fetchUserLobbyData = async () => {
     const currentUser = auth.currentUser;
     if (!currentUser) {
@@ -82,18 +98,6 @@ const URLlobbyStart = Constants?.expoConfig?.hostUri
   }
 
 
-  if (!LobbyExist) {
-    fetchUserLobbyData();
-    setLobbyExist(true);
-  }
-
-  if(lobbyData.inGame)
-  {
-    navigation.replace('TensorCamera', {
-      lobbyData: lobbyData,
-      selectedTeam: selectedTeam
-    })
-  }
 
   return (
     <View style={styles.container}>
