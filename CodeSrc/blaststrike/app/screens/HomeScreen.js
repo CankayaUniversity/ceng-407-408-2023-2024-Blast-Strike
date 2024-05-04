@@ -26,9 +26,6 @@ const HomeScreen = ({ navigation }) => {
         <TouchableOpacity style = {styles.button} onPress={() => setCreateLobbyPopupVisible(true)}>
           <Text style = {styles.buttonText}>Create a Lobby</Text>
         </TouchableOpacity>
-        <TouchableOpacity style = {styles.button} onPress={() => navigation.navigate('Lobby')}>
-          <Text style = {styles.buttonText}>Lobby Navigate</Text>
-        </TouchableOpacity>
         <TouchableOpacity style = {styles.button} onPress={() => setJoinLobbyPopupVisible(true)}>
           <Text style = {styles.buttonText}>Join Lobby</Text>
         </TouchableOpacity>

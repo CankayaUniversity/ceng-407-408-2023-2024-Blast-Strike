@@ -102,7 +102,7 @@ const URLlobbyStart = Constants?.expoConfig?.hostUri
   return (
     <View style={styles.container}>
       <View style={styles.rotatedContainer}>
-        <Text style={styles.heading}>5v5 FPS Shooter Game Lobby</Text>
+        <Text style={styles.heading}>Blast Strike Game Lobby</Text>
         <View style={styles.teamSelection}>
           <View style={styles.team}>
             <Text style={styles.teamHeading}>Team Blue</Text>

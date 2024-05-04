@@ -3,12 +3,14 @@ import {decodeJpeg} from '@tensorflow/tfjs-react-native'
 import * as bodyPix from "@tensorflow-models/body-pix";
 import * as FileSystem from 'expo-file-system';
 import { Camera } from 'expo-camera';
-import { Button, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import { Button, StyleSheet,Image, Text, TouchableOpacity, View} from 'react-native';
 import { useState, useRef, useEffect } from 'react';
 import { manipulateAsync } from 'expo-image-manipulator';
 import Constants from 'expo-constants'; // Ensure Constants is correctly imported
 import { doc, onSnapshot } from 'firebase/firestore';
 import { FIRESTORE_DB as db } from '../Database/Firebase';
+import Scoreboard from '../app/screens/ScoreBoard';
+import ShootingButton from '../app/screens/ShootingButton'
 import axios from 'axios';
 
 export default function TensorCamera({ route }) {
@@ -529,15 +531,13 @@ const transformImageToTensor = async (uri)=>{
         <View style={styles.crossHorizontal} />
       </View>
 
+      {/*score board*/}
+      <Scoreboard scoreRed={scoreRed} scoreBlue={scoreBlue} />
+
       {/* Button Container */}
       <View style={styles.buttonContainer}>
         <TouchableOpacity onPress={takePicture} style={styles.button}>
-          <Text style={styles.buttonText}>{scoreRed/*scoreRed.current*/}</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={{ position: 'absolute', bottom: 20, width: '100%', alignItems: 'flex-end', zIndex: 9999 }}>
-        <TouchableOpacity onPress={takePicture} style={styles.button}>
-          <Text style={styles.buttonText}>{scoreBlue/*scoreRed.current*/}</Text>
+          <ShootingButton/>
         </TouchableOpacity>
       </View>
       {/*photoUri && <Image source={{ uri: photoUri }} style={{ width: 100, height: 100 , opacity:1}} />*/}
@@ -574,7 +574,7 @@ const styles = StyleSheet.create({
     zIndex: 1
   },
   button: {
-    backgroundColor: 'blue',
+    backgroundColor:'#f0f0f0',
     padding: 10,
     borderRadius: 5,
   },
