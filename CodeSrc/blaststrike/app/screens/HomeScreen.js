@@ -5,6 +5,7 @@ import FriendRequestsView from './FriendRequestView';
 import CreateLobbyPopup from './CreateLobbyPopup';
 import JoinLobbyPopup from './JoinLobbyPopUp';
 import DisplayFriendListPopUp from './DisplayFriendListPopUp';
+import ActiveInvitationsView from './ActiveInvitationsView';
 import { useFetchUserData } from '../../Hooks/useFetchUserData';
 
 const HomeScreen = ({ navigation }) => {
@@ -12,6 +13,7 @@ const HomeScreen = ({ navigation }) => {
   const [createLobbyPopupVisible, setCreateLobbyPopupVisible] = useState(false);
   const [joinLobbyPopupVisible, setJoinLobbyPopupVisible] = useState(false);
   const [friendRequestPopupVisible, setFriendRequestPopupVisible] = useState(false);
+  const [invitationPopupVisible, setInvitationPopupVisible] = useState(false);
   const [displayFriendsPopUpVisible, setDisplayFriendsPopUpVisible] = useState(false);
 
   const userData = useFetchUserData();
@@ -38,9 +40,13 @@ const HomeScreen = ({ navigation }) => {
         <TouchableOpacity style = {styles.button} onPress={() => setFriendRequestPopupVisible(!friendRequestPopupVisible)}>
           <Text style = {styles.buttonText}>View Friend Requests</Text>
         </TouchableOpacity>
+        <TouchableOpacity style = {styles.button} onPress={() => setInvitationPopupVisible(!invitationPopupVisible)}>
+          <Text style = {styles.buttonText}>View Invitations</Text>
+        </TouchableOpacity>
       </View>
 
       {friendRequestPopupVisible && <FriendRequestsView userData={userData} />}
+      {invitationPopupVisible && <ActiveInvitationsView navigation={navigation} userData={userData} />}
 
       <SendingRequestPopup
         visible={popupVisible}

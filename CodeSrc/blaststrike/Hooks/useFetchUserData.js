@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
-const URL = 'http://192.168.1.105:4000/fetchCurrentUserData';
+const URL = 'http://192.168.1.107:4000/fetchCurrentUserData';
 const auth = getAuth();
 
 export const useFetchUserData = () => {

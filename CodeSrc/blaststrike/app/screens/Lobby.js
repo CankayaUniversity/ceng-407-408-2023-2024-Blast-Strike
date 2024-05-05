@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { getAuth } from 'firebase/auth';
-import { doc, onSnapshot } from 'firebase/firestore';
+import { doc, onSnapshot} from 'firebase/firestore';
 import { FIRESTORE_DB } from '../../Database/Firebase';
 import axios from 'axios';
+import SendInvitationPopUp from './SendInvitationPopUp';
 import TensorCamera from '../../src/TensorCamera';
 
 const auth = getAuth();
@@ -14,6 +15,8 @@ const Lobby = ({ navigation,route }) => {
   const db = FIRESTORE_DB;
   const [LobbyExist, setLobbyExist] = useState(false);
   const [isCameraOpen, setIsCameraOpen] = useState(false); // State to control camera modal visibility
+
+  const [invitePopUpVisible, setInvitePopUpVisible] = useState(false);
 
   useEffect(() => {
     console.log("111lobbyDocId",lobbyDocId);
@@ -43,7 +46,7 @@ const Lobby = ({ navigation,route }) => {
     }
     try {
       console.log("lobbyName",lobbyName);
-      const response = await axios.post('http://192.168.1.130:4000/Lobby/getLobbyData', {
+      const response = await axios.post('http://192.168.1.107:4000/Lobby/getLobbyData', {
         data: {
           lobbyName: lobbyName
         }
@@ -82,6 +85,21 @@ const Lobby = ({ navigation,route }) => {
               ))}
             </View>
           </View>
+        </View>
+        {invitePopUpVisible && (
+          <SendInvitationPopUp
+            lobbyName={lobbyName}
+            visible={invitePopUpVisible}
+            onClose={() => setInvitePopUpVisible(false)}
+          />
+        )}
+        <View style={styles.startGameBtnContainer}>
+          <TouchableOpacity
+            style={styles.startGameBtn}
+            onPress={() => setInvitePopUpVisible(true)}
+          >
+            <Text style={styles.startGameBtnText}>Invite Friend</Text>
+          </TouchableOpacity>
         </View>
         <View style={styles.startGameBtnContainer}>
         <TouchableOpacity
@@ -135,6 +153,7 @@ const styles = StyleSheet.create({
   startGameBtnContainer: {
     alignItems: 'center',
     borderRadius: 5,
+    margin: 5,
   },
   startGameBtn: {
     backgroundColor: 'blue',
