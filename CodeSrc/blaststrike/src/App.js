@@ -8,7 +8,7 @@ import Lobby from '../app/screens/Lobby';
 import CreateLobbyPopup from '../app/screens/CreateLobbyPopup';
 import JoinLobbyPopup from '../app/screens/JoinLobbyPopUp';
 import TensorCamera from './TensorCamera';
-
+import GameEndScreen from '../app/screens/GameEndScreen';
 const Stack = createNativeStackNavigator();
 
 function App() {
@@ -22,6 +22,7 @@ function App() {
         <Stack.Screen name="CreateLobbyPopup" component={CreateLobbyPopup} options={{ headerShown: false }}  />
         <Stack.Screen name="JoinLobbyPopup" component={JoinLobbyPopup} options={{ headerShown: false }}  />
         <Stack.Screen name="TensorCamera" component={TensorCamera} options={{ headerShown: false }} />
+        <Stack.Screen name="GameEndScreen" component={GameEndScreen} options={{ headerShown: false }} />
       
       </Stack.Navigator>
     </NavigationContainer>

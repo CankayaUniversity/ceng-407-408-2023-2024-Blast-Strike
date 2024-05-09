@@ -12,9 +12,10 @@ import { FIRESTORE_DB as db } from '../Database/Firebase';
 import Scoreboard from '../app/screens/ScoreBoard';
 import ShootingButton from '../app/screens/ShootingButton'
 import HealthBar from '../app/screens/HealthBar';
+import GameEndScreen from '../app/screens/GameEndScreen';
 import axios from 'axios';
 
-export default function TensorCamera({ route }) {
+export default function TensorCamera({ navigation, route }) {
 
   const URLhit = Constants?.expoConfig?.hostUri
   ? `http://${Constants.expoConfig.hostUri.split(':').shift()}:4000/Game/hit`
@@ -24,6 +25,7 @@ export default function TensorCamera({ route }) {
   const {lobbyData,selectedTeam,username}=route.params;
  
 
+  const [gameData, setGameData] = useState(null);
 
   const [permission, requestPermission] = Camera.useCameraPermissions();
   const cameraRef = useRef(null);
@@ -78,6 +80,26 @@ export default function TensorCamera({ route }) {
            console.log("inside");
            setScoreBlue(doc.data()['scoreBlue']);
            setScoreRed(doc.data()['scoreRed']);
+           //setGameData(doc.data());
+           console.log(gameData)
+           if(doc.data().inGame == false)
+           {
+            if(doc.data().scoreBlue == 10)
+            {
+              navigation.replace('GameEndScreen', {
+                winnerTeam: doc.data().teamBlue
+              })
+            }
+
+            else if(doc.data().scoreRed == 10)
+            {
+              navigation.replace('GameEndScreen', {
+                winnerTeam: doc.data().teamRed
+              })
+            }
+           }
+           //scoreBlue.current=doc.data()['scoreBlue'];
+           //scoreRed.current=doc.data()['scoreRed'];
          }
          setUpdateOnce(false);
        }
