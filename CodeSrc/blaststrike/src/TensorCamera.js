@@ -15,6 +15,7 @@ export default function TensorCamera({ route }) {
   const cameraRef = useRef(null);
   const TensorCamera = cameraWithTensors(Camera);
   const [isCheck, setIsCheck] = useState(false);
+  const [heading,setHeading]=useState({})
 
   const screenHeight = 960;
   const screenWidth = 540;
@@ -40,8 +41,7 @@ export default function TensorCamera({ route }) {
         }
 
         let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High });
-        console.log('Location:', location);
-
+        console.log('Location:', location);       
         
         const locationResponse = await axios.put('http://192.168.1.109:4000/Game/Gps', {
           data: {
@@ -63,8 +63,21 @@ export default function TensorCamera({ route }) {
       sendLocation();
     }, 2000); 
 
+    /*let tempHeading;
+    const subscribeToHeading = async () => {
+      tempHeading = await Location.watchHeadingAsync((newHeading) => {
+        console.log('Heading:', newHeading);
+        setHeading(newHeading); 
+      });
+    };*/
+  
+    subscribeToHeading(); 
+
     return () => {
       clearInterval(intervalId); 
+      /*if (tempHeading) {
+        tempHeading.remove(); 
+      }*/
     };
   }, []);
 
