@@ -81,11 +81,12 @@ export default function TensorCamera({ navigation, route }) {
            setScoreBlue(doc.data()['scoreBlue']);
            setScoreRed(doc.data()['scoreRed']);
            //setGameData(doc.data());
-           console.log(gameData)
+           //console.log(gameData)
            if(doc.data().inGame == false)
            {
             if(doc.data().scoreBlue == 10)
-            {
+            { 
+              unsubscribe();
               navigation.replace('GameEndScreen', {
                 winnerTeam: doc.data().teamBlue
               })
@@ -93,6 +94,7 @@ export default function TensorCamera({ navigation, route }) {
 
             else if(doc.data().scoreRed == 10)
             {
+              unsubscribe();
               navigation.replace('GameEndScreen', {
                 winnerTeam: doc.data().teamRed
               })
