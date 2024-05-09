@@ -3,7 +3,7 @@ import {decodeJpeg} from '@tensorflow/tfjs-react-native'
 import * as bodyPix from "@tensorflow-models/body-pix";
 import * as FileSystem from 'expo-file-system';
 import { Camera } from 'expo-camera';
-import { Button, StyleSheet,Image, Text, TouchableOpacity, View} from 'react-native';
+import { Button, StyleSheet,Image, Text, TouchableOpacity, View, Dimensions} from 'react-native';
 import { useState, useRef, useEffect } from 'react';
 import { manipulateAsync } from 'expo-image-manipulator';
 import Constants from 'expo-constants'; // Ensure Constants is correctly imported
@@ -11,6 +11,7 @@ import { doc, onSnapshot } from 'firebase/firestore';
 import { FIRESTORE_DB as db } from '../Database/Firebase';
 import Scoreboard from '../app/screens/ScoreBoard';
 import ShootingButton from '../app/screens/ShootingButton'
+import HealthBar from '../app/screens/HealthBar';
 import axios from 'axios';
 
 export default function TensorCamera({ route }) {
@@ -20,7 +21,9 @@ export default function TensorCamera({ route }) {
   : 'https://yourapi.com/Game/hit';
 
 
-  const {lobbyData,selectedTeam}=route.params;
+  const {lobbyData,selectedTeam,username}=route.params;
+ 
+
 
   const [permission, requestPermission] = Camera.useCameraPermissions();
   const cameraRef = useRef(null);
@@ -29,6 +32,7 @@ export default function TensorCamera({ route }) {
   let screenWidth = 360;
 
   const [updateOnce, setUpdateOnce] = useState(true);
+  const [userHealth, setUserHealth] = useState(100);
 
   const [scoreRed, setScoreRed] = useState(0);
   const [scoreBlue, setScoreBlue] = useState(0);
@@ -56,24 +60,25 @@ export default function TensorCamera({ route }) {
     }
   })
 
+  //console.log("username",username);
 
   const unsubscribe = onSnapshot(docRef, (doc) => {
     // console.log("doc.data()['scoreBlue']",doc.data().scoreBlue);
     // console.log("scoreBlue.current",scoreBlue.current);
     // console.log("doc.data().scoreBlue!=scoreBlue.current",doc.data().scoreBlue!=scoreBlue.current);
      //scoreBlue.current=doc.data()['scoreBlue'];
- 
-      
+
+     if(doc.data()[selectedTeam][0].health!=userHealth)
+        setUserHealth(doc.data()[selectedTeam][0].health)
+
      if((doc.data().scoreRed!=scoreRed || doc.data().scoreBlue!=scoreBlue ))
        {
+        setUpdateOnce(true);
          if(updateOnce){
            console.log("inside");
            setScoreBlue(doc.data()['scoreBlue']);
            setScoreRed(doc.data()['scoreRed']);
-           //scoreBlue.current=doc.data()['scoreBlue'];
-           //scoreRed.current=doc.data()['scoreRed'];
          }
- 
          setUpdateOnce(false);
        }
  
@@ -517,7 +522,6 @@ const transformImageToTensor = async (uri)=>{
     );
   }
 
-
   return (
     <View style={{ flex: 1 }}>
       <Camera 
@@ -534,6 +538,11 @@ const transformImageToTensor = async (uri)=>{
       {/*score board*/}
       <Scoreboard scoreRed={scoreRed} scoreBlue={scoreBlue} />
 
+      {/*Health bar */}
+      <View style={styles.healtContainer}>
+       <HealthBar value={userHealth} />
+      </View>
+      
       {/* Button Container */}
       <View style={styles.buttonContainer}>
         <TouchableOpacity onPress={takePicture} style={styles.button}>
@@ -581,5 +590,12 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontSize: 18,
+  },
+  healtContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%', // Take full width of the screen
+    height: '100%', // Take full height of the screen
   },
 });

@@ -59,7 +59,8 @@ const URLlobbyStart = Constants?.expoConfig?.hostUri
   {
     navigation.replace('TensorCamera', {
       lobbyData: lobbyData,
-      selectedTeam: selectedTeam
+      selectedTeam: selectedTeam,
+      username:username
     })
   }
   },);
