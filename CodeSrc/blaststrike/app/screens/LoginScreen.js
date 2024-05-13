@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, Alert, StyleSheet, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, TextInput, Button, Alert, StyleSheet, Text, TouchableOpacity, ActivityIndicator, Image } from 'react-native';
 import { FIREBASE_AUTH as auth } from '../../Database/Firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import LoginLogo from './LoginLogo';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
@@ -25,7 +26,8 @@ export default function LoginScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text style = {[{color: 'brown'}, {fontSize: 20}, {fontStyle: 'italic'}]}>Welcome to BlastStrike!</Text>
+      <LoginLogo/>
+      <Text style = {[{color: '#D2691E'}, {fontSize: 24}, {fontStyle: 'italic'}]}>Welcome to BlastStrike!</Text>
       <Text style={styles.title}>Login to play!</Text>
       <TextInput
         placeholder="Email"
@@ -62,15 +64,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#fff3e6',
+    backgroundColor: 'dimgray',
+  },
+  image: {
+    width:10,
+    height: 10
   },
   title: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 20,
   },
   input: {
-    width: '100%',
+    width: '85%',
     padding: 15,
     marginVertical: 10,
     borderWidth: 1,
@@ -79,9 +85,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
   },
   button: {
-    width: '100%',
+    width: '85%',
     padding: 15,
-    backgroundColor: '#firebrick',
+    backgroundColor: 'chocolate',
     alignItems: 'center',
     borderRadius: 5,
     marginTop: 10,
@@ -94,6 +100,6 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   registerButtonText: {
-    color: 'brown',
+    color: '#4d2a00',
   },
 });

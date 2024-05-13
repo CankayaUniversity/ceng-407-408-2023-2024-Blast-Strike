@@ -4,6 +4,7 @@ import { View, TextInput, Button, Alert, StyleSheet, ActivityIndicator, Touchabl
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { getFirestore, collection, addDoc } from 'firebase/firestore';
 import { firebaseApp } from '../../Database/Firebase';
+import LoginLogo from './LoginLogo';
 
 const auth = getAuth(firebaseApp);
 const firestore = getFirestore(firebaseApp);
@@ -35,8 +36,9 @@ export default function RegisterScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <LoginLogo/>
       {/* Existing TextInput and Button elements */}
-      <Text style = {{color: 'brown', fontSize:20}}>Register to play!</Text>
+      <Text style = {styles.title}>Register to play!</Text>
       <TextInput
         placeholder="Username"
         value={username}
@@ -78,10 +80,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#fff3e6'
+    backgroundColor: 'dimgray'
   },
   input: {
-    width: '100%',
+    width: '85%',
     padding: 15,
     marginVertical: 10,
     borderWidth: 1,
@@ -89,16 +91,21 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: '#ffffff',
   },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
   backButton: {
     marginTop: 15,
   },
   backButtonText: {
-    color: '#brown',
+    color: '#4d2a00',
   },
   button: {
-    width: '100%',
+    width: '85%',
     padding: 15,
-    backgroundColor: 'firebrick',
+    backgroundColor: 'chocolate',
     alignItems: 'center',
     borderRadius: 5,
     marginTop: 10,
