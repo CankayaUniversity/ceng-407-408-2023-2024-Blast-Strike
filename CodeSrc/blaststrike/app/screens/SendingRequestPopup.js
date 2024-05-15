@@ -1,11 +1,13 @@
 // Popup.js
 import React, { useState } from 'react';
-import { Modal, View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { Modal, View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { ref, set } from 'firebase/firestore';
 import { getFirestore, collection, query, where, getDocs,addDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import axios from 'axios';
 import Constants from 'expo-constants'; // Ensure Constants is correctly imported
+const screenWidth = Dimensions.get('window').width;
+const screenHeight = Dimensions.get('window').height;
 
 const auth = getAuth();
 const firestore = getFirestore();
@@ -73,13 +75,16 @@ const URLsendFriendRequest = Constants?.expoConfig?.hostUri
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
+            <Text style = {styles.text}>Adda a friend!</Text>
             <TextInput
               placeholder="Enter username"
               value={to_username}
               onChangeText={setToUsername}
               style={styles.input}
             />
-            <Button title="Send Request" onPress={handleSendRequest} />
+            <TouchableOpacity onPress={handleSendRequest} style= {styles.button}>
+              <Text style = {styles.buttonText}>Send Request</Text>
+            </TouchableOpacity>
             {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
           </View>
         </View>
@@ -96,10 +101,11 @@ const styles = StyleSheet.create({
   },
   modalView: {
     margin: 20,
-    backgroundColor: 'white',
+    backgroundColor: '#fff5cc',
     borderRadius: 20,
     padding: 35,
     alignItems: 'center',
+    justifyContent: 'center',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -108,14 +114,33 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+    width: screenWidth * 0.7,
+    height: screenHeight * 0.30,
   },
   input: {
-    height: 40,
+    height: 50,
     margin: 12,
     borderWidth: 1,
     padding: 10,
     width: '100%',
+    margin: 20,
   },
+  button: {
+    width: '85%',
+    padding: 15,
+    backgroundColor: 'sienna',
+    alignItems: 'center',
+    borderRadius: 5,
+    marginTop: 10,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize:18,
+  },
+  text: {
+    fontStyle: 'italic',
+    fontSize:17
+  }
 });
 
 export default SendingRequestPopup;

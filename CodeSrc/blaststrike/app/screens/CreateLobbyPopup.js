@@ -1,10 +1,14 @@
 // CreateLobbyPopup.js
 import React, { useEffect, useState } from 'react';
-import { Modal, View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { Modal, View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { getFirestore} from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import axios from 'axios';
 import Constants from 'expo-constants'; // Ensure Constants is correctly imported
+
+const screenWidth = Dimensions.get('window').width;
+const screenHeight = Dimensions.get('window').height;
+
 const auth = getAuth();
 
 const CreateLobbyPopup = ({ visible, onClose,navigation }) => {
@@ -85,6 +89,7 @@ const URLcreateLobby = Constants?.expoConfig?.hostUri
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
+            <Text style = {styles.text}>Create a lobby!</Text>
             <TextInput
               placeholder="Enter a unique lobby name"
               value={nameOfLobby}
@@ -129,7 +134,7 @@ const URLcreateLobby = Constants?.expoConfig?.hostUri
     },
     modalView: {
       margin: 20,
-      backgroundColor: 'linen',
+      backgroundColor: '#fff5cc',
       borderRadius: 20,
       padding: 35,
       alignItems: 'center',
@@ -141,13 +146,16 @@ const URLcreateLobby = Constants?.expoConfig?.hostUri
       shadowOpacity: 0.25,
       shadowRadius: 4,
       elevation: 5,
+      width: screenWidth * 0.7,
+      height: screenHeight * 0.35,
     },
     input: {
-      height: 40,
+      height: 50,
       margin: 12,
       borderWidth: 1,
       padding: 10,
       width: '100%',
+      margin: 20,
     },
     buttonContainer: {
       flexDirection: 'row',
@@ -156,12 +164,16 @@ const URLcreateLobby = Constants?.expoConfig?.hostUri
       width: '100%',
     },
     button: {
-      backgroundColor: 'darkorange',
       borderRadius: 4,
       paddingVertical: 12,
       paddingHorizontal: 32,
       marginBottom: 20,
+      width: '100%',
     },
+    text: {
+      fontStyle: 'italic',
+      fontSize:17
+    }
   });
   
   export default CreateLobbyPopup;

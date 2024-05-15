@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff3e6',
+    backgroundColor: 'dimgray',
     padding:20
   },
   title: {
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
-    color: 'brown'
+    color: 'peachpuff'
   },
   buttonContainer: {
     flexDirection: 'vertical',
@@ -93,13 +93,14 @@ const styles = StyleSheet.create({
   button: {
     width: '100%',
     padding: 15,
-    backgroundColor: 'maroon',
+    backgroundColor: 'chocolate',
     alignItems: 'center',
     borderRadius: 5,
     marginTop: 10,
   },
   buttonText: {
-    color: 'white'
+    color: 'white',
+    fontSize:18,
   },
 });
 

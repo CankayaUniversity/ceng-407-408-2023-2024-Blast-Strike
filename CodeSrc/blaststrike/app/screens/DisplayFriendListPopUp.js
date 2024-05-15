@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, Button, Dimensions } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import axios from 'axios';
 import Constants from 'expo-constants'; // Ensure Constants is correctly imported
 const screenWidth = Dimensions.get('window').width;
@@ -32,12 +32,15 @@ const DisplayFriendListPopUp = ({ visible, onClose, username }) => {
 
   return (
     <View style={styles.container}>
+      <Text style = {styles.text}>Friend List:</Text>
       <FlatList
         data={friendList}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => <Text style={styles.friendItem}>{item}</Text>}
       />
-      <Button title="Close" onPress={onClose} />
+      <TouchableOpacity style = {styles.button} onPress={onClose}>
+        <Text style = {{color:'white', fontSize:15}}>CLOSE</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -46,7 +49,7 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 100,
     padding: 20,
-    backgroundColor: 'white',
+    backgroundColor: '#fff5cc',
     borderRadius: 10,
     position: 'absolute',
     width: screenWidth * 0.8, // Set width to 80% of screen width
@@ -58,6 +61,18 @@ const styles = StyleSheet.create({
   friendItem: {
     padding: 5,
     fontSize: 18,
+  },
+  text: {
+    fontStyle: 'italic',
+    fontSize:17
+  },
+  button: {
+    width: '75%',
+    padding: 15,
+    backgroundColor: 'sienna',
+    alignItems: 'center',
+    borderRadius: 5,
+    marginTop: 10,
   },
 });
 

@@ -1,10 +1,14 @@
-// CreateLobbyPopup.js
+// JoinLobbyPopup.js
 import React, { useEffect, useState } from 'react';
-import { Modal, View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { Modal, View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { getFirestore} from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import axios from 'axios';
 import Constants from 'expo-constants'; // Ensure Constants is correctly imported
+
+const screenWidth = Dimensions.get('window').width;
+const screenHeight = Dimensions.get('window').height;
+
 const auth = getAuth();
 
 const JoinLobbyPopup = ({ visible, onClose,navigation }) => {
@@ -85,30 +89,35 @@ const JoinLobbyPopup = ({ visible, onClose,navigation }) => {
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
+            <Text style = {styles.text}>Join a lobby!</Text>
             <TextInput
               placeholder="Enter a lobby name you want to join"
               value={nameOfLobby}
               onChangeText={setNameOfLobby}
               style={styles.input}
             />
-            <View style={{flexDirection: 'row'}}>
-                <View style={{ marginRight: 10 }}>
-                    <Button 
-                        title='Join Team Blue' 
+            <View style={{flexDirection: 'vertical'}}>
+                <View>
+                    <TouchableOpacity
+                        style = {[styles.button, {backgroundColor: 'deepskyblue'}]} 
                         onPress={() => {
                           setSelectedTeam('teamBlue');
                             handleLobbyJoin();
                             }}
-                    />
+                    >
+                      <Text>Join Team Blue</Text>
+                    </TouchableOpacity>
                </View>
-                <View style={{ marginLeft: 10 }}>
-                    <Button 
-                        title="Join Team Red" 
+                <View>
+                    <TouchableOpacity 
+                        style = {[styles.button, {backgroundColor: 'red'}]}
                         onPress={() => {            
                             setSelectedTeam('teamRed');
                             handleLobbyJoin();
                             }}
-                    />
+                    >
+                      <Text>Join Team Red</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
           </View>
@@ -125,7 +134,7 @@ const JoinLobbyPopup = ({ visible, onClose,navigation }) => {
     },
     modalView: {
       margin: 20,
-      backgroundColor: 'white',
+      backgroundColor: '#fff5cc',
       borderRadius: 20,
       padding: 35,
       alignItems: 'center',
@@ -137,15 +146,33 @@ const JoinLobbyPopup = ({ visible, onClose,navigation }) => {
       shadowOpacity: 0.25,
       shadowRadius: 4,
       elevation: 5,
+      width: screenWidth * 0.77,
+      height: screenHeight * 0.35,
     },
     input: {
-      height: 40,
+      height: 50,
       margin: 12,
       borderWidth: 1,
       padding: 10,
       width: '100%',
+      margin: 20,
     },
-
+    buttonContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      width: '100%',
+    },
+    button: {
+      borderRadius: 4,
+      paddingVertical: 12,
+      paddingHorizontal: 32,
+      marginBottom: 20,
+    },
+    text: {
+      fontStyle: 'italic',
+      fontSize:17
+    }
   });
   
   export default JoinLobbyPopup;
