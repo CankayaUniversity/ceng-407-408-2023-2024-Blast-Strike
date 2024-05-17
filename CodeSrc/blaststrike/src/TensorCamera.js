@@ -6,6 +6,7 @@ import {cameraWithTensors} from '@tensorflow/tfjs-react-native'
 import { Button, StyleSheet, Text, TouchableOpacity,Platform, View, Dimensions } from 'react-native';
 import { Camera, CameraType } from 'expo-camera';
 import axios from 'axios';
+import { detectLatLon } from './Calculation';
 
 export default function TensorCamera({ route }) {
   const {lobbyData,selectedTeam}=route.params;
@@ -42,14 +43,17 @@ export default function TensorCamera({ route }) {
 
         let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High });
         console.log('Location:', location);       
-        
+        let heading = await Location.getHeadingAsync();
+        console.log("Heading", heading);
+
         const locationResponse = await axios.put('http://192.168.1.109:4000/Game/Gps', {
           data: {
             playerTeam:selectedTeam,
             documentId:lobbyData.documentId,
             location: {
               latitude: location.coords.latitude,
-              longitude: location.coords.longitude
+              longitude: location.coords.longitude,
+              heading: heading.trueHeading
             }
           }
         });

@@ -61,7 +61,8 @@ async function addPlayer(db, data) {
         let lobbyData = {
             "username" :playerName,
             "health" : 100,
-            "locations": new GeoPoint(0, 0)
+            "locations": new GeoPoint(0, 0),
+            "heading" : 0
         }
         
 

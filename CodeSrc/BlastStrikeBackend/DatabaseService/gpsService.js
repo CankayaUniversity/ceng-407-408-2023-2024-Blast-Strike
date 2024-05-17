@@ -25,7 +25,7 @@ async function getGpsLocation(db, data) {
         
             
             data[playerTeam][0].locations = geoPoint;
-
+            data[playerTeam][0].heading = location.heading;
             console.log("Updated data", data[playerTeam][0]);
 
             await updateDoc(docRef, {
