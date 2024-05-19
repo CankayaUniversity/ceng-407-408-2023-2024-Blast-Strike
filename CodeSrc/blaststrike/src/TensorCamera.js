@@ -6,7 +6,7 @@ import {cameraWithTensors} from '@tensorflow/tfjs-react-native'
 import { Button, StyleSheet, Text, TouchableOpacity,Platform, View, Dimensions } from 'react-native';
 import { Camera, CameraType,useCameraPermissions } from 'expo-camera';
 import axios from 'axios';
-import { detectLatLon } from './Calculation';
+
 
 export default function TensorCamera({ route }) {
   const {lobbyData,selectedTeam}=route.params;
@@ -18,6 +18,8 @@ export default function TensorCamera({ route }) {
   const [isCheck, setIsCheck] = useState(false);
   const [heading,setHeading]=useState(null)
 
+  let tempLocation;
+  let tempHeading;
   const screenHeight = 960;
   const screenWidth = 540;
 
@@ -41,13 +43,16 @@ export default function TensorCamera({ route }) {
         }
 
         let location = await Location.getCurrentPositionAsync({accuracy: Location.Accuracy.High});
-        console.log("Location ", location)
+        console.log("Location ", location);
+        tempLocation = location;
+
 
         let heading = await Location.getHeadingAsync();
         // heading info includes trueHeading , magHeading, accuracy
         // trueHeading real north
         // magHeading magnetic north
         console.log("Heading ", heading)
+        tempHeading = heading;
         
         const locationResponse = await axios.put('http://192.168.1.109:4000/Game/Gps', {
           data: {
@@ -385,7 +390,12 @@ async function detectHittedPart(segmentedParts) {
             data: {
               playerTeam:selectedTeam,
               documentId:lobbyData.documentId,
-              damage:damage
+              damage:damage,
+              location:{
+                latitude: tempLocation.coords.latitude,
+                longitude: tempLocation.coords.longitude,
+                heading: tempHeading,
+              }
             }
            })
 
