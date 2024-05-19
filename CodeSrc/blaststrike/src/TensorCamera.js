@@ -4,7 +4,7 @@ import * as bodyPix from "@tensorflow-models/body-pix";
 import * as Location from "expo-location";
 import {cameraWithTensors} from '@tensorflow/tfjs-react-native'
 import { Button, StyleSheet, Text, TouchableOpacity,Platform, View, Dimensions } from 'react-native';
-import { Camera, CameraType } from 'expo-camera';
+import { Camera, CameraType,useCameraPermissions } from 'expo-camera';
 import axios from 'axios';
 import { detectLatLon } from './Calculation';
 
@@ -16,7 +16,7 @@ export default function TensorCamera({ route }) {
   const cameraRef = useRef(null);
   const TensorCamera = cameraWithTensors(Camera);
   const [isCheck, setIsCheck] = useState(false);
-  const [heading,setHeading]=useState({})
+  const [heading,setHeading]=useState(null)
 
   const screenHeight = 960;
   const screenWidth = 540;
@@ -34,28 +34,31 @@ export default function TensorCamera({ route }) {
   useEffect(() => {
     const sendLocation = async () => {
       try {
-        
-        let { status } = await Location.requestForegroundPermissionsAsync();
+        const { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== 'granted') {
           console.error('Permission to access location was denied');
           return;
         }
 
-        let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High });
-        console.log('Location:', location);       
-        let heading = await Location.getHeadingAsync();
-        console.log("Heading", heading);
+        let location = await Location.getCurrentPositionAsync({accuracy: Location.Accuracy.High});
+        console.log("Location ", location)
 
+        let heading = await Location.getHeadingAsync();
+        // heading info includes trueHeading , magHeading, accuracy
+        // trueHeading real north
+        // magHeading magnetic north
+        console.log("Heading ", heading)
+        
         const locationResponse = await axios.put('http://192.168.1.109:4000/Game/Gps', {
           data: {
-            playerTeam:selectedTeam,
-            documentId:lobbyData.documentId,
+            playerTeam: selectedTeam,
+            documentId: lobbyData.documentId,
             location: {
               latitude: location.coords.latitude,
               longitude: location.coords.longitude,
-              heading: heading.trueHeading
-            }
-          }
+              heading: heading,
+            },
+          },
         });
         console.log('Location server response:', locationResponse.data);
       } catch (error) {
@@ -65,24 +68,9 @@ export default function TensorCamera({ route }) {
 
     const intervalId = setInterval(() => {
       sendLocation();
-    }, 2000); 
+    }, 2000);
 
-    /*let tempHeading;
-    const subscribeToHeading = async () => {
-      tempHeading = await Location.watchHeadingAsync((newHeading) => {
-        console.log('Heading:', newHeading);
-        setHeading(newHeading); 
-      });
-    };*/
-  
-    subscribeToHeading(); 
-
-    return () => {
-      clearInterval(intervalId); 
-      /*if (tempHeading) {
-        tempHeading.remove(); 
-      }*/
-    };
+    return () => clearInterval(intervalId);
   }, []);
 
 console.log(route.params)
