@@ -29,6 +29,8 @@ export default function TensorCamera({ navigation, route }) {
 
   const [permission, requestPermission] = Camera.useCameraPermissions();
   const cameraRef = useRef(null);
+  // Give default ratio value
+  const [cameraRatio, setCameraRatio] = useState('16:9');
 
   let screenHeight;
   let screenWidth = 360;
@@ -48,7 +50,30 @@ export default function TensorCamera({ navigation, route }) {
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
-      requestPermission(status === 'granted');
+      await requestPermission(status === 'granted');
+      if (cameraRef.current) {
+        const ratios = await cameraRef.current.getSupportedRatiosAsync();
+        const window = Dimensions.get('window');
+        const screenRatio = window.height / window.width;
+        let bestRatio = ratios[0];
+
+        let minDiff = Infinity;
+        for (const ratio of ratios) {
+          const parts = ratio.split(':');
+          const ratioHeight = parseInt(parts[0]);
+          const ratioWidth = parseInt(parts[1]);
+          const currentRatio = ratioHeight / ratioWidth;
+          const diff = Math.abs(currentRatio - screenRatio);
+
+          if (diff < minDiff) {
+            minDiff = diff;
+            bestRatio = ratio;
+          }
+        }
+        //console.log(ratios);
+        //console.log(bestRatio);
+        setCameraRatio(bestRatio);
+      }
     })();
   }, []);
 
@@ -551,6 +576,7 @@ const transformImageToTensor = async (uri)=>{
       <Camera 
         ref={cameraRef} 
         style={{ flex: 1 }}
+        ratio = {cameraRatio}
       />
 
       {/* Cross */}
