@@ -17,11 +17,15 @@ export default function TensorCamera({ route }) {
   const TensorCamera = cameraWithTensors(Camera);
   const [isCheck, setIsCheck] = useState(false);
 
-  const [tempLocation, setTempLocation] = useState(null);
-  const [tempHeading, setTempHeading] = useState(null);
+  //const [tempLocation, setTempLocation] = useRef(null);
+  //const [tempHeading, setTempHeading] = useRef(null);
+
+  const tempLocation = useRef(null);
+  const tempHeading = useRef(null);
 
   const screenHeight = 960;
   const screenWidth = 540;
+
 
 useEffect(() => {
     const loadTf = async ()=>  {
@@ -43,12 +47,32 @@ useEffect(() => {
             }
 
             const location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High });
-            setTempLocation(location);
+            tempLocation.current=location;
 
             const heading = await Location.getHeadingAsync();
-            setTempHeading(heading); 
+           // setTempHeading(heading); 
+            tempHeading.current=heading;
 
-            updateServer(location, heading);
+            console.log('tempHeading.current', tempHeading.current);
+            console.log('tempLocation.current', tempLocation.current);
+
+
+            const data = {
+              playerTeam: selectedTeam,
+              documentId: lobbyData.documentId,
+              location: {
+                  latitude: location.coords.latitude,
+                  longitude: location.coords.longitude,
+                  heading: heading.trueHeading,
+              },
+          };
+      
+          try {
+              const locationResponse = await axios.put('http://192.168.1.109:4000/Game/Gps', { data });
+              console.log('Location server response:', locationResponse.data);
+          } catch (error) {
+              console.error('Error while sending location to server:', error);
+          }
         } catch (error) {
             console.error('Error fetching and sending location:', error);
         }
@@ -67,22 +91,7 @@ useEffect(() => {
 }, [tempHeading]); 
 
 const updateServer = async (location, heading) => {
-    const data = {
-        playerTeam: selectedTeam,
-        documentId: lobbyData.documentId,
-        location: {
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-            heading: heading.trueHeading,
-        },
-    };
-
-    try {
-        const locationResponse = await axios.put('http://192.168.1.109:4000/Game/Gps', { data });
-        console.log('Location server response:', locationResponse.data);
-    } catch (error) {
-        console.error('Error while sending location to server:', error);
-    }
+   
 };
 
 const takePicture = () => {
@@ -398,9 +407,9 @@ async function detectHittedPart(segmentedParts) {
               documentId:lobbyData.documentId,
               damage:damage,
               location:{
-                latitude: tempLocation?.coords?.latitude,
-                longitude: tempLocation?.coords?.longitude,
-                heading: tempHeading?.trueHeading 
+                latitude: tempLocation.current?.coords?.latitude,
+                longitude: tempLocation.current?.coords?.longitude,
+                heading: tempHeading.current?.trueHeading 
               }
             }
            })

@@ -41,8 +41,6 @@ async function hitPlayer(db, data) {
             console.log(typeof(enemyLat))
             console.log('Enemy Longitude:', enemyLon);
             console.log(typeof(enemyLon))
-            console.log('Enemy Heading:', enemyHeading);
-            console.log(typeof(enemyHeading))
             console.log("Player Latitude:",playerLat)
             console.log("Player Longtitude:",playerLon)
             console.log("Player Haeding:",playerHeading)
@@ -81,7 +79,7 @@ async function hitPlayer(db, data) {
 
             if (Math.abs(angleDifference) <= angleThreshold && distance <= maxDistance) {
                 console.log("In sight!");
-                data[enemyTeam][0].health -= damage; // Hasar uygula
+                data[enemyTeam][0].health -= damage; 
             } 
             
             else {
