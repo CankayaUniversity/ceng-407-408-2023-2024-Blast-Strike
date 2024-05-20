@@ -16,14 +16,14 @@ export default function TensorCamera({ route }) {
   const cameraRef = useRef(null);
   const TensorCamera = cameraWithTensors(Camera);
   const [isCheck, setIsCheck] = useState(false);
-  const [heading,setHeading]=useState(null)
 
-  let tempLocation;
-  let tempHeading;
+  const [tempLocation, setTempLocation] = useState(null);
+  const [tempHeading, setTempHeading] = useState(null);
+
   const screenHeight = 960;
   const screenWidth = 540;
 
-  useEffect(() => {
+useEffect(() => {
     const loadTf = async ()=>  {
       await tf.ready()
     }
@@ -33,52 +33,57 @@ export default function TensorCamera({ route }) {
     }
   })
 
-  useEffect(() => {
+useEffect(() => {
     const sendLocation = async () => {
-      try {
-        const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') {
-          console.error('Permission to access location was denied');
-          return;
+        try {
+            const { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                console.error('Permission to access location was denied');
+                return;
+            }
+
+            const location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High });
+            setTempLocation(location);
+
+            const heading = await Location.getHeadingAsync();
+            setTempHeading(heading); 
+
+            updateServer(location, heading);
+        } catch (error) {
+            console.error('Error fetching and sending location:', error);
         }
-
-        let location = await Location.getCurrentPositionAsync({accuracy: Location.Accuracy.High});
-        console.log("Location ", location);
-        tempLocation = location;
-
-
-        let heading = await Location.getHeadingAsync();
-        // heading info includes trueHeading , magHeading, accuracy
-        // trueHeading real north
-        // magHeading magnetic north
-        console.log("Heading ", heading)
-        tempHeading = heading;
-        
-        const locationResponse = await axios.put('http://192.168.1.109:4000/Game/Gps', {
-          data: {
-            playerTeam: selectedTeam,
-            documentId: lobbyData.documentId,
-            location: {
-              latitude: location.coords.latitude,
-              longitude: location.coords.longitude,
-              heading: heading,
-            },
-          },
-        });
-        console.log('Location server response:', locationResponse.data);
-      } catch (error) {
-        console.error('Error fetching and sending location:', error);
-      }
     };
 
-    const intervalId = setInterval(() => {
-      sendLocation();
-    }, 2000);
-
+    const intervalId = setInterval(sendLocation, 2000);
     return () => clearInterval(intervalId);
-  }, []);
+}, []);
 
-console.log(route.params)
+
+useEffect(() => {
+
+    if (tempHeading) {
+        console.log("Updated TempHeading:", tempHeading);
+    }
+}, [tempHeading]); 
+
+const updateServer = async (location, heading) => {
+    const data = {
+        playerTeam: selectedTeam,
+        documentId: lobbyData.documentId,
+        location: {
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+            heading: heading.trueHeading,
+        },
+    };
+
+    try {
+        const locationResponse = await axios.put('http://192.168.1.109:4000/Game/Gps', { data });
+        console.log('Location server response:', locationResponse.data);
+    } catch (error) {
+        console.error('Error while sending location to server:', error);
+    }
+};
 
 const takePicture = () => {
   setIsCheck(true);
@@ -381,6 +386,7 @@ async function detectHittedPart(segmentedParts) {
     if(damage>0)
     {
       console.log(lobbyData);
+      console.log("hitteyimmmm",tempLocation)
       
 
       try {
@@ -392,9 +398,9 @@ async function detectHittedPart(segmentedParts) {
               documentId:lobbyData.documentId,
               damage:damage,
               location:{
-                latitude: tempLocation.coords.latitude,
-                longitude: tempLocation.coords.longitude,
-                heading: tempHeading,
+                latitude: tempLocation?.coords?.latitude,
+                longitude: tempLocation?.coords?.longitude,
+                heading: tempHeading?.trueHeading 
               }
             }
            })

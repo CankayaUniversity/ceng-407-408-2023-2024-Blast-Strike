@@ -6,12 +6,15 @@ async function hitPlayer(db, data) {
     console.log("00000000data ", data)
     let documentId = data['documentId'];
     let damage = data['damage'];
-    let playerLat = parseFloat(data['latitude']);
-    let playerLon = parseFloat(data['longtitude']);
-    let playerHeading = parseFloat(data['heading']);
+    let playerLat = parseFloat(data.location['latitude']);
+    let playerLon = parseFloat(data.location['longitude']);
+    let playerHeading = parseFloat(data.location['heading']);
     let enemyTeam = data['playerTeam']=="teamBlue" ? "teamRed" :"teamBlue";  /// iki ikişilik demoda karıyı vurmak için
     //let enemyTeam = data['playerTeam'];
     console.log("enemyTeam", enemyTeam);
+
+    const angleThreshold = 30; 
+    const maxDistance = 25;
     try {
         // Reference to the document using its ID
         const docRef = await doc(db, 'Lobby',documentId);
@@ -40,17 +43,32 @@ async function hitPlayer(db, data) {
             console.log(typeof(enemyLon))
             console.log('Enemy Heading:', enemyHeading);
             console.log(typeof(enemyHeading))
-            console.log("pLat",playerLat)
-            console.log("pLat",typeof(playerLat))
-            console.log("pLon",typeof(playerLon))
-            console.log("pHead",typeof(playerHeading))
-            
+            console.log("Player Latitude:",playerLat)
+            console.log("Player Longtitude:",playerLon)
+            console.log("Player Haeding:",playerHeading)
 
-           
-            const distance = getDistance(
-                { latitude: playerLat, longitude: playerLon },
-                { latitude: enemyLat, longitude: enemyLon }
-            );
+            //Haversine 
+            const toRadians = (degree) => degree * (Math.PI / 180);
+
+            const lat1 = enemyLat;
+            const lon1 = enemyLon;
+            const lat2 = playerLat;
+            const lon2 = playerLon;
+
+            const R = 6371e3; 
+
+            const lat1Radians = toRadians(lat1);
+            const lat2Radians = toRadians(lat2);
+            const deltaLatRadians = toRadians(lat2 - lat1);
+            const deltaLonRadians = toRadians(lon2 - lon1);
+
+            const a = Math.sin(deltaLatRadians / 2) * Math.sin(deltaLatRadians / 2) +
+                    Math.cos(lat1Radians) * Math.cos(lat2Radians) *
+                    Math.sin(deltaLonRadians / 2) * Math.sin(deltaLonRadians / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+            const distance = R * c;
+
             const bearing = getRhumbLineBearing(
                 { latitude: playerLat, longitude: playerLon },
                 { latitude: enemyLat, longitude: enemyLon }
@@ -61,11 +79,14 @@ async function hitPlayer(db, data) {
             console.log('Bearing:', bearing);
             console.log('Angle Difference:', angleDifference);
 
-
-
-            //console.log("data[enemyTeam]",data[enemyTeam.toString()][0].health);
-            data[enemyTeam][0].health -=damage;
-            console.log("data",data);
+            if (Math.abs(angleDifference) <= angleThreshold && distance <= maxDistance) {
+                console.log("In sight!");
+                data[enemyTeam][0].health -= damage; // Hasar uygula
+            } 
+            
+            else {
+                console.log("Not in sight!");
+            }
             await updateDoc(docRef, {
                 [`${enemyTeam}.0`]: data[enemyTeam][0] 
             });
