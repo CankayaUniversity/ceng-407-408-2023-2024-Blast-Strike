@@ -100,8 +100,8 @@ export default function TensorCamera({ navigation, route }) {
 
      if((doc.data().scoreRed!=scoreRed || doc.data().scoreBlue!=scoreBlue ))
        {
-        setUpdateOnce(true);
-         if(updateOnce){
+     //   setUpdateOnce(true);
+       //  if(updateOnce){
            console.log("inside");
            setScoreBlue(doc.data()['scoreBlue']);
            setScoreRed(doc.data()['scoreRed']);
@@ -113,7 +113,8 @@ export default function TensorCamera({ navigation, route }) {
             { 
               unsubscribe();
               navigation.replace('GameEndScreen', {
-                winnerTeam: doc.data().teamBlue
+                winnerTeam: doc.data().teamBlue,
+                teamTag:'blue'
               })
             }
 
@@ -121,14 +122,15 @@ export default function TensorCamera({ navigation, route }) {
             {
               unsubscribe();
               navigation.replace('GameEndScreen', {
-                winnerTeam: doc.data().teamRed
+                winnerTeam: doc.data().teamRed,
+                teamTag:'red'
               })
             }
            }
            //scoreBlue.current=doc.data()['scoreBlue'];
            //scoreRed.current=doc.data()['scoreRed'];
-         }
-         setUpdateOnce(false);
+      //  }
+      //   setUpdateOnce(false);
        }
  
     /*
