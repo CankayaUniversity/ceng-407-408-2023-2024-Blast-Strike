@@ -72,17 +72,20 @@ async function fetchCurrentUserData(db,data) {
     * Creates a document in friendshipRequests database.
     */
    async function sendFriendRequest(db, data) {
-    
     const requestExists = await checkFriendshipRequestExist(db, data);
-
-    if (requestExists) {
-      // Handle the case where the friendship request already exists
-      throw new Error("Friendship request already exists between these users.");
-      // Optionally, you could return here or throw an error, depending on how you want to handle this case
-  
+    
+    try {
+      if (requestExists) {
+        // Handle the case where the friendship request already exists
+        throw new Error("Friendship request already exists between these users.");
+        // Optionally, you could return here or throw an error, depending on how you want to handle this case
+      }
+    }catch (error) {
+      console.error('Error sending friend request:', error);
+      throw error;
     }
+
     if (data) {
-        
       try {
         const usersRef = collection(db, 'Users');
         const q = query(usersRef, where("username", "==", data.data.to_username));
@@ -98,7 +101,7 @@ async function fetchCurrentUserData(db,data) {
           console.log("Document written with ID: ", docRef.id);
         } else {
           console.log("User not found with username:", data.data.to_username);
-          throw new Error("User is not found");
+          throw new Error("User is not found.");
         }
       } catch (error) {
         console.error('Error sending friend request:', error);
@@ -106,6 +109,7 @@ async function fetchCurrentUserData(db,data) {
       }
     }
   }
+
   async function checkFriendshipRequestExist(db, data) {
     let requestExists = false; // Default assumption
   
@@ -122,10 +126,8 @@ async function fetchCurrentUserData(db,data) {
         requestExists = true;
       }
     }
-  
     return requestExists;
   }
-  
   
    async function addFriends(db, data) {
     if (data) {
@@ -156,6 +158,7 @@ async function fetchCurrentUserData(db,data) {
       }
     }
   }
+  
  async function fetchFriendRequests(db,data)
  {
   try {
@@ -167,12 +170,9 @@ async function fetchCurrentUserData(db,data) {
     });
    // console.log(requestsArray)
     return requestsArray;
-  
-} catch (error) {
-  console.log("Error on fetching data",error);
-  
-}
-
+  } catch (error) {
+    console.log("Error on fetching data",error);
+  }
  }
 
 async function displayFriends(db,data)
@@ -190,7 +190,6 @@ async function displayFriends(db,data)
 
     })}
     return friendListArray;
-
   }
   catch(error)
   {

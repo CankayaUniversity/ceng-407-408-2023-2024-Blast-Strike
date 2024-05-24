@@ -1,6 +1,6 @@
 // CreateLobbyPopup.js
 import React, { useEffect, useState } from 'react';
-import { Modal, View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { Modal, View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Dimensions, Alert } from 'react-native';
 import { getFirestore} from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import axios from 'axios';
@@ -70,7 +70,19 @@ const URLcreateLobby = Constants?.expoConfig?.hostUri
           selectedTeam:selectedTeam
           });
         } catch (error) {
-          console.error('CreateLobby pop Error creating lobby:', error);
+          console.log('CreateLobby pop Error creating lobby:', error);
+          const status = error.message.slice(-3);
+          console.log("status", status);
+          console.log(typeof status);
+          if (status == "404") {
+            Alert.alert("Lobby Creation Failed!","Invalid lobby name entered. Please check your credentials.")
+          }
+          else if (status == "409") {
+            Alert.alert("Lobby Creation Failed!","Lobby already exists.")
+          }
+          else {
+            Alert.alert("Lobby Creation Failed!","An error occured, please try again.")
+          }
         }
         finally{
             setNameOfLobby('');
@@ -100,6 +112,7 @@ const URLcreateLobby = Constants?.expoConfig?.hostUri
               <View>
                   <TouchableOpacity 
                     style = {[styles.button, {backgroundColor: 'deepskyblue'}]}
+                    disabled={nameOfLobby === ''}
                     onPress={() => {
                       selectedTeam='teamBlue';
                       handleLobbyCreate();
@@ -111,6 +124,7 @@ const URLcreateLobby = Constants?.expoConfig?.hostUri
                 <View>
                     <TouchableOpacity 
                       style = {[styles.button, {backgroundColor: 'red'}]}
+                      disabled={nameOfLobby === ''}
                       onPress={() => {
                         selectedTeam='teamRed';
                         handleLobbyCreate();
