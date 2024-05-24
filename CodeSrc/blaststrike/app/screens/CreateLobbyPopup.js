@@ -44,9 +44,10 @@ const URLcreateLobby = Constants?.expoConfig?.hostUri
         }
     }
   
+    fetchUserData();
 
     const handleLobbyCreate = async () => {
-     fetchUserData();
+     //fetchUserData();
       // Proceed to send a friend request only if we successfully got the username
       if (currentUsername) {
         try {

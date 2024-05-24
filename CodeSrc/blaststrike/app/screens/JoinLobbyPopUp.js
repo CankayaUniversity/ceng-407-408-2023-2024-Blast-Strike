@@ -45,8 +45,10 @@ const JoinLobbyPopup = ({ visible, onClose,navigation }) => {
     }
   
 
+    fetchUserData();
+
     const handleLobbyJoin = async () => {
-     fetchUserData();
+     //fetchUserData();
       if (currentUsername) {
         try {
             const response = await axios.put(URLaddPlayer, {
