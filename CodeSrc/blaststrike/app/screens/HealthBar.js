@@ -5,7 +5,7 @@ const HealthBar = ({ value }) => {
     const fillStyle = {
         ...styles.fill,
         width: `${value}%`,
-        backgroundColor: `rgb(${255 - value *2},${value * 2} , 0)`, // Calculate color based on value
+        backgroundColor: `rgb(${255 - value * 2},${value * 2} , 0)`, // Calculate color based on value
     };
           console.log(value)
     return (
@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     borderRadius: 15, // Rounded corners
     position: 'absolute', // Absolute positioning
     top: '49%', // Align to the top of the screen
-    right: '40%', // Align to the left of the screen
+    right: '47%', // Align to the left of the screen
   }, 
   fill: {
     borderRadius: 15, // Rounded corners

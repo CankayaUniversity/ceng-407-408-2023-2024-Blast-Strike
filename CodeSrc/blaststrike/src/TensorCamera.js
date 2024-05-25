@@ -189,7 +189,7 @@ function isInsideOfTolerance(actual_x, actual_y, predicted_x, predicted_y)
   return false;
 }
 
-  async function detectHittedPart(segmentedParts) {
+async function detectHittedPart(segmentedParts) {
   console.log(segmentedParts);
 
   if (segmentedParts.length > 0) {
@@ -199,11 +199,11 @@ function isInsideOfTolerance(actual_x, actual_y, predicted_x, predicted_y)
         segmentedParts.find(part => part.part === "rightEar") &&
         segmentedParts.find(part => part.part === "leftShoulder") &&
         segmentedParts.find(part => part.part === "rightShoulder") &&
-        ((segmentedParts.find(part => part.part === "leftEar").position.x >= screenHeight / 2 &&
-          segmentedParts.find(part => part.part === "rightEar").position.x <= screenHeight / 2) ||
-          (segmentedParts.find(part => part.part === "leftEar").position.x <= screenHeight / 2 &&
-            segmentedParts.find(part => part.part === "rightEar").position.x >= screenHeight / 2)) &&
-          segmentedParts.find(part => part.part === "leftShoulder").position.y >= screenWidth / 2
+        ((segmentedParts.find(part => part.part === "leftEar").position.x >= screenWidth / 2 &&
+          segmentedParts.find(part => part.part === "rightEar").position.x <= screenWidth / 2) ||
+          (segmentedParts.find(part => part.part === "leftEar").position.x <= screenWidth / 2 &&
+            segmentedParts.find(part => part.part === "rightEar").position.x >= screenWidth / 2)) &&
+          segmentedParts.find(part => part.part === "leftShoulder").position.y >= screenHeight / 2
         )
       {
       console.log("Hitted by head, 100 dmg taken - 1");
@@ -216,8 +216,8 @@ function isInsideOfTolerance(actual_x, actual_y, predicted_x, predicted_y)
         isInsideOfTolerance(
           segmentedParts.find(part => part.part === "nose").position.x,
           segmentedParts.find(part => part.part === "nose").position.y,
-          screenHeight / 2,
-          screenWidth / 2
+          screenWidth / 2,
+          screenHeight / 2
         )) 
       {
         console.log("Hitted by head, 100 dmg taken - 2");
@@ -230,8 +230,8 @@ function isInsideOfTolerance(actual_x, actual_y, predicted_x, predicted_y)
       isInsideOfTolerance(
         segmentedParts.find(part => part.part === "leftEye").position.x,
         segmentedParts.find(part => part.part === "leftEye").position.y,
-        screenHeight / 2,
-        screenWidth / 2
+        screenWidth / 2,
+        screenHeight / 2
       )) 
       {
         console.log("Hitted by head, 100 dmg taken - 3");
@@ -244,8 +244,8 @@ function isInsideOfTolerance(actual_x, actual_y, predicted_x, predicted_y)
       isInsideOfTolerance(
         segmentedParts.find(part => part.part === "rightEye").position.x,
         segmentedParts.find(part => part.part === "rightEye").position.y,
-        screenHeight / 2,
-        screenWidth / 2
+        screenWidth / 2,
+        screenHeight / 2
       )) 
       {
         console.log("Hitted by head, 100 dmg taken - 4");
@@ -258,8 +258,8 @@ function isInsideOfTolerance(actual_x, actual_y, predicted_x, predicted_y)
       isInsideOfTolerance(
         segmentedParts.find(part => part.part === "leftEar").position.x,
         segmentedParts.find(part => part.part === "leftEar").position.y,
-        screenHeight / 2,
-        screenWidth / 2
+        screenWidth / 2,
+        screenHeight / 2
       )) 
       {
         console.log("Hitted by head, 100 dmg taken - 5");
@@ -272,8 +272,8 @@ function isInsideOfTolerance(actual_x, actual_y, predicted_x, predicted_y)
       isInsideOfTolerance(
         segmentedParts.find(part => part.part === "rightEar").position.x,
         segmentedParts.find(part => part.part === "rightEar").position.y,
-        screenHeight / 2,
-        screenWidth / 2
+        screenWidth / 2,
+        screenHeight / 2
       )) 
       {
         console.log("Hitted by head, 100 dmg taken - 6"); 
@@ -282,11 +282,11 @@ function isInsideOfTolerance(actual_x, actual_y, predicted_x, predicted_y)
       else if (
       segmentedParts.find(part => part.part === "leftShoulder") &&
       segmentedParts.find(part => part.part === "rightShoulder") &&
-      ((segmentedParts.find(part => part.part === "leftShoulder").position.x <= screenHeight / 2 &&
-        segmentedParts.find(part => part.part === "rightShoulder").position.x >= screenHeight / 2) ||
-        (segmentedParts.find(part => part.part === "leftShoulder").position.x >= screenHeight / 2 &&
-          segmentedParts.find(part => part.part === "rightShoulder").position.x <= screenHeight / 2)) &&
-        segmentedParts.find(part => part.part === "leftShoulder").position.y <= screenWidth / 2
+      ((segmentedParts.find(part => part.part === "leftShoulder").position.x <= screenWidth / 2 &&
+        segmentedParts.find(part => part.part === "rightShoulder").position.x >= screenWidth / 2) ||
+        (segmentedParts.find(part => part.part === "leftShoulder").position.x >= screenWidth / 2 &&
+          segmentedParts.find(part => part.part === "rightShoulder").position.x <= screenWidth / 2)) &&
+        segmentedParts.find(part => part.part === "leftShoulder").position.y <= screenHeight / 2
       )
       {
         console.log("Hitted by body, 50 dmg taken - 1");
@@ -299,8 +299,8 @@ function isInsideOfTolerance(actual_x, actual_y, predicted_x, predicted_y)
       isInsideOfTolerance(
         segmentedParts.find(part => part.part === "leftShoulder").position.x,
         segmentedParts.find(part => part.part === "leftShoulder").position.y,
-        screenHeight / 2,
-        screenWidth / 2
+        screenWidth / 2,
+        screenHeight / 2
       )) 
       {
         console.log("Hitted by body, 50 dmg taken - 2");
@@ -313,8 +313,8 @@ function isInsideOfTolerance(actual_x, actual_y, predicted_x, predicted_y)
       isInsideOfTolerance(
         segmentedParts.find(part => part.part === "rightShoulder").position.x,
         segmentedParts.find(part => part.part === "rightShoulder").position.y,
-        screenHeight / 2,
-        screenWidth / 2
+        screenWidth / 2,
+        screenHeight / 2
       )) 
       {
         console.log("Hitted by body, 50 dmg taken - 3");
@@ -327,8 +327,8 @@ function isInsideOfTolerance(actual_x, actual_y, predicted_x, predicted_y)
       isInsideOfTolerance(
         segmentedParts.find(part => part.part === "leftElbow").position.x,
         segmentedParts.find(part => part.part === "leftElbow").position.y,
-        screenHeight / 2,
-        screenWidth / 2
+        screenWidth / 2,
+        screenHeight / 2
       )) 
       {
         console.log("Hitted by body, 50 dmg taken - 4");
@@ -341,8 +341,8 @@ function isInsideOfTolerance(actual_x, actual_y, predicted_x, predicted_y)
       isInsideOfTolerance(
         segmentedParts.find(part => part.part === "rightElbow").position.x,
         segmentedParts.find(part => part.part === "rightElbow").position.y,
-        screenHeight / 2,
-        screenWidth / 2
+        screenWidth / 2,
+        screenHeight / 2
       )) 
       {
         console.log("Hitted by body, 50 dmg taken - 5");
@@ -355,8 +355,8 @@ function isInsideOfTolerance(actual_x, actual_y, predicted_x, predicted_y)
       isInsideOfTolerance(
         segmentedParts.find(part => part.part === "leftWrist").position.x,
         segmentedParts.find(part => part.part === "leftWrist").position.y,
-        screenHeight / 2,
-        screenWidth / 2
+        screenWidth / 2,
+        screenHeight / 2
       )) 
       {
           console.log("Hitted by body, 50 dmg taken - 6");
@@ -369,8 +369,8 @@ function isInsideOfTolerance(actual_x, actual_y, predicted_x, predicted_y)
       isInsideOfTolerance(
         segmentedParts.find(part => part.part === "rightWrist").position.x,
         segmentedParts.find(part => part.part === "rightWrist").position.y,
-        screenHeight / 2,
-        screenWidth / 2
+        screenWidth / 2,
+        screenHeight / 2
       )) 
       {
         console.log("Hitted by body, 50 dmg taken - 7");
@@ -383,8 +383,8 @@ function isInsideOfTolerance(actual_x, actual_y, predicted_x, predicted_y)
       isInsideOfTolerance(
         segmentedParts.find(part => part.part === "leftHip").position.x,
         segmentedParts.find(part => part.part === "leftHip").position.y,
-        screenHeight / 2,
-        screenWidth / 2
+        screenWidth / 2,
+        screenHeight / 2
       )) 
       {
         console.log("Hitted by body, 50 dmg taken - 8");
@@ -397,8 +397,8 @@ function isInsideOfTolerance(actual_x, actual_y, predicted_x, predicted_y)
       isInsideOfTolerance(
         segmentedParts.find(part => part.part === "rightHip").position.x,
         segmentedParts.find(part => part.part === "rightHip").position.y,
-        screenHeight / 2,
-        screenWidth / 2
+        screenWidth / 2,
+        screenHeight / 2
       ))
       {
         console.log("Hitted by body, 50 dmg taken - 9");
@@ -411,8 +411,8 @@ function isInsideOfTolerance(actual_x, actual_y, predicted_x, predicted_y)
       isInsideOfTolerance(
         segmentedParts.find(part => part.part === "leftKnee").position.x,
         segmentedParts.find(part => part.part === "leftKnee").position.y,
-        screenHeight / 2,
-        screenWidth / 2
+        screenWidth / 2,
+        screenHeight / 2
       )) 
       {
         console.log("Hitted by body, 50 dmg taken- 10");
@@ -425,8 +425,8 @@ function isInsideOfTolerance(actual_x, actual_y, predicted_x, predicted_y)
       isInsideOfTolerance(
         segmentedParts.find(part => part.part === "rightKnee").position.x,
         segmentedParts.find(part => part.part === "rightKnee").position.y,
-        screenHeight / 2,
-        screenWidth / 2
+        screenWidth / 2,
+        screenHeight / 2
       )) 
       {
         console.log("Hitted by body, 50 dmg taken - 11");
@@ -439,8 +439,8 @@ function isInsideOfTolerance(actual_x, actual_y, predicted_x, predicted_y)
       isInsideOfTolerance(
         segmentedParts.find(part => part.part === "leftAnkle").position.x,
         segmentedParts.find(part => part.part === "leftAnkle").position.y,
-        screenHeight / 2,
-        screenWidth / 2
+        screenWidth / 2,
+        screenHeight / 2
       )) 
       {
         console.log("Hitted by body, 50 dmg taken - 12");
@@ -453,8 +453,8 @@ function isInsideOfTolerance(actual_x, actual_y, predicted_x, predicted_y)
       isInsideOfTolerance(
         segmentedParts.find(part => part.part === "rightAnkle").position.x,
         segmentedParts.find(part => part.part === "rightAnkle").position.y,
-        screenHeight / 2,
-        screenWidth / 2
+        screenWidth / 2,
+        screenHeight / 2
       )) 
       {
         console.log("Hitted by body, 50 dmg taken - 13");
@@ -508,7 +508,6 @@ const detect = async (net, imgTensor) => {
 const resizeImage = async (uri) => {
   const resizedImage = await manipulateAsync(
     uri,
-    [{ rotate: 90 }],
     [{ resize: { width: screenWidth } }], // Adjust width as needed
     { compress: 0.2 } // Adjust compression quality as needed
   );
