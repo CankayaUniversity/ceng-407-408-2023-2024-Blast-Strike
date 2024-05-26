@@ -249,7 +249,7 @@ function isInsideOfTolerance(actual_x, actual_y, predicted_x, predicted_y)
   return false;
 }
 
-  async function detectHittedPart(segmentedParts) {
+async function detectHittedPart(segmentedParts) {
   console.log(segmentedParts);
 
   if (segmentedParts.length > 0) {

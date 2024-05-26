@@ -16,11 +16,12 @@ async function createLobby(db, data) {
         let lobbyList= await getLobby(db);
         // To use lobby names as a identifier of a database doc we checking if the our lobby doc has duplicate
         lobbyList.forEach(lobby => {
-            if(lobby.lobbyName==data.lobbyName )
-            throw new Error('Lobby name ' + data.lobbyName+' must be unique,try to change name');
-            if(data.selectedTeam=='')
-            throw new Error('Selected team cannot be empty');
-
+            if(lobby.lobbyName == data.lobbyName) {
+                throw new Error("Lobby name must be unique, please change the name.");
+            }
+            if(data.selectedTeam == '') {
+                throw new Error("Selected team cannot be empty.");
+            }
         });
 
          const docRef = await addDoc(collection(db, 'Lobby'), {
@@ -36,7 +37,9 @@ async function createLobby(db, data) {
         await addPlayer(db,data);
 
     } catch (error) {
-        console.error('Error creating Lobby:', error);
+        console.log('Error creating Lobby:', error.message);
+        console.log(error.message);
+        throw error;
     }
 }
 
@@ -53,6 +56,44 @@ async function addPlayer(db, data) {
     
     */
     try {
+        //Check if lobby exists
+        const lobbyRef = collection(db, 'Lobby');
+        const q = query(lobbyRef, where('lobbyName', '==', data.lobbyName));
+        const querySnapshot = await getDocs(q);
+
+        let usernameExistsInRed = false;
+        let usernameExistsInBlue = false;
+
+        if (!querySnapshot.empty) {
+            querySnapshot.forEach((doc) => {
+                const l_data = doc.data();
+
+                //Check if the username exists in teamRed
+                for (const playerKey in l_data.teamRed) {
+                    if (l_data.teamRed[playerKey].username === data.username) {
+                        usernameExistsInRed = true;
+                        break;  // Exit the loop early if username is found
+                    }
+                }
+                //Check if the username exists in teamBlue
+                if (!usernameExistsInRed) {
+                    for (const playerKey in l_data.teamBlue) {
+                        if (l_data.teamBlue[playerKey].username === data.username) {
+                            usernameExistsInBlue = true;
+                            break;  // Exit the loop early if username is found
+                        }
+                    }
+                }
+            });
+        }
+
+        if ((data.selectedTeam === "teamRed" && usernameExistsInBlue) || (data.selectedTeam === "teamBlue" && usernameExistsInRed)) {
+            throw new Error("You joined the opposite team before, cannot also join this team.");
+        }
+        else if ((data.selectedTeam === "teamRed" && usernameExistsInRed) || (data.selectedTeam === "teamBlue" && usernameExistsInBlue)) {
+            return;
+        }
+
         // burdaki player name yapısı şimdilik sadece username olarak kullanılabilir ilerki güncellemelerde burada username üzerinden kullanıcnın player hesabını çektiğimiz yer olucak
 
        // const playerName= await getUser(data.username);
@@ -67,8 +108,6 @@ async function addPlayer(db, data) {
             "heading" : 0
         }
         
-
-
        // enables to get and update lobby data fields
         const lobbyDocId =await getLobbyIdByLobbyName(db,data.lobbyName)
 
@@ -82,14 +121,14 @@ async function addPlayer(db, data) {
         console.log("lobby",lobby);
         console.log("data",data);
         
-        if(lobby!==undefined)
+        if(lobby!==undefined || lobby!==null)
         {
             console.log("lobby[data.selectedTeam]",lobby[data.selectedTeam]);
             // console.log("lobby.teamRed.length",lobby.teamRed.length);
 
             //checking for team decided to join got space to 
 
-            if(lobby[data.selectedTeam].length<6)
+            if(lobby[data.selectedTeam].length<5)
             {
                 let newTeam = lobby[data.selectedTeam];
                 newTeam.push(lobbyData)
@@ -100,16 +139,16 @@ async function addPlayer(db, data) {
                 });
             }
             else
-                throw new error("Team is full!!!");
+                throw new Error("Team is full!");
 
                 return lobbyDocId;
         }
         else
-            throw new error("Lobby cannot found!!!");
+            throw new Error("Invalid Lobby name entered. Please check the lobby name.");
 
     } catch (error) {
         console.error('Error adding player : ', error);
-
+        throw error;
     }
 }
 
@@ -132,8 +171,8 @@ async function getLobbyIdByLobbyName(db,lobbyName) {
            // console.log('Lobby document ID:', lobbyDocId);
             return lobbyDocId;
         } else {
-            console.log('No lobby document found with the specified lobbyName');
-            return null;
+            console.log('No lobby document found with the specified lobbyName.');
+            throw new Error ("No lobby document found with the specified lobbyName.");
         }
     } catch (error) {
         console.error('Error getting lobby ID:', error);

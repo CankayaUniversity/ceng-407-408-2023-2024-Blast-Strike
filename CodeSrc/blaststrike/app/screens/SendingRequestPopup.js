@@ -1,6 +1,6 @@
 // Popup.js
 import React, { useState } from 'react';
-import { Modal, View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { Modal, View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions, Alert } from 'react-native';
 import { ref, set } from 'firebase/firestore';
 import { getFirestore, collection, query, where, getDocs,addDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
@@ -58,8 +58,18 @@ const URLsendFriendRequest = Constants?.expoConfig?.hostUri
           console.log(response);
           console.log("Friend request sent");
         } catch (error) {
-          console.error('Error sending friend request:', error);
+          console.log('Error sending friend request:', error);
           setErrorMessage('Error sending friend request.'); // Set error message
+          const status = error.message.slice(-3);
+          if (status == "404") {
+            Alert.alert("Request Failed!","Invalid username entered. Please check your credentials.")
+          }
+          else if (status == "409") {
+            Alert.alert("Request Failed!","Friendship request already exists.")
+          }
+          else {
+            Alert.alert("Request Failed!","An error occured, please try again.")
+          }
         }
       } else {
         setErrorMessage('Current user username not set.'); // Set error message if username isn't fetched
@@ -82,10 +92,9 @@ const URLsendFriendRequest = Constants?.expoConfig?.hostUri
               onChangeText={setToUsername}
               style={styles.input}
             />
-            <TouchableOpacity onPress={handleSendRequest} style= {styles.button}>
+            <TouchableOpacity onPress={handleSendRequest} style= {styles.button} disabled={to_username === ''}>
               <Text style = {styles.buttonText}>Send Request</Text>
             </TouchableOpacity>
-            {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
           </View>
         </View>
       </Modal>

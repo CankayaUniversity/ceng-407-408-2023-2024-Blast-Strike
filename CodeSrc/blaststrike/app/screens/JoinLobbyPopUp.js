@@ -1,6 +1,6 @@
 // JoinLobbyPopup.js
 import React, { useEffect, useState } from 'react';
-import { Modal, View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { Modal, View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions, Alert } from 'react-native';
 import { getFirestore} from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import axios from 'axios';
@@ -45,8 +45,10 @@ const JoinLobbyPopup = ({ visible, onClose,navigation }) => {
     }
   
 
+    fetchUserData();
+
     const handleLobbyJoin = async () => {
-     fetchUserData();
+     //fetchUserData();
       if (currentUsername) {
         try {
             const response = await axios.put(URLaddPlayer, {
@@ -72,7 +74,20 @@ const JoinLobbyPopup = ({ visible, onClose,navigation }) => {
           });
           
         } catch (error) {
-          console.error('joinLobby pop Error joining lobby:', error);
+          console.log('joinLobby pop Error joining lobby:', error);
+          const status = error.message.slice(-3);
+          if (status == "404") {
+            Alert.alert("Lobby Join Failed!","No lobby found with the specified lobbyName. Please check the lobby name.")
+          }
+          else if (status == "409") {
+            Alert.alert("Lobby Join Failed!","You joined the opposite team before, cannot also join this team.")
+          }
+          else if (status == "422") {
+            Alert.alert("Lobby Join Failed!","Team is full!")
+          }
+          else {
+            Alert.alert("Lobby Join Failed!","An error occured, please try again.")
+          }
         }
 
       }
@@ -100,6 +115,7 @@ const JoinLobbyPopup = ({ visible, onClose,navigation }) => {
                 <View>
                     <TouchableOpacity
                         style = {[styles.button, {backgroundColor: 'deepskyblue'}]} 
+                        disabled={nameOfLobby === ''}
                         onPress={() => {
                           setSelectedTeam('teamBlue');
                             handleLobbyJoin();
@@ -111,6 +127,7 @@ const JoinLobbyPopup = ({ visible, onClose,navigation }) => {
                 <View>
                     <TouchableOpacity 
                         style = {[styles.button, {backgroundColor: 'red'}]}
+                        disabled={nameOfLobby === ''}
                         onPress={() => {            
                             setSelectedTeam('teamRed');
                             handleLobbyJoin();

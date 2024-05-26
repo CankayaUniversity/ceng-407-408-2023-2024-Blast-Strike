@@ -19,7 +19,7 @@ export default function LoginScreen({ navigation }) {
         navigation.navigate('HomeScreen');
       })
       .catch((error) => {
-        Alert.alert("Login Failed", error.message);
+        Alert.alert("Login Failed", "Please check your credentials.");
         setLoading(false);
       });
   };

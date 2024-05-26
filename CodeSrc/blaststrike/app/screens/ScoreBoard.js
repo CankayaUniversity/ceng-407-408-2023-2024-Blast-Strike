@@ -22,9 +22,9 @@ const Scoreboard = ({ scoreRed, scoreBlue }) => {
 const styles = StyleSheet.create({
   scoreboardContainer: {
     position: 'absolute',
-    top: '50%',
-    right: -140,
-    transform: [{ translateY: -50 }],
+    top: '8%',
+    right: '25%',
+    transform: [{ translateY: -80 }],
   },
   scoreboard: {
     width: 350,
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   rotatedScoreboard: {
-    transform: [{ rotate: '90deg' }],
+    //transform: [{ rotate: '90deg' }],
   },
   team: {
     alignItems: 'center',

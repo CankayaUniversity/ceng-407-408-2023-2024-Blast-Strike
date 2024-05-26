@@ -29,7 +29,27 @@ export default function RegisterScreen({ navigation }) {
         navigation.navigate("Login"); // Assuming "Login" is the name used in your stack navigator for the LoginScreen
       })
       .catch((error) => {
-        Alert.alert("Registration Failed", error.message);
+        //Split firebase error from ":", so remove the Firebase: part from error string
+        const parts = error.message.split(':');
+        //Split the error part from "(" to get the actual error
+        const error_parts = parts[1].split('(');
+        //Remove the whitespaces from the actual error message
+        const messagePart = error_parts[0].trim();
+        let error_message;
+        //Since firebase error format do not explain the error when invalid e-mail is entered, we need to check and generate an error message
+        if(error_parts[1] == "auth/invalid-email).") {
+          error_message = "Invalied e-mail entered. Please check your credentials."
+        }
+        else if(error_parts[1] == "auth/missing-email).") {
+          error_message = "No e-mail is entered. Please check your credentials."
+        }
+        else if(error_parts[1] == "auth/missing-password).") {
+          error_message = "No password is entered. Please check your credentials."
+        }
+        else {
+          error_message = messagePart + '.';
+        }
+        Alert.alert("Registration Failed", error_message);
       })
       .finally(() => setIsLoading(false));
   };
