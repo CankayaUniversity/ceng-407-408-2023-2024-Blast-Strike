@@ -190,6 +190,10 @@ async function addPlayer(db, data) {
             });
         }
 
+        console.log(usernameExistsInBlue);
+        console.log(usernameExistsInRed);
+        console.log(data.selectedTeam);
+
         if ((data.selectedTeam === "teamRed" && usernameExistsInBlue) || (data.selectedTeam === "teamBlue" && usernameExistsInRed)) {
             throw new Error("You joined the opposite team before, cannot also join this team.");
         }

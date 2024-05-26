@@ -14,7 +14,6 @@ const auth = getAuth();
 const JoinLobbyPopup = ({ visible, onClose,navigation }) => {
     const [nameOfLobby,setNameOfLobby]=useState('');
     const [currentUsername,setCurrentUsername]=useState('');
-    const [selectedTeam,setSelectedTeam]=useState('');
 
     const URLfetchCurrentUserData = Constants?.expoConfig?.hostUri
     ? `http://${Constants.expoConfig.hostUri.split(':').shift()}:4000/fetchCurrentUserData`
@@ -47,8 +46,7 @@ const JoinLobbyPopup = ({ visible, onClose,navigation }) => {
 
     fetchUserData();
 
-    const handleLobbyJoin = async () => {
-     //fetchUserData();
+    const handleLobbyJoin = async (_selectedTeam) => {
       if (currentUsername) {
         try {
             const response = await axios.put(URLaddPlayer, {
@@ -58,7 +56,7 @@ const JoinLobbyPopup = ({ visible, onClose,navigation }) => {
                 
                 lobbyName:nameOfLobby,
                 username:currentUsername,
-                selectedTeam:selectedTeam
+                selectedTeam:_selectedTeam
                 
                 
               });
@@ -70,7 +68,7 @@ const JoinLobbyPopup = ({ visible, onClose,navigation }) => {
           lobbyName:nameOfLobby,
           username:currentUsername,
           lobbyDocId:response.data.lobbyDocId,
-          selectedTeam:selectedTeam
+          selectedTeam:_selectedTeam
           });
           
         } catch (error) {
@@ -116,10 +114,7 @@ const JoinLobbyPopup = ({ visible, onClose,navigation }) => {
                     <TouchableOpacity
                         style = {[styles.button, {backgroundColor: 'deepskyblue'}]} 
                         disabled={nameOfLobby === ''}
-                        onPress={() => {
-                          setSelectedTeam('teamBlue');
-                            handleLobbyJoin();
-                            }}
+                        onPress={() => {handleLobbyJoin('teamBlue')}}
                     >
                       <Text>Join Team Blue</Text>
                     </TouchableOpacity>
@@ -128,10 +123,7 @@ const JoinLobbyPopup = ({ visible, onClose,navigation }) => {
                     <TouchableOpacity 
                         style = {[styles.button, {backgroundColor: 'red'}]}
                         disabled={nameOfLobby === ''}
-                        onPress={() => {            
-                            setSelectedTeam('teamRed');
-                            handleLobbyJoin();
-                            }}
+                        onPress={() => {handleLobbyJoin('teamRed')}}
                     >
                       <Text>Join Team Red</Text>
                     </TouchableOpacity>
