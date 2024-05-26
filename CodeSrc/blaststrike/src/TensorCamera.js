@@ -13,6 +13,7 @@ import Scoreboard from '../app/screens/ScoreBoard';
 import ShootingButton from '../app/screens/ShootingButton'
 import HealthBar from '../app/screens/HealthBar';
 import GameEndScreen from '../app/screens/GameEndScreen';
+import * as Location from "expo-location";
 import axios from 'axios';
 
 export default function TensorCamera({ navigation, route }) {
@@ -20,6 +21,11 @@ export default function TensorCamera({ navigation, route }) {
   const URLhit = Constants?.expoConfig?.hostUri
   ? `http://${Constants.expoConfig.hostUri.split(':').shift()}:4000/Game/hit`
   : 'https://yourapi.com/Game/hit';
+
+  const URLgps = Constants?.expoConfig?.hostUri
+  ? `http://${Constants.expoConfig.hostUri.split(':').shift()}:4000/Game/Gps`
+  : 'https://yourapi.com/Game/Gps';
+  
 
 
   const {lobbyData,selectedTeam,username}=route.params;
@@ -41,7 +47,8 @@ export default function TensorCamera({ navigation, route }) {
   const [scoreRed, setScoreRed] = useState(0);
   const [scoreBlue, setScoreBlue] = useState(0);
 
-
+  const tempLocation = useRef(null);
+  const tempHeading = useRef(null);
 
   //data snapshot listening for lobby information start
   const docId=lobbyData.documentId;
@@ -86,6 +93,59 @@ export default function TensorCamera({ navigation, route }) {
       loadTf()
     }
   })
+
+  useEffect(() => {
+    const sendLocation = async () => {
+        try {
+            const { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                console.error('Permission to access location was denied');
+                return;
+            }
+
+            const location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High });
+            tempLocation.current=location;
+
+            const heading = await Location.getHeadingAsync();
+           // setTempHeading(heading); 
+            tempHeading.current=heading;
+
+            console.log('tempHeading.current', tempHeading.current);
+            console.log('tempLocation.current', tempLocation.current);
+
+
+            const data = {
+              playerTeam: selectedTeam,
+              documentId: lobbyData.documentId,
+              location: {
+                  latitude: location.coords.latitude,
+                  longitude: location.coords.longitude,
+                  heading: heading.trueHeading,
+              },
+          };
+      
+          try {
+              const locationResponse = await axios.put(URLgps, { data });
+              console.log('Location server response:', locationResponse.data);
+          } catch (error) {
+              console.error('Error while sending location to server:', error);
+          }
+        } catch (error) {
+            console.error('Error fetching and sending location:', error);
+        }
+    };
+
+    const intervalId = setInterval(sendLocation, 2000);
+    return () => clearInterval(intervalId);
+}, []);
+
+
+  useEffect(() => {
+
+      if (tempHeading) {
+          console.log("Updated TempHeading:", tempHeading);
+      }
+  }, [tempHeading]); 
 
   //console.log("username",username);
 
@@ -468,12 +528,18 @@ function isInsideOfTolerance(actual_x, actual_y, predicted_x, predicted_y)
       console.log(lobbyData);
        try {
           console.log(1111)
+          console.log(tempHeading.current?.trueHeading)
            // Fetching user data from your backend
           const response = await axios.put(URLhit, {
             data: {
               playerTeam:selectedTeam,
               documentId:lobbyData.documentId,
-              damage:damage
+              damage:damage,
+              location:{
+                latitude: tempLocation.current?.coords?.latitude,
+                longitude: tempLocation.current?.coords?.longitude,
+                heading: tempHeading.current?.trueHeading 
+              }
             }
            })
       } catch (error) {

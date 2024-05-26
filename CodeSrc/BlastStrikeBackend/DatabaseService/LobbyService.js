@@ -1,4 +1,4 @@
-import { collection, getDocs, getDoc,addDoc,query,where,doc,updateDoc} from 'firebase/firestore/lite';
+import { collection, getDocs, getDoc,addDoc,query,where,doc,updateDoc,GeoPoint} from 'firebase/firestore/lite';
 import { getUser } from './UsersService.js';
 
 const teamSize=5;
@@ -62,7 +62,9 @@ async function addPlayer(db, data) {
 
         let lobbyData = {
             "username" :playerName,
-            "health" : 100
+            "health" : 100,
+            "locations": new GeoPoint(0, 0),
+            "heading" : 0
         }
         
 

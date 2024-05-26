@@ -36,7 +36,8 @@
     "react-native-vision-camera": "^3.9.0",
     "react-native-web": "~0.19.6",
     "react-webcam": "^7.2.0",
-    "sharp": "^0.33.2"
+    "sharp": "^0.33.2",
+    "expo-location": "~16.5.5"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

@@ -3,6 +3,7 @@ import cors from 'cors';
 import { getUsers,createUser,fetchCurrentUserData,sendFriendRequest,addFriends,deleteAcceptedRequest,displayFriends } from './DatabaseService/UsersService.js';
 import { getLobby,createLobby,addPlayer,getLobbyData,getLobbyIdByLobbyName,startLobby } from './DatabaseService/LobbyService.js';
 import { hitPlayer } from './DatabaseService/gameService.js';
+import { getGpsLocation } from './DatabaseService/gpsService.js';
 import { db } from './DatabaseService/firebaseConfig.js';
 
 const app = express();
@@ -161,7 +162,11 @@ app.put('/Game/hit',async (req,res) => {
     res.json(true);
 })
 
+app.put('/Game/Gps',async (req,res) => {
 
+    await getGpsLocation(db,req.body.data);
+    res.json(true);
+})
 
 
 app.listen(4000,()=>console.log("backend running"))
