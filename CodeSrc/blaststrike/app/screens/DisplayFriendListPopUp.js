@@ -13,13 +13,23 @@ const DisplayFriendListPopUp = ({ visible, onClose, username }) => {
   : 'https://yourapi.com/fetchCurrentUserData';
   
 
+  const renderItem = ({ item }) => (
+    <View style={styles.itemContainer}>
+      <Text style={styles.bullet}>•</Text>
+      <Text>{item}</Text>
+    </View>
+  );
+
   useEffect(() => {
     const fetchFriendsList = async () => {
       if (!username) return;
 
       try {
         const response = await axios.post(URLdisplayFriends, { username });
-        setFriendList(response.data); // Assuming response.data is the list of friends
+        let friend_list  = response.data;
+        friend_list = friend_list[0];
+        friend_list = friend_list.filter(item => item !== "");
+        setFriendList(friend_list);
       } catch (error) {
         console.error('Error fetching friends list:', error);
       }
@@ -36,7 +46,7 @@ const DisplayFriendListPopUp = ({ visible, onClose, username }) => {
       <FlatList
         data={friendList}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => <Text style={styles.friendItem}>{item}</Text>}
+        renderItem={renderItem}
       />
       <TouchableOpacity style = {styles.button} onPress={onClose}>
         <Text style = {{color:'white', fontSize:15}}>CLOSE</Text>
@@ -65,6 +75,15 @@ const styles = StyleSheet.create({
   text: {
     fontStyle: 'italic',
     fontSize:17
+  },
+  itemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 5,
+  },
+  bullet: {
+    marginRight: 5,
+    fontSize: 20,
   },
   button: {
     width: '75%',

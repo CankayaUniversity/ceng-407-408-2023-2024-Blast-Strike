@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { getUsers,createUser,fetchCurrentUserData,sendFriendRequest,addFriends,deleteAcceptedRequest,displayFriends,fetchFriendRequests } from './DatabaseService/UsersService.js';
-import { getLobby,createLobby,addPlayer,getLobbyData,getLobbyIdByLobbyName,startLobby } from './DatabaseService/LobbyService.js';
+import { getLobby,createLobby,addPlayer,getLobbyData,getLobbyIdByLobbyName,startLobby, sendInvitation, deleteAcceptedInvitations, fetchInvitations } from './DatabaseService/LobbyService.js';
 import { hitPlayer } from './DatabaseService/gameService.js';
 import { getGpsLocation } from './DatabaseService/gpsService.js';
 import { db } from './DatabaseService/firebaseConfig.js';
@@ -117,6 +117,52 @@ app.post('/displayFriends', async (req, res) => {
     } catch (error) {
         console.error('Server error fetching user data:', error);
         res.status(500).send({ msg: 'Server error fetching user data' });
+    }
+});
+
+app.post('/sendInvitation', async (req, res) => {
+    console.log("sendInvitation endpoint hit");
+
+    const data = req.body;
+    console.log(data.data.to_username,data.data.from_username);
+
+    if (!data || !data.data.to_username || !data.data.from_username || !data.data.lobbyName) {
+        return res.status(400).send({ error: 'Missing required fields' });
+    }
+
+    try {
+        await sendInvitation(db, data);
+        res.send({ msg: 'Request sent' });
+    } catch (error) {
+        const statusCode = error.message === "User is not found" ? 404 : 400;
+        res.status(statusCode).send({ error: error.message });
+    }
+});
+
+app.post('/fetchInvitations', async (req, res) => {
+    console.log("fetchInvitations endpoint hit");
+    try {
+        const data = req.body;
+        const activeInvitations = await fetchInvitations(db, data);
+        console.log("in post Invitations");
+        res.send({ ActiveInvitations: activeInvitations });
+    } catch (error) {
+        console.error('Server error fetching user data:', error);
+        res.status(500).send({ msg: 'Server error fetching user data' });
+    }
+});
+
+app.post('/deleteAcceptedInvitations', async (req, res) => {
+    console.log("deleteAcceptedInvitations endpoint hit");
+    try {
+        const data = req.body;
+        await deleteAcceptedInvitations(db,data);
+
+
+        res.send({ msg:"Successfully deleted" });
+    } catch (error) {
+        console.error('Delete accepted invitation error', error);
+        res.status(500).send({ msg: 'Delete accepted invitation error' });
     }
 });
 

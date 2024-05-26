@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { getAuth } from 'firebase/auth';
 import { doc, onSnapshot } from 'firebase/firestore';
+import SendInvitationPopUp from './SendInvitationPopUp';
 import { FIRESTORE_DB } from '../../Database/Firebase';
 import axios from 'axios';
 import TensorCamera from '../../src/TensorCamera';
@@ -14,6 +15,8 @@ const Lobby = ({ navigation,route }) => {
   const db = FIRESTORE_DB;
   const [LobbyExist, setLobbyExist] = useState(false);
   const [isCameraOpen, setIsCameraOpen] = useState(false); // State to control camera modal visibility
+
+  const [invitePopUpVisible, setInvitePopUpVisible] = useState(false);
   
   const URLgetLobbyData = Constants?.expoConfig?.hostUri
 ? `http://${Constants.expoConfig.hostUri.split(':').shift()}:4000/Lobby/getLobbyData`
@@ -122,6 +125,21 @@ const URLlobbyStart = Constants?.expoConfig?.hostUri
             </View>
           </View>
         </View>
+        {invitePopUpVisible && (
+          <SendInvitationPopUp
+            lobbyName={lobbyName}
+            visible={invitePopUpVisible}
+            onClose={() => setInvitePopUpVisible(false)}
+          />
+        )}
+        <View style={styles.startGameBtnContainer}>
+          <TouchableOpacity
+            style={styles.startGameBtn}
+            onPress={() => setInvitePopUpVisible(true)}
+          >
+            <Text style={styles.startGameBtnText}>Invite Friend</Text>
+          </TouchableOpacity>
+        </View>
         { lobbyData.lobbyAdmin == username &&
                 <View style={styles.startGameBtnContainer}>
                 <TouchableOpacity
@@ -171,6 +189,7 @@ const styles = StyleSheet.create({
   startGameBtnContainer: {
     alignItems: 'center',
     borderRadius: 5,
+    margin:5
   },
   startGameBtn: {
     backgroundColor: 'blue',

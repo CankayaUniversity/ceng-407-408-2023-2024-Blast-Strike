@@ -1,4 +1,4 @@
-import { collection, getDocs, getDoc,addDoc,query,where,doc,updateDoc,GeoPoint} from 'firebase/firestore/lite';
+import { collection, getDocs, getDoc,addDoc,query,where,doc,updateDoc,GeoPoint, deleteDoc} from 'firebase/firestore/lite';
 import { getUser } from './UsersService.js';
 
 const teamSize=5;
@@ -10,6 +10,101 @@ async function getLobby(db) {
     const lobbyList = LobbySnapshot.docs.map(doc => doc.data()); 
     return lobbyList;
 }
+
+async function sendInvitation(db, data) {
+    const invitationExists = await checkInvitationExist(db, data);
+    if (invitationExists) {
+      throw new Error("Invitation already exists.");
+    }
+    if (data) {
+      try {
+        const usersRef = collection(db, 'Users');
+        const q = query(usersRef, where("username", "==", data.data.to_username));
+        const querySnapshot = await getDocs(q);
+        console.log("Query snapshot size:", querySnapshot.size); // Check how many documents were found
+        if (!querySnapshot.empty) {
+          const docRef = await addDoc(collection(db, "ActiveInvitations"), {
+            from_username: data.data.from_username,
+            lobbyName: data.data.lobbyName,
+            to_username: data.data.to_username,
+          });
+          console.log("Document written with ID: ", docRef.id);
+        } else {
+          console.log("User not found with username:", data.data.to_username);
+          throw new Error("User is not found");
+        }
+      } catch (error) {
+        console.error('Error sending friend request:', error);
+        throw error;
+      }
+    }
+}
+
+async function checkInvitationExist(db, data) {
+    let invitationExists = false;
+    if(data) {
+      const usersRef = collection(db, 'ActiveInvitations');
+      const q = query(usersRef, 
+                      where("from_username", "==", data.data.from_username),
+                      where("to_username", "==", data.data.to_username),
+                      where("lobbyName", "==", data.data.lobbyName));
+      const querySnapshot = await getDocs(q);
+      if (!querySnapshot.empty) {
+        // If the querySnapshot is not empty, it means invitation already exists
+        invitationExists = true;
+      }
+    }
+    return invitationExists;
+}
+
+async function fetchInvitations(db,data)
+ {
+  try {
+    const q = query(collection(db, "ActiveInvitations"), where("to_username", "==", data.to_username), where("lobbyName", "==", data.lobbyName));
+    const querySnapshot = await getDocs(q);
+    const requestsArray = [];
+    querySnapshot.forEach((doc) => {
+      requestsArray.push(doc.data());
+    });
+   // console.log(requestsArray)
+    return requestsArray;
+  } catch (error) {
+    console.log("Error on fetching data",error);
+  }
+}
+
+async function deleteAcceptedInvitations(db, data) {
+    if (!data.to_username || !data.from_username || !data.lobbyName) {
+      console.error("Error: Missing or undefined to_username or from_username.");
+      return;
+    }
+    try {
+      const q = query(
+        collection(db, "ActiveInvitations"),
+        where("to_username", "==", data.to_username),
+        where("from_username", "==", data.from_username),
+        where("lobbyName", "==", data.lobbyName)
+      );
+
+      // Execute the query.
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        console.log("No matching documents found to delete.");
+        return;
+      }
+
+      // Loop over the documents returned by the query.
+      for (const docSnapshot of querySnapshot.docs) {
+        // For each document, delete it.
+        await deleteDoc(doc(db, "ActiveInvitations", docSnapshot.id));
+      }
+
+      console.log("Document(s) deleted successfully.");
+    } catch (error) {
+      console.error("Error deleting document:", error);
+    }
+  }
 
 async function createLobby(db, data) {
     try {
@@ -237,4 +332,4 @@ async function deleteLobby(db) {
 
 
 
-export { getLobby, createLobby,addPlayer,getLobbyData,getLobbyIdByLobbyName,startLobby };
+export { getLobby, createLobby,addPlayer,getLobbyData,getLobbyIdByLobbyName,startLobby, sendInvitation, fetchInvitations, deleteAcceptedInvitations };
