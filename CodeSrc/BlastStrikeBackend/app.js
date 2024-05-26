@@ -134,7 +134,8 @@ app.post('/sendInvitation', async (req, res) => {
         await sendInvitation(db, data);
         res.send({ msg: 'Request sent' });
     } catch (error) {
-        const statusCode = error.message === "User is not found" ? 404 : 400;
+        let statusCode;
+        statusCode = error.message === "User is not found." ? 404 : error.message === "Invitation already exists." ? 409 : 400;
         res.status(statusCode).send({ error: error.message });
     }
 });

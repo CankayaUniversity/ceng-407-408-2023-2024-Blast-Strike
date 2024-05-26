@@ -49,12 +49,13 @@ const FriendRequestsView = ({ userData }) => {
       });
     } catch (error) {
       console.error('Error accepting friend request:', error);
+      Alert.alert("Acception Failed!", "Error accepting friend request.")
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text>Active Friend Requests</Text>
+      <Text style = {{fontSize: 20}}>Active Friend Requests</Text>
       <FlatList
         data={requests}
         keyExtractor={(item, index) => index.toString()}

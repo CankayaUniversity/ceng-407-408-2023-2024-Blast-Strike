@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, Button, StyleSheet } from 'react-native';
+import { View, Text, FlatList, Button, StyleSheet, Alert } from 'react-native';
 import { getFirestore, collection, query, where, onSnapshot } from 'firebase/firestore';
 import axios from 'axios';
 import Constants from 'expo-constants';
@@ -61,12 +61,13 @@ const ActiveInvitationsView = ({ navigation, userData }) => {
         });
     } catch (error) {
       console.error('Error accepting invitation:', error);
+      Alert.alert("Acception Failed!", "Error accepting invitation.")
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style = {{paddingLeft: 10}}>Active Invitations</Text>
+      <Text style = {{paddingLeft: 10,  fontSize: 20}}>Active Invitations</Text>
       <FlatList
         data={invitations}
         keyExtractor={(item, index) => index.toString()}

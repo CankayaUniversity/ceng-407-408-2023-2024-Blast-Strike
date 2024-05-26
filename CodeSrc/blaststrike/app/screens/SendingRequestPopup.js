@@ -31,7 +31,7 @@ const URLsendFriendRequest = Constants?.expoConfig?.hostUri
       const currentUser = auth.currentUser;
       if (!currentUser) {
         console.log('No user logged in');
-        setErrorMessage('No user logged in.'); // Set error message
+        Alert.alert("No user logged in.") // Set error message
         return; // Exit the function if there's no logged-in user
       }
       try {
@@ -39,12 +39,13 @@ const URLsendFriendRequest = Constants?.expoConfig?.hostUri
         setCurrentUserName(response.data.username);
       } catch (error) {
         console.log('Error fetching user data:', error);
-        setErrorMessage('Error fetching user data.'); // Set error message
+        Alert.alert("Request Failed!","Error fetching user data.") // Set error message
       }
     }
+
+    fetchUserData();
   
     const handleSendRequest = async () => {
-      await fetchUserData();
       if (currentUserName) {
         try {
           const response = await axios.post(URLsendFriendRequest, {
@@ -59,7 +60,6 @@ const URLsendFriendRequest = Constants?.expoConfig?.hostUri
           console.log("Friend request sent");
         } catch (error) {
           console.log('Error sending friend request:', error);
-          setErrorMessage('Error sending friend request.'); // Set error message
           const status = error.message.slice(-3);
           if (status == "404") {
             Alert.alert("Request Failed!","Invalid username entered. Please check your credentials.")
@@ -72,7 +72,7 @@ const URLsendFriendRequest = Constants?.expoConfig?.hostUri
           }
         }
       } else {
-        setErrorMessage('Current user username not set.'); // Set error message if username isn't fetched
+        Alert.alert("Request Failed!","Current user username not set.") // Set error message if username isn't fetched
       }
     };
   

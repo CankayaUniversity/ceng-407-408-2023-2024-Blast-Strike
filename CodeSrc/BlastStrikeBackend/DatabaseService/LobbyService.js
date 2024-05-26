@@ -13,9 +13,17 @@ async function getLobby(db) {
 
 async function sendInvitation(db, data) {
     const invitationExists = await checkInvitationExist(db, data);
-    if (invitationExists) {
-      throw new Error("Invitation already exists.");
+
+    try {
+        if (invitationExists) {
+            // Handle the case where the invitation already exists
+            throw new Error("Invitation already exists.");
+        }
+    }catch (error) {
+        console.error('Error sending invitation:', error);
+        throw error;
     }
+
     if (data) {
       try {
         const usersRef = collection(db, 'Users');
@@ -31,10 +39,10 @@ async function sendInvitation(db, data) {
           console.log("Document written with ID: ", docRef.id);
         } else {
           console.log("User not found with username:", data.data.to_username);
-          throw new Error("User is not found");
+          throw new Error("User is not found.");
         }
       } catch (error) {
-        console.error('Error sending friend request:', error);
+        console.error('Error sending invitation:', error);
         throw error;
       }
     }
