@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Dimensions } from 'react-native';
+
+const { width, height } = Dimensions.get('window');  // Get the screen width and height
 
 const Scoreboard = ({ scoreRed, scoreBlue }) => {
-    
   return (
     <View style={styles.scoreboardContainer}>
       <View style={[styles.scoreboard, styles.rotatedScoreboard]}>
@@ -22,12 +23,12 @@ const Scoreboard = ({ scoreRed, scoreBlue }) => {
 const styles = StyleSheet.create({
   scoreboardContainer: {
     position: 'absolute',
-    top: '8%',
-    right: '25%',
-    transform: [{ translateY: -80 }],
+    top: height * 0.1, // 11% of the screen height
+    right: width * 0.05, // 8% of the screen width
+    transform: [{ translateY: -80 }], // Consider adjusting based on device size if necessary
   },
   scoreboard: {
-    width: 350,
+    width: width * 0.9, // Make width responsive, e.g., 90% of screen width
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
@@ -41,22 +42,22 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   rotatedScoreboard: {
-    //transform: [{ rotate: '90deg' }],
+    // Uncomment and adjust rotation if needed for different orientations
+    // transform: [{ rotate: '90deg' }],
   },
   team: {
     alignItems: 'center',
   },
   teamName: {
-    fontSize: 15,
+    fontSize: 15, // Consider using a scaling function for font sizes
     fontWeight: 'bold',
   },
   score: {
-    fontSize: 24,
+    fontSize: 24, // Consider using a scaling function for font sizes
     marginTop: 10,
   },
   team1: {
     color: '#00CCFF',
-
   },
   team2: {
     color: '#FF0000',
