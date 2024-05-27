@@ -109,18 +109,24 @@ const URLlobbyStart = Constants?.expoConfig?.hostUri
         <Text style={styles.heading}>Blast Strike Game Lobby</Text>
         <View style={styles.teamSelection}>
           <View style={styles.team}>
-            <Text style={styles.teamHeading}>Team Blue</Text>
-            <View style={styles.playerList}>
+            <Text style={[styles.teamHeading, {color: 'deepskyblue'}]}>Team Blue</Text>
+            <View style={[styles.playerList, {borderColor: 'deepskyblue'}]}>
               {lobbyData && lobbyData.teamBlue && lobbyData.teamBlue.map((user, index) => (
-                <Text key={index}>{user.username}</Text>
+                <View style={styles.bulletContainer} key={index}>
+                  <Text style={styles.bulletPoint}>•</Text>
+                  <Text style={{color: 'white'}}>{user.username}</Text>
+                </View>
               ))}
             </View>
           </View>
           <View style={styles.team}>
-            <Text style={styles.teamHeading}>Team Red</Text>
-            <View style={styles.playerList}>
+            <Text style={[styles.teamHeading, {color: 'red'}]}>Team Red</Text>
+            <View style={[styles.playerList, {borderColor: 'red'}]}>
               {lobbyData && lobbyData.teamRed && lobbyData.teamRed.map((user, index) => (
-                <Text key={index}>{user.username}</Text>
+                <View style={styles.bulletContainer} key={index}>
+                  <Text style={styles.bulletPoint}>•</Text>
+                  <Text style={{color: 'white'}}>{user.username}</Text>
+                </View>
               ))}
             </View>
           </View>
@@ -132,23 +138,26 @@ const URLlobbyStart = Constants?.expoConfig?.hostUri
             onClose={() => setInvitePopUpVisible(false)}
           />
         )}
-        <View style={styles.startGameBtnContainer}>
-          <TouchableOpacity
-            style={styles.startGameBtn}
-            onPress={() => setInvitePopUpVisible(true)}
-          >
-            <Text style={styles.startGameBtnText}>Invite Friend</Text>
-          </TouchableOpacity>
-        </View>
-        { lobbyData.lobbyAdmin == username &&
-                <View style={styles.startGameBtnContainer}>
-                <TouchableOpacity
-                style={styles.startGameBtn}
+        <View style = {styles.buttonContainer}>
+          <View style={styles.startGameBtnContainer}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => setInvitePopUpVisible(true)}
+            >
+              <Text style={styles.buttonText}>Invite Friend</Text>
+            </TouchableOpacity>
+          </View>
+          { lobbyData.lobbyAdmin == username &&
+            <View style={styles.startGameBtnContainer}>
+              <TouchableOpacity
+                style={styles.button}
                 onPress={ startLobby }>
-                <Text style={styles.startGameBtnText}>Start Game</Text>
-                </TouchableOpacity>
-                </View> } 
-
+                <Text style={styles.buttonText}>Start Game</Text>
+              </TouchableOpacity>
+            </View> 
+          } 
+        </View>
+        
       </View>
     </View>
   );
@@ -159,6 +168,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'dimgray'
   },
   rotatedContainer: {
     transform: [{ rotate: '90deg' }],
@@ -189,17 +199,34 @@ const styles = StyleSheet.create({
   startGameBtnContainer: {
     alignItems: 'center',
     borderRadius: 5,
-    margin:5
+    margin:5,
   },
-  startGameBtn: {
-    backgroundColor: 'blue',
+  button: {
+    backgroundColor: 'darkorange',
     paddingVertical: 10,
     paddingHorizontal: 20,
+    marginTop: 5,
   },
-  startGameBtnText: {
+  buttonText: {
     color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+    borderTopColor: 'white',
+    borderTopWidth: 3,
+  },
+  bulletContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  bulletPoint: {
+    color: 'white',
+    fontSize: 20,
+    marginRight: 5,
   },
 });
 
