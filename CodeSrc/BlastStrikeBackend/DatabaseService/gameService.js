@@ -6,6 +6,7 @@ const angleThreshold = 30;
 const maxDistance = 25;
 const R = 6371e3; 
 const toRadians = (degree) => degree * (Math.PI / 180);
+
 function calculateBearing(lat1, lon1, lat2, lon2) {
     // Radyan cinsine çevir
     const radians = (degree) => degree * (Math.PI / 180);
@@ -56,10 +57,6 @@ async function hitPlayer(db, data) {
             const enemyData = docData[enemyTeam][0];
             console.log(enemyData);
 
-            /*if (!enemyData.locations || !enemyData.heading || !enemyData.locations._lat || !enemyData.locations._long) {
-                throw new Error('Enemy latitude, longitude, or heading is undefined');
-            }*/
-
             const enemyLat = parseFloat(enemyData.locations._lat);
             const enemyLon = parseFloat(enemyData.locations._long);
             const enemyHeading = parseFloat(enemyData.heading.trueHeading);;
@@ -90,15 +87,23 @@ async function hitPlayer(db, data) {
 
             const distance = R * c;
 
-            /*const bearing = getRhumbLineBearing(
+            const bearing = getRhumbLineBearing(
                 { latitude: playerLat, longitude: playerLon },
                 { latitude: enemyLat, longitude: enemyLon }
-            );*/
+            );
 
-            const bearing = calculateBearing(playerLat, playerLon, enemyLat, enemyLon);
+            //const bearing = calculateBearing(playerLat, playerLon, enemyLat, enemyLon);
 
 
-            const angleDifference = Math.abs(playerHeading - bearing);
+            //const angleDifference = Math.abs(playerHeading - bearing);
+            
+            // (playerHeading - bearing + 360) always pos
+            // % 360 normalize circular nature
+            let angleDifference = Math.abs((playerHeading - bearing + 360) % 360);
+            if (angleDifference > 180) {
+                angleDifference = 360 - angleDifference;
+            }
+
 
             console.log('Distance:', distance);
             console.log('Bearing:', bearing);
