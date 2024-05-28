@@ -134,8 +134,9 @@ async function fetchCurrentUserData(db,data) {
       const usersCollectionRef = collection(db, 'Users');
       console.log("First breakpoint");
       const q = query(usersCollectionRef, where('username', '==', data.to_username));
-      
+      const fromUserQuery=query(usersCollectionRef, where('username', '==', data.from_username));
       const querySnapshot = await getDocs(q);
+      const fromUserQuerySnapshot= await getDocs(fromUserQuery);
       if (!querySnapshot.empty) {
         querySnapshot.forEach(async (documentSnapshot) => {
           console.log("Second breakpoint");
@@ -156,6 +157,27 @@ async function fetchCurrentUserData(db,data) {
       } else {
         console.log('No documents matching the criteria.');
       }
+      if (!fromUserQuerySnapshot.empty) {
+        fromUserQuerySnapshot.forEach(async (documentSnapshot) => {
+          console.log("Second breakpoint");
+          // Get the document ID
+          const docId = documentSnapshot.id;
+          // Create a reference to the document
+          const docRef = doc(db, 'Users', docId);
+          // Perform the update
+          try {
+            await updateDoc(docRef, {
+              friends: arrayUnion(data.to_username)
+            });
+            console.log('Item added to the array successfully!');
+          } catch (error) {
+            console.error('Error updating document: ', error);
+          }
+        });
+      } else {
+        console.log('No documents matching the criteria.');
+      }
+
     }
   }
   
