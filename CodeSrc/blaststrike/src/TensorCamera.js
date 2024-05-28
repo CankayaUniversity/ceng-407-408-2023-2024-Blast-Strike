@@ -140,13 +140,14 @@ export default function TensorCamera({ navigation, route }) {
 }, []);
 
 
+/*
   useEffect(() => {
 
       if (tempHeading) {
-          console.log("Updated TempHeading:", tempHeading);
+          console.log("Updated TempHeading:", tempHeading.current);
       }
-  }, [tempHeading]); 
-
+  }, [tempHeading.current]); 
+*/
   //console.log("username",username);
 
   const unsubscribe = onSnapshot(docRef, (doc) => {
@@ -162,14 +163,13 @@ export default function TensorCamera({ navigation, route }) {
        {
      //   setUpdateOnce(true);
        //  if(updateOnce){
-           console.log("inside");
            setScoreBlue(doc.data()['scoreBlue']);
            setScoreRed(doc.data()['scoreRed']);
            //setGameData(doc.data());
            //console.log(gameData)
            if(doc.data().inGame == false)
            {
-            if(doc.data().scoreBlue == 10)
+            if(doc.data().scoreBlue == 5)
             { 
               unsubscribe();
               navigation.replace('GameEndScreen', {
@@ -178,7 +178,7 @@ export default function TensorCamera({ navigation, route }) {
               })
             }
 
-            else if(doc.data().scoreRed == 10)
+            else if(doc.data().scoreRed == 5)
             {
               unsubscribe();
               navigation.replace('GameEndScreen', {
@@ -530,18 +530,21 @@ async function detectHittedPart(segmentedParts) {
           console.log(1111)
           console.log(tempHeading.current?.trueHeading)
            // Fetching user data from your backend
-          const response = await axios.put(URLhit, {
-            data: {
-              playerTeam:selectedTeam,
-              documentId:lobbyData.documentId,
-              damage:damage,
-              location:{
-                latitude: tempLocation.current?.coords?.latitude,
-                longitude: tempLocation.current?.coords?.longitude,
-                heading: tempHeading.current?.trueHeading 
+           if(tempHeading)
+           {
+            const response = await axios.put(URLhit, {
+              data: {
+                playerTeam:selectedTeam,
+                documentId:lobbyData.documentId,
+                damage:damage,
+                location:{
+                  latitude: tempLocation.current?.coords?.latitude,
+                  longitude: tempLocation.current?.coords?.longitude,
+                  heading: tempHeading.current?.trueHeading 
+                }
               }
-            }
-           })
+             })
+           }
       } catch (error) {
           console.log('Error hit:', error);
           return; // Exit the function if there was an error fetching user data

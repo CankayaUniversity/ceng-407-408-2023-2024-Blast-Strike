@@ -5,7 +5,6 @@ const GameEndScreen = ({ navigation, route }) => {
   const { winnerTeam, teamTag } = route.params;
 
   let imagePath;
-
   if (teamTag === 'red') {
     imagePath = require('../../images/redTeamWinner.jpg');
   } else {
@@ -18,30 +17,14 @@ const GameEndScreen = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.rotatedImageContainer}>
-        <Image source={imagePath} style={styles.rotatedImage} />
+      <Image source={imagePath} style={styles.image} />
+      <View style={styles.infoContainer}>
+        <Text style={styles.teamHeader}>{teamTag === 'blue' ? 'Blue Team Member:' : 'Red Team Member:'}</Text>
+        <Text style={styles.teamHeader}>{winnerTeam[0].username}</Text>
       </View>
-      {teamTag === 'blue' && (
-        <View style={styles.middleRightTextBlue}>
-          <Text style={styles.textStyleBlue}>Team Members:</Text>
-          {winnerTeam && winnerTeam.map((user, index) => (
-            <Text key={index}>-{user.username}</Text>
-          ))}
-        </View>
-      )}
-      {teamTag === 'red' && (
-        <View style={styles.middleRightTextRed}>
-          <Text style={styles.textStyleRed}>Team Members:</Text>
-          {winnerTeam && winnerTeam.map((user, index) => (
-            <Text key={index}>-{user.username}</Text>
-          ))}
-        </View>
-      )}
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={EndGame} style={styles.button}>
-          <Text style={styles.buttonText}>Return Home</Text>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity onPress={EndGame} style={styles.button}>
+        <Text style={styles.buttonText}>Return Home</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -49,58 +32,35 @@ const GameEndScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: '#000000',
+    backgroundColor: '#000',
+    padding: 20,
   },
-  rotatedImageContainer: {
-    flex: 1,
-    width: '100%', // Ensures the container fills the width of the screen
-    justifyContent: 'center',
+  image: {
+    width: '100%', // Adjust as needed
+    height: '50%', // Adjust as needed
+    resizeMode: 'contain',
+  },
+  infoContainer: {
     alignItems: 'center',
+    width: '100%',
   },
-  rotatedImage: {
-    width: '100%', // Ensures the image fills the width of the container
-    height: '50%', // Ensures the image fills the height of the container
-    transform: [{ rotate: '90deg' }],
-  },
-  middleRightTextRed: {
-    position: 'absolute',
-    width: '20%',
-    top: '45%',
-    right: '75%',
-    transform: [{ rotate: '90deg' }], // Vertically center the text
-    fontSize: 18,
+  teamHeader: {
+    fontSize: 20,
     fontWeight: 'bold',
-    color: 'white', // Adjust color as needed
+    color: 'white',
+    marginBottom: 10,
   },
-  middleRightTextBlue: {
-    position: 'absolute',
-    width: '20%',
-    top: '65%',
-    right: '35%',
-    transform: [{ rotate: '90deg' }], // Vertically center the text
+  username: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: 'white', // Adjust color as needed
-  },
-  textStyleBlue: {
-    color: 'black',
-  },
-  textStyleRed: {
-    color: 'black',
-  },
-  buttonContainer: {
-    position: 'absolute',
-    bottom: '7%', // Adjust this value to move the button up or down
-    right: '40%', // Adjust this value to move the button left or right
-    transform: [{ rotate: '90deg' }],
+    color: 'white',
   },
   button: {
-    backgroundColor: 'grey', // Button color
+    backgroundColor: 'grey',
     paddingVertical: 10,
-    paddingHorizontal: 10,
-    borderRadius: 5, // Rounded corners
+    paddingHorizontal: 20,
+    borderRadius: 5,
   },
   buttonText: {
     color: 'white',

@@ -2,7 +2,7 @@ import { collection, getDocs, getDoc,addDoc,query,where,doc,updateDoc} from 'fir
 import { db } from './firebaseConfig.js';
 import { getDistance, getRhumbLineBearing } from 'geolib';
 
-const angleThreshold = 30; 
+const angleThreshold = 20; 
 const maxDistance = 25;
 const R = 6371e3; 
 const toRadians = (degree) => degree * (Math.PI / 180);
@@ -59,7 +59,7 @@ async function hitPlayer(db, data) {
 
             const enemyLat = parseFloat(enemyData.locations._lat);
             const enemyLon = parseFloat(enemyData.locations._long);
-            const enemyHeading = parseFloat(enemyData.heading.trueHeading);;
+            //const enemyHeading = parseFloat(enemyData.heading.trueHeading);
 
             console.log('Enemy Data:', enemyData);
             console.log('Enemy Latitude:', enemyLat);
@@ -100,16 +100,23 @@ async function hitPlayer(db, data) {
             // (playerHeading - bearing + 360) always pos
             // % 360 normalize circular nature
             let angleDifference = Math.abs((playerHeading - bearing + 360) % 360);
-            if (angleDifference > 180) {
+            let angleDifferenceNegative = Math.abs((-playerHeading - bearing + 360) % 360);
+            if (angleDifference < 180) {
                 angleDifference = 360 - angleDifference;
             }
+
+            if (angleDifferenceNegative > 180) {
+                angleDifferenceNegative = 360 - angleDifferenceNegative;
+            }
+
+
 
 
             console.log('Distance:', distance);
             console.log('Bearing:', bearing);
             console.log('Angle Difference:', angleDifference);
 
-            if (Math.abs(angleDifference) <= angleThreshold && distance <= maxDistance) {
+            if ((Math.abs(angleDifference) >= angleThreshold || (Math.abs(angleDifferenceNegative) <= angleThreshold))&& distance <= maxDistance) {
                 console.log("In sight!");
                 //check enemy killed && score updates
                 if(isDead(docData[enemyTeam][0].health,damage))
@@ -152,7 +159,7 @@ async function hitPlayer(db, data) {
                     //check enemy killed && score updates - END
         
                     ////check if game ended 
-                    if(docData.scoreBlue==10 || docData.scoreRed==10)
+                    if(docData.scoreBlue==5 || docData.scoreRed==5)
                     {
                         //update player health
                         docData[enemyTeam][0].health = newHealth;
