@@ -44,7 +44,7 @@ const URLsendInvitation = Constants?.expoConfig?.hostUri
       }
     }
 
-    fetchUserData();
+//fetchUserData();
 
     const handleSendRequest = async () => {
       if (currentUserName) {

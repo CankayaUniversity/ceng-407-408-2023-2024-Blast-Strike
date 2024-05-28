@@ -7,7 +7,7 @@ const HealthBar = ({ value }) => {
         width: `${value}%`,
         backgroundColor: `rgb(${255 - value * 2},${value * 2} , 0)`, // Calculate color based on value
     };
-          console.log(value)
+       //   console.log(value)
     return (
         <View style={[styles.bar, { transform: [{ rotate: '90deg' }] }]}>
           <View style={fillStyle}>

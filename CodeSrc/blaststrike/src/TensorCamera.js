@@ -31,7 +31,7 @@ export default function TensorCamera({ navigation, route }) {
   const {lobbyData,selectedTeam,username}=route.params;
  
 
-  const [gameData, setGameData] = useState(null);
+  //const [gameData, setGameData] = useState(null);
 
   const [permission, requestPermission] = Camera.useCameraPermissions();
   const cameraRef = useRef(null);
@@ -126,6 +126,7 @@ export default function TensorCamera({ navigation, route }) {
           };
       
           try {
+            console.log("data",data);
               const locationResponse = await axios.put(URLgps, { data });
               console.log('Location server response:', locationResponse.data);
           } catch (error) {
@@ -141,14 +142,14 @@ export default function TensorCamera({ navigation, route }) {
 }, []);
 
 
-/*
+
   useEffect(() => {
 
       if (tempHeading) {
           console.log("Updated TempHeading:", tempHeading.current);
       }
   }, [tempHeading.current]); 
-*/
+
   //console.log("username",username);
 
   const unsubscribe = onSnapshot(docRef, (doc) => {

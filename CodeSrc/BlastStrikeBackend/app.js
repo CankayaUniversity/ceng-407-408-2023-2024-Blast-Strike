@@ -1,8 +1,9 @@
 import express from 'express';
 import cors from 'cors';
-import { getUsers,createUser,fetchCurrentUserData,sendFriendRequest,addFriends,deleteAcceptedRequest,displayFriends } from './DatabaseService/UsersService.js';
-import { getLobby,createLobby,addPlayer,getLobbyData,getLobbyIdByLobbyName,startLobby } from './DatabaseService/LobbyService.js';
+import { getUsers,createUser,fetchCurrentUserData,sendFriendRequest,addFriends,deleteAcceptedRequest,displayFriends,fetchFriendRequests } from './DatabaseService/UsersService.js';
+import { getLobby,createLobby,addPlayer,getLobbyData,getLobbyIdByLobbyName,startLobby, sendInvitation, deleteAcceptedInvitations, fetchInvitations } from './DatabaseService/LobbyService.js';
 import { hitPlayer } from './DatabaseService/gameService.js';
+import { getGpsLocation } from './DatabaseService/gpsService.js';
 import { db } from './DatabaseService/firebaseConfig.js';
 
 const app = express();
@@ -61,12 +62,11 @@ app.post('/sendFriendRequest', async (req, res) => {
         res.send({ msg: 'Request sent' });
     } catch (error) {
         // Use specific status codes for different types of errors if possible
-        const statusCode = error.message === "User is not found" ? 404 : 400;
+        let statusCode;
+        statusCode = error.message === "User is not found." ? 404 : error.message === "Friendship request already exists between these users." ? 409 : 400;
         res.status(statusCode).send({ error: error.message });
     }
 });
-
-
 
 app.post('/addFriends',async(req,res)=>
 {
@@ -120,6 +120,53 @@ app.post('/displayFriends', async (req, res) => {
     }
 });
 
+app.post('/sendInvitation', async (req, res) => {
+    console.log("sendInvitation endpoint hit");
+
+    const data = req.body;
+    console.log(data.data.to_username,data.data.from_username);
+
+    if (!data || !data.data.to_username || !data.data.from_username || !data.data.lobbyName) {
+        return res.status(400).send({ error: 'Missing required fields' });
+    }
+
+    try {
+        await sendInvitation(db, data);
+        res.send({ msg: 'Request sent' });
+    } catch (error) {
+        let statusCode;
+        statusCode = error.message === "User is not found." ? 404 : error.message === "Invitation already exists." ? 409 : 400;
+        res.status(statusCode).send({ error: error.message });
+    }
+});
+
+app.post('/fetchInvitations', async (req, res) => {
+    console.log("fetchInvitations endpoint hit");
+    try {
+        const data = req.body;
+        const activeInvitations = await fetchInvitations(db, data);
+        console.log("in post Invitations");
+        res.send({ ActiveInvitations: activeInvitations });
+    } catch (error) {
+        console.error('Server error fetching user data:', error);
+        res.status(500).send({ msg: 'Server error fetching user data' });
+    }
+});
+
+app.post('/deleteAcceptedInvitations', async (req, res) => {
+    console.log("deleteAcceptedInvitations endpoint hit");
+    try {
+        const data = req.body;
+        await deleteAcceptedInvitations(db,data);
+
+
+        res.send({ msg:"Successfully deleted" });
+    } catch (error) {
+        console.error('Delete accepted invitation error', error);
+        res.status(500).send({ msg: 'Delete accepted invitation error' });
+    }
+});
+
 
 //Lobby
 
@@ -129,13 +176,29 @@ app.get('/getLobby',async (req,res)=> {
 })
 
 app.post('/createLobby',async (req,res)=> {
-    await createLobby(db,req.body);
-    res.send({msg:'Lobby Added'})
+    try {
+        await createLobby(db,req.body);
+        res.send({msg:'Lobby Added'})
+    } catch (error) {
+        // Use specific status codes for different types of errors if possible
+        let statusCode;
+        statusCode = error.message === "Lobby name must be unique, please change the name." ? 409 : error.message === "Selected team cannot be empty." ? 404: 400;
+        console.log(statusCode);
+        res.status(statusCode).send({ error: error.message });
+    }
 })
 
 app.put('/Lobby/addPlayer',async (req,res)=> {
-    let lobbyDocId =await addPlayer(db,req.body);
-    res.send({lobbyDocId})
+    try {
+        let lobbyDocId =await addPlayer(db,req.body);
+        res.send({lobbyDocId})
+    } catch (error) {
+        // Use specific status codes for different types of errors if possible
+        let statusCode;
+        statusCode = error.message === "Team is full!" ? 422 : "You joined the opposite team before, cannot also join this team." ? 409 : 
+        error.message === "No lobby document found with the specified lobbyName." ? 404: 400;
+        res.status(statusCode).send({ error: error.message });
+    }
 })
 
 app.post('/Lobby/getLobbyData',async (req,res) => {
@@ -161,7 +224,11 @@ app.put('/Game/hit',async (req,res) => {
     res.json(true);
 })
 
+app.put('/Game/Gps',async (req,res) => {
 
+    await getGpsLocation(db,req.body.data);
+    res.json(true);
+})
 
 
 app.listen(4000,()=>console.log("backend running"))
