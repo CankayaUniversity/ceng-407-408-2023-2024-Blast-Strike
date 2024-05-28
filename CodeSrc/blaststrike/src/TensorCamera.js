@@ -47,6 +47,7 @@ export default function TensorCamera({ navigation, route }) {
   const [scoreRed, setScoreRed] = useState(0);
   const [scoreBlue, setScoreBlue] = useState(0);
 
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const tempLocation = useRef(null);
   const tempHeading = useRef(null);
 
@@ -156,6 +157,11 @@ export default function TensorCamera({ navigation, route }) {
     // console.log("doc.data().scoreBlue!=scoreBlue.current",doc.data().scoreBlue!=scoreBlue.current);
      //scoreBlue.current=doc.data()['scoreBlue'];
 
+     if (userHealth === 0 && !isButtonDisabled) {
+      setIsButtonDisabled(true);
+    } else if (isButtonDisabled && userHealth !== 0) {
+      setIsButtonDisabled(false);
+    }
      if(doc.data()[selectedTeam][0].health!=userHealth)
         setUserHealth(doc.data()[selectedTeam][0].health)
 
@@ -525,6 +531,8 @@ async function detectHittedPart(segmentedParts) {
 
     if(damage>0)
     {
+      
+    
       console.log(lobbyData);
        try {
           console.log(1111)
@@ -666,9 +674,13 @@ const transformImageToTensor = async (uri)=>{
       
       {/* Button Container */}
       <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={takePicture} style={styles.button}>
-          <ShootingButton/>
-        </TouchableOpacity>
+      <TouchableOpacity
+  onPress={takePicture}
+  style={[styles.button, isButtonDisabled && styles.disabledButton]}
+  disabled={isButtonDisabled}
+>
+  <ShootingButton />
+</TouchableOpacity>
       </View>
       {/*photoUri && <Image source={{ uri: photoUri }} style={{ width: 100, height: 100 , opacity:1}} />*/}
     </View>
@@ -718,5 +730,10 @@ const styles = StyleSheet.create({
     left: 0,
     width: '100%', // Take full width of the screen
     height: '100%', // Take full height of the screen
+  },
+  disabledButton: {
+    // Your additional styles for the disabled state
+    backgroundColor: 'red',
+    opacity: 0.5, // Example: reduce opacity to indicate disabled state
   },
 });
