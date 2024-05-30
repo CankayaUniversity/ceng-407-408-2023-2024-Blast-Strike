@@ -77,14 +77,16 @@ async function hitPlayer(db, data) {
             // (playerHeading - bearing + 360) always pos
             // % 360 normalize circular nature
             let angleDifference = Math.abs((playerHeading - bearing + 360) % 360);
-            let angleDifferenceNegative = Math.abs((-playerHeading - bearing + 360) % 360);
-            if (angleDifference < 180) {
+           //let angleDifferenceNegative = Math.abs((-playerHeading - bearing + 360) % 360);
+            if (angleDifference > 180) {
                 angleDifference = 360 - angleDifference;
             }
 
+            /*
             if (angleDifferenceNegative > 180) {
                 angleDifferenceNegative = 360 - angleDifferenceNegative;
             }
+            */
 
 
             console.log('Enemy Radians:', enemyWidthRadians)
@@ -92,7 +94,7 @@ async function hitPlayer(db, data) {
             console.log('Bearing:', bearing);
             console.log('Angle Difference:', angleDifference);
 
-            if ((Math.abs(angleDifference) <= enemyWidthRadians || (Math.abs(angleDifferenceNegative) <= angleThreshold))&& distance <= maxDistance) {
+            if (Math.abs(angleDifference) <= enemyWidthRadians && distance <= maxDistance) {
                 console.log("In sight!");
                 //check enemy killed && score updates
                 if(isDead(docData[enemyTeam][0].health,damage))
