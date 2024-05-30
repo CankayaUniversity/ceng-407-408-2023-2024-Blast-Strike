@@ -71,9 +71,7 @@ async function hitPlayer(db, data) {
                 { latitude: playerLat, longitude: playerLon },
                 { latitude: enemyLat, longitude: enemyLon }
             );
-            
             //const angleDifference = Math.abs(playerHeading - bearing);
-            
             // (playerHeading - bearing + 360) always pos
             // % 360 normalize circular nature
             let angleDifference = Math.abs((playerHeading - bearing + 360) % 360);
@@ -87,8 +85,6 @@ async function hitPlayer(db, data) {
                 angleDifferenceNegative = 360 - angleDifferenceNegative;
             }
             */
-
-
             console.log('Enemy Radians:', enemyWidthRadians)
             console.log('Distance:', distance);
             console.log('Bearing:', bearing);
@@ -163,17 +159,12 @@ async function hitPlayer(db, data) {
                     }
                 return true;
             }
-            
             else {
                 console.log("Not in sight!");
                 return false;
             }
-            
-
-
         } else {
             console.log('Document does not exist');
-
         }
     } catch (error) {
         console.log('Error getting document data:', error);

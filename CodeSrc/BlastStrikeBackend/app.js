@@ -220,8 +220,8 @@ app.put('/Lobby/start',async (req,res)=> {
 app.put('/Game/hit',async (req,res) => {
 
     //let documentId = req.body.data['documentId'];
-    await hitPlayer(db,req.body.data);
-    res.json(true);
+    let hitCheck = await hitPlayer(db,req.body.data);
+    res.send({'result':hitCheck});
 })
 
 app.put('/Game/Gps',async (req,res) => {

@@ -134,8 +134,8 @@ export default function TensorCamera({ navigation, route }) {
            // setTempHeading(heading); 
             tempHeading.current=heading;
 
-            console.log('tempHeading.current', tempHeading.current);
-            console.log('tempLocation.current', tempLocation.current);
+            //console.log('tempHeading.current', tempHeading.current);
+            //console.log('tempLocation.current', tempLocation.current);
 
 
             const data = {
@@ -149,9 +149,9 @@ export default function TensorCamera({ navigation, route }) {
           };
       
           try {
-            console.log("data",data);
+              //console.log("data",data);
               const locationResponse = await axios.put(URLgps, { data });
-              console.log('Location server response:', locationResponse.data);
+              //console.log('Location server response:', locationResponse.data);
           } catch (error) {
               console.log('Error while sending location to server:', error);
           }
@@ -169,7 +169,7 @@ export default function TensorCamera({ navigation, route }) {
   useEffect(() => {
 
       if (tempHeading) {
-          console.log("Updated TempHeading:", tempHeading.current);
+          //console.log("Updated TempHeading:", tempHeading.current);
       }
   }, [tempHeading.current]); 
 
@@ -557,10 +557,9 @@ async function detectHittedPart(segmentedParts) {
     {
       
       //Vibration.vibrate([500, 1000, 500]);
-      console.log(lobbyData);
+      //console.log(lobbyData);
        try {
-          console.log(1111)
-          console.log(tempHeading.current?.trueHeading)
+          //console.log(tempHeading.current?.trueHeading)
            // Fetching user data from your backend
            if(tempHeading)
            {
@@ -576,7 +575,7 @@ async function detectHittedPart(segmentedParts) {
                 }
               }
              })
-             if(response == true)
+             if(response.data.result == true)
               Vibration.vibrate([500, 1000, 500]);
            }
       } catch (error) {
