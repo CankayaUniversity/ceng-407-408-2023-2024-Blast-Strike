@@ -65,7 +65,12 @@ async function hitPlayer(db, data) {
 
             const distance = R * c;
             // adjust for object width
-            const enemyWidthRadians = 2 * Math.atan(enemyWidth / (2 * distance));
+            //const enemyWidthRadians = 2 * Math.atan(enemyWidth / (2 * distance));
+
+            const enemyWidthDegrees = Math.atan(enemyWidth / (2 * distance)) * (180 / Math.PI);
+            const leftViewAngle = (bearing - enemyWidthDegrees + 360) % 360;
+            const rightViewAngle = (bearing + enemyWidthDegrees) % 360;
+
 
             const bearing = getRhumbLineBearing(
                 { latitude: playerLat, longitude: playerLon },
@@ -90,7 +95,7 @@ async function hitPlayer(db, data) {
             console.log('Bearing:', bearing);
             console.log('Angle Difference:', angleDifference);
 
-            if (Math.abs(angleDifference) <= enemyWidthRadians && distance <= maxDistance) {
+            if (((Math.abs(playerHeading - leftViewAngle + 360) % 360 <= angleDifference) || (Math.abs(playerHeading - rightViewAngle + 360) % 360 <= angleDifference)) && distance <= maxDistance) {
                 console.log("In sight!");
                 //check enemy killed && score updates
                 if(isDead(docData[enemyTeam][0].health,damage))
