@@ -3,7 +3,7 @@ import {decodeJpeg} from '@tensorflow/tfjs-react-native'
 import * as bodyPix from "@tensorflow-models/body-pix";
 import * as FileSystem from 'expo-file-system';
 import { Camera } from 'expo-camera';
-import { Button, StyleSheet,Image, Text, TouchableOpacity, View, Dimensions} from 'react-native';
+import { Button, StyleSheet,Image, Text, TouchableOpacity, View, Dimensions, Vibration} from 'react-native';
 import { useState, useRef, useEffect } from 'react';
 import { manipulateAsync } from 'expo-image-manipulator';
 import Constants from 'expo-constants'; // Ensure Constants is correctly imported
@@ -533,7 +533,7 @@ async function detectHittedPart(segmentedParts) {
     if(damage>0)
     {
       
-    
+      Vibration.vibrate([500, 1000, 500]);
       console.log(lobbyData);
        try {
           console.log(1111)
