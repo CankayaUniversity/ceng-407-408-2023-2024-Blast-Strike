@@ -37,7 +37,7 @@ async function getGpsLocation(db, data) {
 
         }
     } catch (error) {
-        console.error('Error getting document data:', error);
+        console.log('Error getting document data:', error);
         throw error;
     }
     return true;

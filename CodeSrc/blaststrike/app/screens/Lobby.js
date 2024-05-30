@@ -85,7 +85,7 @@ const URLlobbyStart = Constants?.expoConfig?.hostUri
       setLobbyExist(true);
 
     } catch (error) {
-      console.error("Error fetching lobby data:", error);
+      console.log("Error fetching lobby data:", error);
     }
   }
 
@@ -97,7 +97,7 @@ const URLlobbyStart = Constants?.expoConfig?.hostUri
       }
     });
     } catch (error) {
-      console.error("Error starting lobby data:", error);
+      console.log("Error starting lobby data:", error);
     }
   }
 

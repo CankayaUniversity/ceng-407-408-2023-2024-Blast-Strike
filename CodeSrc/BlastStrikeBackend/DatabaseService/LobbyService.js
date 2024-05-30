@@ -20,7 +20,7 @@ async function sendInvitation(db, data) {
             throw new Error("Invitation already exists.");
         }
     }catch (error) {
-        console.error('Error sending invitation:', error);
+        console.log('Error sending invitation:', error);
         throw error;
     }
 
@@ -42,7 +42,7 @@ async function sendInvitation(db, data) {
           throw new Error("User is not found.");
         }
       } catch (error) {
-        console.error('Error sending invitation:', error);
+        console.log('Error sending invitation:', error);
         throw error;
       }
     }
@@ -83,7 +83,7 @@ async function fetchInvitations(db,data)
 
 async function deleteAcceptedInvitations(db, data) {
     if (!data.to_username || !data.from_username || !data.lobbyName) {
-      console.error("Error: Missing or undefined to_username or from_username.");
+      console.log("Error: Missing or undefined to_username or from_username.");
       return;
     }
     try {
@@ -110,7 +110,7 @@ async function deleteAcceptedInvitations(db, data) {
 
       console.log("Document(s) deleted successfully.");
     } catch (error) {
-      console.error("Error deleting document:", error);
+      console.log("Error deleting document:", error);
     }
   }
 
@@ -254,7 +254,7 @@ async function addPlayer(db, data) {
             throw new Error("Invalid Lobby name entered. Please check the lobby name.");
 
     } catch (error) {
-        console.error('Error adding player : ', error);
+        console.log('Error adding player : ', error);
         throw error;
     }
 }
@@ -282,7 +282,7 @@ async function getLobbyIdByLobbyName(db,lobbyName) {
             throw new Error ("No lobby document found with the specified lobbyName.");
         }
     } catch (error) {
-        console.error('Error getting lobby ID:', error);
+        console.log('Error getting lobby ID:', error);
         throw error;
     }
 }
@@ -308,7 +308,7 @@ async function getLobbyData(db,documentId) {
             return null;
         }
     } catch (error) {
-        console.error('Error getting document data:', error);
+        console.log('Error getting document data:', error);
         throw error;
     }
 }
@@ -327,7 +327,7 @@ async function startLobby (db,data) {
             return null;
         }
     } catch (error) {
-        console.error('Error getting document data:', error);
+        console.log('Error getting document data:', error);
         throw error;
     }
 }

@@ -25,7 +25,7 @@ async function getUser(username) {
             return userData;
         }
     } catch (error) {
-        console.error('Error getting user by email:', error);
+        console.log('Error getting user by email:', error);
         throw error;
     }
 }
@@ -40,7 +40,7 @@ async function createUser(db, data) {
         console.log('User created successfully with ID:', docRef.id);
 
     } catch (error) {
-        console.error('Error creating user:', error);
+        console.log('Error creating user:', error);
     }
 }
 async function fetchCurrentUserData(db,data) {
@@ -81,7 +81,7 @@ async function fetchCurrentUserData(db,data) {
         // Optionally, you could return here or throw an error, depending on how you want to handle this case
       }
     }catch (error) {
-      console.error('Error sending friend request:', error);
+      console.log('Error sending friend request:', error);
       throw error;
     }
 
@@ -104,7 +104,7 @@ async function fetchCurrentUserData(db,data) {
           throw new Error("User is not found.");
         }
       } catch (error) {
-        console.error('Error sending friend request:', error);
+        console.log('Error sending friend request:', error);
         throw error; // Ensure this error gets thrown for the caller to handle
       }
     }
@@ -151,7 +151,7 @@ async function fetchCurrentUserData(db,data) {
             });
             console.log('Item added to the array successfully!');
           } catch (error) {
-            console.error('Error updating document: ', error);
+            console.log('Error updating document: ', error);
           }
         });
       } else {
@@ -171,7 +171,7 @@ async function fetchCurrentUserData(db,data) {
             });
             console.log('Item added to the array successfully!');
           } catch (error) {
-            console.error('Error updating document: ', error);
+            console.log('Error updating document: ', error);
           }
         });
       } else {
@@ -222,7 +222,7 @@ async function displayFriends(db,data)
  async function deleteAcceptedRequest(db, data) {
   // Check if the necessary data is present and not undefined.
   if (!data.to_username || !data.from_username) {
-    console.error("Error: Missing or undefined to_username or from_username.");
+    console.log("Error: Missing or undefined to_username or from_username.");
     return; // Exit the function if the required data is missing or undefined.
   }
 
@@ -250,7 +250,7 @@ async function displayFriends(db,data)
 
     console.log("Document(s) deleted successfully.");
   } catch (error) {
-    console.error("Error deleting document:", error);
+    console.log("Error deleting document:", error);
   }
 }
 

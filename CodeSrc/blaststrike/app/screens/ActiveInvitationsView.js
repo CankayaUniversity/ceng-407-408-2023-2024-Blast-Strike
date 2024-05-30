@@ -30,7 +30,7 @@ const ActiveInvitationsView = ({ navigation, userData }) => {
         const updatedInvitations = querySnapshot.docs.map(doc => doc.data());
         setInvitations(updatedInvitations);
       }, (error) => {
-        console.error("Error fetching friend Invitations: ", error);
+        console.log("Error fetching friend Invitations: ", error);
       });
     }
 
@@ -60,7 +60,7 @@ const ActiveInvitationsView = ({ navigation, userData }) => {
         selectedTeam:selectedTeam
         });
     } catch (error) {
-      console.error('Error accepting invitation:', error);
+      console.log('Error accepting invitation:', error);
       Alert.alert("Acception Failed!", "Error accepting invitation.")
     }
   };

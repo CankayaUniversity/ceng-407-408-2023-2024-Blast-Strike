@@ -29,7 +29,7 @@ const FriendRequestsView = ({ userData }) => {
         const updatedRequests = querySnapshot.docs.map(doc => doc.data());
         setRequests(updatedRequests);
       }, (error) => {
-        console.error("Error fetching friend requests: ", error);
+        console.log("Error fetching friend requests: ", error);
       });
     }
 
@@ -48,7 +48,7 @@ const FriendRequestsView = ({ userData }) => {
         to_username: userData.username,
       });
     } catch (error) {
-      console.error('Error accepting friend request:', error);
+      console.log('Error accepting friend request:', error);
       Alert.alert("Acception Failed!", "Error accepting friend request.")
     }
   };

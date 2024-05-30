@@ -23,14 +23,14 @@ export const useFetchUserData = () => {
             });
             setUserData(response.data); // Adjust according to your response structure
           } catch (error) {
-            console.error('Error fetching user data:', error);
+            console.log('Error fetching user data:', error);
             setUserData(null); // Handle error by setting userData to null
           }
         };
 
         fetchUserData();
       } else {
-        console.error('No user logged in');
+        console.log('No user logged in');
         setUserData(null); // Set userData to null when no user is logged in
       }
     });

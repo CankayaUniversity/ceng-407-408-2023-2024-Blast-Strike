@@ -31,7 +31,7 @@ const DisplayFriendListPopUp = ({ visible, onClose, username }) => {
         friend_list = friend_list.filter(item => item !== "");
         setFriendList(friend_list);
       } catch (error) {
-        console.error('Error fetching friends list:', error);
+        console.log('Error fetching friends list:', error);
       }
     };
 

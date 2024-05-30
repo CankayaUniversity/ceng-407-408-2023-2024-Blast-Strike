@@ -123,7 +123,7 @@ export default function TensorCamera({ navigation, route }) {
         try {
             const { status } = await Location.requestForegroundPermissionsAsync();
             if (status !== 'granted') {
-                console.error('Permission to access location was denied');
+                console.log('Permission to access location was denied');
                 return;
             }
 
@@ -153,10 +153,10 @@ export default function TensorCamera({ navigation, route }) {
               const locationResponse = await axios.put(URLgps, { data });
               console.log('Location server response:', locationResponse.data);
           } catch (error) {
-              console.error('Error while sending location to server:', error);
+              console.log('Error while sending location to server:', error);
           }
         } catch (error) {
-            console.error('Error fetching and sending location:', error);
+            console.log('Error fetching and sending location:', error);
         }
     };
 

@@ -41,7 +41,7 @@ app.post('/fetchCurrentUserData', async (req, res) => {
         // Assuming currentUserData directly contains the username or relevant user info
         res.send({ username: currentUserData.username });
     } catch (error) {
-        console.error('Server error fetching user data:', error);
+        console.log('Server error fetching user data:', error);
         res.status(500).send({ msg: 'Server error fetching user data' });
     }
 });
@@ -87,7 +87,7 @@ app.post('/fetchFriendRequests', async (req, res) => {
         // Send the fetched data in the response
         res.send({ FriendRequests: friendRequests });
     } catch (error) {
-        console.error('Server error fetching user data:', error);
+        console.log('Server error fetching user data:', error);
         // It's a good practice to return a meaningful HTTP status code
         res.status(500).send({ msg: 'Server error fetching user data' });
     }
@@ -102,7 +102,7 @@ app.post('/deleteAcceptedRequests', async (req, res) => {
       
         res.send({ msg:"Successfully deleted" });
     } catch (error) {
-        console.error('Delete accepted request error', error);
+        console.log('Delete accepted request error', error);
         // It's a good practice to return a meaningful HTTP status code
         res.status(500).send({ msg: 'delete accepted request error' });
     }
@@ -115,7 +115,7 @@ app.post('/displayFriends', async (req, res) => {
         const friendsList = await displayFriends(db,data); // Corrected data structure
         res.json(friendsList); // Respond with the friend list
     } catch (error) {
-        console.error('Server error fetching user data:', error);
+        console.log('Server error fetching user data:', error);
         res.status(500).send({ msg: 'Server error fetching user data' });
     }
 });
@@ -148,7 +148,7 @@ app.post('/fetchInvitations', async (req, res) => {
         console.log("in post Invitations");
         res.send({ ActiveInvitations: activeInvitations });
     } catch (error) {
-        console.error('Server error fetching user data:', error);
+        console.log('Server error fetching user data:', error);
         res.status(500).send({ msg: 'Server error fetching user data' });
     }
 });
@@ -162,7 +162,7 @@ app.post('/deleteAcceptedInvitations', async (req, res) => {
 
         res.send({ msg:"Successfully deleted" });
     } catch (error) {
-        console.error('Delete accepted invitation error', error);
+        console.log('Delete accepted invitation error', error);
         res.status(500).send({ msg: 'Delete accepted invitation error' });
     }
 });
