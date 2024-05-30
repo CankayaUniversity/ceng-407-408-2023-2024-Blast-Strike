@@ -6,30 +6,8 @@ const angleThreshold = 20;
 const maxDistance = 25;
 const R = 6371e3; 
 const toRadians = (degree) => degree * (Math.PI / 180);
-
-function calculateBearing(lat1, lon1, lat2, lon2) {
-    // Radyan cinsine çevir
-    const radians = (degree) => degree * (Math.PI / 180);
-    lat1 = radians(lat1);
-    lon1 = radians(lon1);
-    lat2 = radians(lat2);
-    lon2 = radians(lon2);
-
-    // Boylam farkını hesapla
-    const deltaLon = lon2 - lon1;
-
-    // Yönü hesapla
-    const x = Math.sin(deltaLon) * Math.cos(lat2);
-    const y = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(deltaLon);
-    let initialBearing = Math.atan2(x, y);
-
-    // Radyan cinsinden hesaplanan bearing'i dereceye çevir ve 0-360 arası bir değer olarak düzenle
-    initialBearing = initialBearing * (180 / Math.PI);
-    const bearing = (initialBearing + 360) % 360;
-
-    return bearing;
-}
-
+const enemyWidth = 0.5; // in meter
+ 
 async function hitPlayer(db, data) {
     let documentId = data['documentId'];
     let damage = data['damage'];
@@ -86,15 +64,14 @@ async function hitPlayer(db, data) {
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
             const distance = R * c;
+            // adjust for object width
+            const enemyWidthRadians = 2 * Math.atan(enemyWidth / (2 * distance));
 
             const bearing = getRhumbLineBearing(
                 { latitude: playerLat, longitude: playerLon },
                 { latitude: enemyLat, longitude: enemyLon }
             );
-
-            //const bearing = calculateBearing(playerLat, playerLon, enemyLat, enemyLon);
-
-
+            
             //const angleDifference = Math.abs(playerHeading - bearing);
             
             // (playerHeading - bearing + 360) always pos
@@ -110,13 +87,12 @@ async function hitPlayer(db, data) {
             }
 
 
-
-
+            console.log('Enemy Radians:', enemyWidthRadians)
             console.log('Distance:', distance);
             console.log('Bearing:', bearing);
             console.log('Angle Difference:', angleDifference);
 
-            if ((Math.abs(angleDifference) >= angleThreshold || (Math.abs(angleDifferenceNegative) <= angleThreshold))&& distance <= maxDistance) {
+            if ((Math.abs(angleDifference) <= enemyWidthRadians || (Math.abs(angleDifferenceNegative) <= angleThreshold))&& distance <= maxDistance) {
                 console.log("In sight!");
                 //check enemy killed && score updates
                 if(isDead(docData[enemyTeam][0].health,damage))
