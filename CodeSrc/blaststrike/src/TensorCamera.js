@@ -556,7 +556,7 @@ async function detectHittedPart(segmentedParts) {
     if(damage>0)
     {
       
-      Vibration.vibrate([500, 1000, 500]);
+      //Vibration.vibrate([500, 1000, 500]);
       console.log(lobbyData);
        try {
           console.log(1111)
