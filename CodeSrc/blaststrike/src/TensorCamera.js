@@ -181,13 +181,42 @@ export default function TensorCamera({ navigation, route }) {
     // console.log("doc.data().scoreBlue!=scoreBlue.current",doc.data().scoreBlue!=scoreBlue.current);
      //scoreBlue.current=doc.data()['scoreBlue'];
 
-     if (userHealth === 0 && !isButtonDisabled) {
+     const data = doc.data();
+     if (!data) {
+       console.log("No data found in document!");
+       return;
+     }
+     const newHealth = data[selectedTeam][0].health;
+
+     //if(doc.data()[selectedTeam][0].health!=userHealth)
+       // setUserHealth(doc.data()[selectedTeam][0].health)
+
+      // Check if the new health value is 0 and handle button state
+  if (newHealth !== userHealth) {
+    //console.log("Health has changed:", newHealth);
+    setUserHealth(newHealth);
+
+    // Handle button state based on the new health value
+    if (newHealth === 0 && !isButtonDisabled) {
       setIsButtonDisabled(true);
-    } else if (isButtonDisabled && userHealth !== 0) {
+     // console.log("Button disabled due to health 0");
+    } else if (isButtonDisabled && newHealth !== 0) {
       setIsButtonDisabled(false);
+      //console.log("Button enabled as health is not 0");
     }
-     if(doc.data()[selectedTeam][0].health!=userHealth)
-        setUserHealth(doc.data()[selectedTeam][0].health)
+  } else {
+   // console.log("Health unchanged:", newHealth);
+
+    // Additional check to handle button state if health is 0 but button is not disabled
+    if (newHealth === 0 && !isButtonDisabled) {
+      setIsButtonDisabled(true);
+      //console.log("Button disabled due to health 0 (from unchanged block)");
+    } else if (isButtonDisabled && newHealth !== 0) {
+      setIsButtonDisabled(false);
+     // console.log("Button enabled as health is not 0 (from unchanged block)");
+    }
+  }
+
 
      if((doc.data().scoreRed!=scoreRed || doc.data().scoreBlue!=scoreBlue ))
        {
