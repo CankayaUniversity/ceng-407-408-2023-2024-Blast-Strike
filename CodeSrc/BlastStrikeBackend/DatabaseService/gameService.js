@@ -1,7 +1,6 @@
 import { collection, getDocs, getDoc,addDoc,query,where,doc,updateDoc} from 'firebase/firestore/lite';
 import { db } from './firebaseConfig.js';
 import { getDistance, getRhumbLineBearing } from 'geolib';
-import {Vibration} from 'react-native';
 
 const angleThreshold = 20; 
 const maxDistance = 25;
@@ -96,7 +95,6 @@ async function hitPlayer(db, data) {
             console.log('Angle Difference:', angleDifference);
 
             if (Math.abs(angleDifference) <= enemyWidthRadians && distance <= maxDistance) {
-                Vibration.vibrate([500, 1000, 500]);
                 console.log("In sight!");
                 //check enemy killed && score updates
                 if(isDead(docData[enemyTeam][0].health,damage))
@@ -163,11 +161,12 @@ async function hitPlayer(db, data) {
                                 });
                             }    
                     }
-    
+                return true;
             }
             
             else {
                 console.log("Not in sight!");
+                return false;
             }
             
 
@@ -180,7 +179,7 @@ async function hitPlayer(db, data) {
         console.error('Error getting document data:', error);
         throw error;
     }
-    return true;
+    return false;
 }
 
 // kill decide logic

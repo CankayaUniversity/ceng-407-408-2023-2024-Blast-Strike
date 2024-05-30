@@ -576,6 +576,8 @@ async function detectHittedPart(segmentedParts) {
                 }
               }
              })
+             if(response == true)
+              Vibration.vibrate([500, 1000, 500]);
            }
       } catch (error) {
           console.log('Error hit:', error);
