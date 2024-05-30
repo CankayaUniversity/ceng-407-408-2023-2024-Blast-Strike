@@ -13,6 +13,7 @@ import Scoreboard from '../app/screens/ScoreBoard';
 import ShootingButton from '../app/screens/ShootingButton'
 import HealthBar from '../app/screens/HealthBar';
 import GameEndScreen from '../app/screens/GameEndScreen';
+import { Audio } from 'expo-av';
 import * as Location from "expo-location";
 import axios from 'axios';
 
@@ -28,8 +29,30 @@ export default function TensorCamera({ navigation, route }) {
   
 
 
-  const {lobbyData,selectedTeam,username}=route.params;
- 
+ const {lobbyData,selectedTeam,username}=route.params;
+ const [sound, setSound] = useState(null);
+ const [isInFire, setInFire] = useState(false);
+
+ async function playSound() {
+  try {
+    setInFire(true);
+    // create a new sound instance and play it immediately
+    const { sound: newSound } = await Audio.Sound.createAsync(
+      require('../sounds/FireSound.mp3')
+    );
+    await newSound.playAsync();
+
+    // Clean up the sound after it has finished playing
+    newSound.setOnPlaybackStatusUpdate(async (status) => {
+      if (status.didJustFinish) {
+        await newSound.unloadAsync();
+      }
+    });
+    setInFire(false);
+  } catch (error) {
+    console.log('Error loading or playing sound:', error);
+  }
+}
 
   //const [gameData, setGameData] = useState(null);
 
@@ -594,7 +617,8 @@ const resizeImage = async (uri) => {
 
 
 const takePicture = async () => {
-  if (cameraRef.current) {
+  if (cameraRef.current && !isInFire) {
+    playSound();
     const photo = await cameraRef.current.takePictureAsync();
     const resizedUri = await resizeImage(photo.uri);
     //setPhotoUri(resizedUri); // Here, you get the URI of the captured photo
