@@ -1,7 +1,22 @@
 # ceng-407-408-2023-2024-Blast-Strike
 Blast Strike
 
+
 ## Modifications
+
+### Modify `AppEntry.js`
+
+Navigate to the file at:
+
+ceng-407-408-2023-2024-Blast-Strike\CodeSrc\blaststrike\node_modules\expo\AppEntry.js
+
+```
+import registerRootComponent from 'expo/build/launch/registerRootComponent';
+
+import App from '../../src/App';
+
+registerRootComponent(App);
+```
 
 After installation, you'll need to make some modifications to the `expo-location` library used in the project.
 
@@ -77,6 +92,13 @@ export async function watchHeadingAsync(callback) {
     };
 }
 ```
+
+
+
+
+
+
+
 
 ## Additional Information
 
