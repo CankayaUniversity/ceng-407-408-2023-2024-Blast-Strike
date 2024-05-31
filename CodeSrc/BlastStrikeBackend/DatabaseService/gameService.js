@@ -58,6 +58,12 @@ async function hitPlayer(db, data) {
             const deltaLatRadians = toRadians(lat2 - lat1);
             const deltaLonRadians = toRadians(lon2 - lon1);
 
+
+            const bearing = getRhumbLineBearing(
+                { latitude: playerLat, longitude: playerLon },
+                { latitude: enemyLat, longitude: enemyLon }
+            );
+
             const a = Math.sin(deltaLatRadians / 2) * Math.sin(deltaLatRadians / 2) +
                     Math.cos(lat1Radians) * Math.cos(lat2Radians) *
                     Math.sin(deltaLonRadians / 2) * Math.sin(deltaLonRadians / 2);
@@ -66,16 +72,12 @@ async function hitPlayer(db, data) {
             const distance = R * c;
             // adjust for object width
             //const enemyWidthRadians = 2 * Math.atan(enemyWidth / (2 * distance));
-
             const enemyWidthDegrees = Math.atan(enemyWidth / (2 * distance)) * (180 / Math.PI);
             const leftViewAngle = (bearing - enemyWidthDegrees + 360) % 360;
             const rightViewAngle = (bearing + enemyWidthDegrees) % 360;
 
 
-            const bearing = getRhumbLineBearing(
-                { latitude: playerLat, longitude: playerLon },
-                { latitude: enemyLat, longitude: enemyLon }
-            );
+
             //const angleDifference = Math.abs(playerHeading - bearing);
             // (playerHeading - bearing + 360) always pos
             // % 360 normalize circular nature
@@ -90,7 +92,7 @@ async function hitPlayer(db, data) {
                 angleDifferenceNegative = 360 - angleDifferenceNegative;
             }
             */
-            console.log('Enemy Radians:', enemyWidthRadians)
+            //console.log('Enemy Radians:', enemyWidthRadians)
             console.log('Distance:', distance);
             console.log('Bearing:', bearing);
             console.log('Angle Difference:', angleDifference);
