@@ -6,7 +6,7 @@ const angleThreshold = 20;
 const maxDistance = 25;
 const R = 6371e3; 
 const toRadians = (degree) => degree * (Math.PI / 180);
-const enemyWidth = 0.5; // in meter
+
  
 async function hitPlayer(db, data) {
     let documentId = data['documentId'];
@@ -70,21 +70,22 @@ async function hitPlayer(db, data) {
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
             const distance = R * c;
-            // adjust for object width
-            //const enemyWidthRadians = 2 * Math.atan(enemyWidth / (2 * distance));
-            const enemyWidthDegrees = Math.atan(enemyWidth / (2 * distance)) * (180 / Math.PI);
-            const leftViewAngle = (bearing - enemyWidthDegrees + 360) % 360;
-            const rightViewAngle = (bearing + enemyWidthDegrees) % 360;
-
 
 
             //const angleDifference = Math.abs(playerHeading - bearing);
             // (playerHeading - bearing + 360) always pos
             // % 360 normalize circular nature
             let angleDifference = Math.abs((playerHeading - bearing + 360) % 360);
+
            //let angleDifferenceNegative = Math.abs((-playerHeading - bearing + 360) % 360);
-            if (angleDifference > 180) {
+
+            let angleDifferenceNegative = Math.abs((-playerHeading - bearing + 360) % 360);
+            if (angleDifference < 180) {
                 angleDifference = 360 - angleDifference;
+            }
+
+            if (angleDifferenceNegative > 180) {
+                angleDifferenceNegative = 360 - angleDifferenceNegative;
             }
 
             /*
@@ -97,7 +98,7 @@ async function hitPlayer(db, data) {
             console.log('Bearing:', bearing);
             console.log('Angle Difference:', angleDifference);
 
-            if (((Math.abs(playerHeading - leftViewAngle + 360) % 360 <= angleDifference) || (Math.abs(playerHeading - rightViewAngle + 360) % 360 <= angleDifference)) && distance <= maxDistance) {
+            if ((Math.abs(angleDifference) >= angleThreshold || (Math.abs(angleDifferenceNegative) <= angleThreshold))&& distance <= maxDistance) {
                 console.log("In sight!");
                 //check enemy killed && score updates
                 if(isDead(docData[enemyTeam][0].health,damage))
