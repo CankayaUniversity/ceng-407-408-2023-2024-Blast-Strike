@@ -1,5 +1,15 @@
 # ceng-407-408-2023-2024-Blast-Strike
 Blast Strike
+Before starting change the AppEntry.js file in path \ceng-407-408-2023-2024-Blast-Strike\CodeSrc\blaststrike\node_modules\expo\AppEntry.js
+
+to this :
+
+import registerRootComponent from 'expo/build/launch/registerRootComponent';
+
+import App from '../../src/App';
+
+registerRootComponent(App);
+
 
 After the npm install part of the project. Change the this releated libary with this functions:
 Go to CodeSrc -> blaststrike -> node_modules -> expo-location->build->Location.js
